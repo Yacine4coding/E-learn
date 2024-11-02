@@ -11,14 +11,12 @@ const teacherShcema = mongoose.Schema({
   },
   courses: {
     type: {
-      count: {
-        type: Number,
-        default: 0,
-      },
-      coursesId: {
-        type: Array,
-        default: [],
-      },
+      count: Number,
+      coursesId: Array,
+    },
+    default: {
+      count: 0,
+      coursesId: [],
     },
   },
 });
