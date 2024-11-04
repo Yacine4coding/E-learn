@@ -1,4 +1,4 @@
-import { TOKEN_OPTION, generateToken } from "../middleware/jwt.js";
+import { generateToken } from "../middleware/jwt.js";
 import {
   comparePassword,
   hashingPassword,
@@ -101,7 +101,11 @@ export async function isUserExist(userId) {
     if (!isUserExist) return { isExist: false };
     return {
       isExist: true,
-      user: { username: isUserExist.username, picture: isUserExist.picture },
+      user: {
+        username: isUserExist.username,
+        picture: isUserExist.picture,
+        isHasPicture: isUserExist.isHasPicture,
+      },
     };
   } catch (error) {
     return false;

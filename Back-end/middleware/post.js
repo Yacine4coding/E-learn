@@ -1,5 +1,5 @@
 export function formatPost(post, user) {
-  let { text, _id: id, vote } = post;
+  let { text, _id: id, vote,comments } = post;
   const { username, picture, isHasPicture } = user;
   vote = {
     up: vote.up,
@@ -11,6 +11,7 @@ export function formatPost(post, user) {
     isHasPicture,
     picture,
     text,
+    comments,
     vote,
   };
 }

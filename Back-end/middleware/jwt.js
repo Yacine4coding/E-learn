@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { isUserExist } from "../controller/user";
 
 // export const TOKEN_OPTION = { httpOnly: true, secure: true };
 export const TOKEN_OPTION = { httpOnly: true };
@@ -21,8 +22,19 @@ export async function verifyToken(req, res, next) {
   try {
     const isCorrectToken = jwt.verify(token, process.env.SECRET_KEY);
     const { userId, isteacher } = isCorrectToken;
+    if (userId) {
+      res.status(404).send({ message: "auth : user id not found" });
+      return;
+    }
+    // check user info
+    const { isExist, user } = await isUserExist(userId);
+    if (!isExist) {
+      res.status(500).send({ message: "auth : user not found" });
+      return;
+    }
     req.body.userId = userId.toString();
     req.body.isteacher = isteacher;
+    req.body.user = user;
     addExistingToken(token, res);
     next();
   } catch (error) {

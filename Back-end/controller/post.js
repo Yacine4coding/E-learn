@@ -2,18 +2,12 @@ import { formatPost } from "../middleware/post.js";
 import Post from "../models/Post.js";
 import { isUserExist } from "./user.js";
 export async function addPost(req, res) {
-  const { text, userId, isteacher } = req.body;
+  const { text, userId, isteacher, user } = req.body;
   if (isteacher) {
     res.status(500).send("techers don't has access to add posts yet");
     return;
   }
   try {
-    // check userId is correct
-    const existingUser = await isUserExist(userId);
-    if (!existingUser.isExist) {
-      res.status(404).send("user id not found");
-      return;
-    }
     // check if text not empty
     if (!text) {
       res.status(404).send("text is required");
@@ -25,12 +19,159 @@ export async function addPost(req, res) {
       text,
     }).save();
     // hundle post response
-    const postFromat = formatPost(post, existingUser.user);
     res.status(200).send({
       message: "post add succesfuly",
-      post: postFromat,
+      post: formatPost(post, user),
     });
   } catch (error) {
     res.status(500).send(error.message);
+  }
+}
+export async function getPosts(req, res) {
+  const { userId, isteacher, user } = req.body;
+  if (isteacher) {
+    res.status(500).send({
+      message: "teacher hasn't access to posts yet",
+    });
+  }
+  try {
+    const posts = await Post.find({ userId });
+    if (posts.length === 0) {
+      res.status(200).send({
+        count: 0,
+        message: "no post yet",
+      });
+      return;
+    }
+    const postsFormat = posts.map((post) => formatPost(post, user));
+    res.status(200).send({
+      count: posts.length,
+      posts: postsFormat,
+    });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
+// ! not tested
+export async function updatePost(req, res) {
+  const { isteacher, userId, postId, text, user } = req.body;
+  //   check inputs
+  if (!postId) {
+    res.status(404).send("postId is empty");
+    return;
+  }
+
+  if (isteacher) {
+    res.status(500).send("teacher hasn't access for posts yet");
+    return;
+  }
+  try {
+    // check post and user access
+    let post = await Post.findById(postId);
+    if (!post) {
+      res.status(404).send({ message: "post not found" });
+      return;
+    }
+
+    if (userId !== post._id.toString()) {
+      res.status(400).send({ message: "sorry !! but isn't your post" });
+      return;
+    }
+    // hundle update
+    if (post.text !== text) {
+      post.text = text;
+      post = await post.save();
+    }
+    res.status(200).send({
+      message: "post is updated",
+      post: formatPost(post, user),
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+}
+export async function voteUp(req, res) {
+  const { userId, isteacher, postId } = req.body;
+  if (!postId) {
+    res.status(404).send({ message: "post id not found" });
+    return;
+  }
+  if (isteacher) {
+    res.status(500).send({ message: "teacher hasn't acces to posts yet" });
+    return;
+  }
+  try {
+    let post = await Post.findById(postId);
+    if (!post) {
+      res.status(404).send("post not found");
+      return;
+    }
+    const { isExist, user: postOwner } = await isUserExist(post.userId);
+    if (isExist) {
+      res.status(400).send({ message: "post owner not found" });
+      return;
+    }
+    const isVotedUp = post.vote.up.usersID.indexOf(userId);
+    if (isVotedUp !== -1) {
+      post.vote.up.usersID.splice(isVotedUp, 1);
+      post.vote.up.count--;
+    } else {
+      post.vote.up.usersID.unshift(userId);
+      post.vote.up.count++;
+      const isVotedDown = post.vote.down.usersID.indexOf(userId);
+
+      if (isVotedDown !== -1) {
+        post.vote.down.usersID.splice(isVotedDown, 1);
+        post.vote.down.count--;
+      }
+    }
+    post = await post.save();
+    res.status(200).send({
+      post: formatPost(post, postOwner),
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+}
+export async function voteDown(req, res) {
+  const { userId, isteacher, postId } = req.body;
+  if (!postId) {
+    res.status(404).send({ message: "post id not found" });
+    return;
+  }
+  if (isteacher) {
+    res.status(500).send({ message: "teacher hasn't acces to posts yet" });
+    return;
+  }
+  try {
+    let post = await Post.findById(postId);
+    if (!post) {
+      res.status(404).send("post not found");
+      return;
+    }
+    const { isExist, user: postOwner } = await isUserExist(post.userId);
+    if (isExist) {
+      res.status(400).send({ message: "post owner not found" });
+      return;
+    }
+    const isVotedDown = post.vote.down.usersID.indexOf(userId);
+    if (isVotedDown !== -1) {
+      post.vote.down.usersID.splice(isVotedDown, 1);
+      post.vote.down.count--;
+    } else {
+      post.vote.down.usersID.unshift(userId);
+      post.vote.down.count++;
+      const isVotedUp = post.vote.up.usersID.indexOf(userId);
+      if (isVotedUp !== -1) {
+        post.vote.up.usersID.splice(isVotedUp, 1);
+        post.vote.up.count--;
+      }
+    }
+    post = await post.save();
+    res.status(200).send({
+      post: formatPost(post, postOwner),
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
   }
 }
