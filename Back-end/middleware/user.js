@@ -10,8 +10,10 @@ export async function comparePassword(pass, hashPass) {
   return isCorrectPassword;
 }
 export function generateUserInfo(user) {
-  const { username, isteacher, bio, userId } = user;
+  const { username, isteacher, bio, userId, picture, isHasPicture } = user;
   return {
+    picture,
+    isHasPicture,
     username,
     userId,
     bio,

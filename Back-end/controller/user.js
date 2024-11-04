@@ -47,7 +47,7 @@ export async function singup(req, res) {
       password: passwordHash,
     }).save();
     // send response
-    res.cookie("token", await generateToken(newUser), TOKEN_OPTION);
+    await generateToken(newUser, res);
     res.status(200).send({
       message: "signup succesfuly",
       userInfo: {
@@ -70,7 +70,7 @@ export async function login(req, res) {
     // ! don't find user or password isn't match
     if (!checkUser || !comparePassword(password, checkUser?.password)) {
       res.status(403).send({
-        message: "email or password is inccorect",
+        message: "username or password is inccorect",
       });
       return;
     }
@@ -82,10 +82,8 @@ export async function login(req, res) {
       userInfo = generateStudientInfo(
         await Studient.findById(checkUser.userId)
       );
-
     // * generate res and cookies(token)
-
-    res.cookie("token", await generateToken(checkUser), TOKEN_OPTION);
+    await generateToken(checkUser, res);
     res.status(200).send({
       message: "login succesfuly",
       userInfo: {
@@ -95,5 +93,17 @@ export async function login(req, res) {
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
+  }
+}
+export async function isUserExist(userId) {
+  try {
+    const isUserExist = await User.findById(userId);
+    if (!isUserExist) return { isExist: false };
+    return {
+      isExist: true,
+      user: { username: isUserExist.username, picture: isUserExist.picture },
+    };
+  } catch (error) {
+    return false;
   }
 }

@@ -28,6 +28,14 @@ const UserShcema = mongoose.Schema(
       type: String,
       default: "",
     },
+    isHasPicture: {
+      type: Boolean,
+      default: false,
+    },
+    picture: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

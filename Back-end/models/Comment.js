@@ -14,24 +14,22 @@ const commentSchema = mongoose.Schema(
     vote: {
       type: {
         up: {
-          count: {
-            type: Number,
-            default: 0,
-          },
-          userId: {
-            type: Array,
-            default: [],
-          },
+          count: Number,
+          usersId: [Number],
         },
         down: {
-          count: {
-            type: Number,
-            default: 0,
-          },
-          userId: {
-            type: Array,
-            default: [],
-          },
+          count: Number,
+          usersId: [],
+        },
+      },
+      default: {
+        up: {
+          count: 0,
+          usersId: [],
+        },
+        down: {
+          count: 0,
+          usersId: [],
         },
       },
     },
