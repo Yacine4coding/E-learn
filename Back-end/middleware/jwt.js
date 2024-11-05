@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { isUserExist } from "../controller/user";
+import { isUserExist } from "../controller/user.js";
 
 // export const TOKEN_OPTION = { httpOnly: true, secure: true };
 export const TOKEN_OPTION = { httpOnly: true };
@@ -21,8 +21,9 @@ export async function verifyToken(req, res, next) {
   const token = await req.cookies.token;
   try {
     const isCorrectToken = jwt.verify(token, process.env.SECRET_KEY);
+    // * hundle req
     const { userId, isteacher } = isCorrectToken;
-    if (userId) {
+    if (!userId) {
       res.status(404).send({ message: "auth : user id not found" });
       return;
     }

@@ -1,4 +1,4 @@
-import { generateToken } from "../middleware/jwt.js";
+import { addExistingToken, generateToken } from "../middleware/jwt.js";
 import {
   comparePassword,
   hashingPassword,
@@ -110,4 +110,8 @@ export async function isUserExist(userId) {
   } catch (error) {
     return false;
   }
+}
+export async function logOut(undefined, res) {
+  addExistingToken("", res);
+  res.status(200).send({ message: "log out succesfuly" });
 }

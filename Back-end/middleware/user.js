@@ -21,8 +21,8 @@ export function generateUserInfo(user) {
   };
 }
 export function generateStudientInfo(studient) {
-  const { points, posts, comments, notifications, tasks } = studient;
-  return { points, posts, comments, notifications, tasks };
+  const { points, notifications, tasks } = studient;
+  return { points, notifications, tasks };
 }
 export function generateTeacherInfo(teacher) {
   let { domain, notification, courses } = teacher;

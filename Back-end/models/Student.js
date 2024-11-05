@@ -5,14 +5,6 @@ const studientSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  posts: {
-    type: Array,
-    default: [],
-  },
-  comments: {
-    type: Array,
-    default: [],
-  },
   notifications: {
     type: Array,
     default: [],
