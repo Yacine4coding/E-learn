@@ -2,20 +2,23 @@ import mongoose from "mongoose";
 
 const commentSchema = mongoose.Schema(
   {
+    postId: {
+      type: String,
+      require: true,
+    },
     userId: {
-      unique: true,
       type: String,
       require: true,
     },
     text: {
       type: String,
-      default: "",
+      require: true,
     },
     vote: {
       type: {
         up: {
           count: Number,
-          usersId: [Number],
+          usersId: [],
         },
         down: {
           count: Number,
