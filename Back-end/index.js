@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 // modules path
 import connectDb from "./middleware/database.js";
 import user from "./routes/User.js";
-import post from "./routes/post.js";
+import post from "./routes/Post.js";
 import comment from "./routes/Comment.js";
 dotenv.config();
 const app = express();
