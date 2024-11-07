@@ -13,6 +13,10 @@ const studientSchema = mongoose.Schema({
     type: Array,
     default: [],
   },
+  courses : {
+    type : Array,
+    default : []
+  }
 });
 const Studient = mongoose.model("studient", studientSchema);
 export default Studient;

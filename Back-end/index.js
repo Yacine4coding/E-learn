@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 import connectDb from "./middleware/database.js";
 import user from "./routes/User.js";
 import post from "./routes/post.js";
-import comment from "./routes/Comment.js";
 dotenv.config();
 const app = express();
 connectDb();
@@ -25,6 +24,6 @@ app.use("/user", user);
 app.use("/post", post);
 app.use("/comment", comment);
 // listen port
-app.listen(process.env.PORT, () => {
-  console.log(`http://localhost:${process.env.PORT}`);
+app.listen(process.env.PORT||3001, () => {
+  console.log(`http://localhost:${process.env.PORT||3001}`);
 });
