@@ -1,4 +1,9 @@
 export function generateStudientInfo(studient) {
-  const { points, notifications, tasks } = studient;
-  return { points, notifications, tasks };
+  try {
+    const { points, tasks ,_id } = studient;
+    return { points, tasks, userId: _id.toString() };
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }

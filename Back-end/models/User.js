@@ -15,6 +15,10 @@ const UserShcema = mongoose.Schema(
       type: Array,
       default: [],
     },
+    emailId: {
+      type: String,
+      default: "",
+    },
     email: {
       unique: true,
       type: String,

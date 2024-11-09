@@ -10,13 +10,32 @@ export async function comparePassword(pass, hashPass) {
   return isCorrectPassword;
 }
 export function generateUserInfo(user) {
-  const { username, isteacher, bio, userId, picture, isHasPicture } = user;
+  const {
+    username,
+    isteacher,
+    notifications,
+    bio,
+    emailValidate,
+    userId,
+    isHasPicture,
+    picture,
+  } = user;
   return {
     userId,
     username,
+    emailValidate,
     bio,
+    notifications,
     isteacher,
     picture,
     isHasPicture,
+  };
+}
+export function generateGoogleProps(callbackURL) {
+  return {
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL ,
+    scope: ["profile", "email"],
   };
 }

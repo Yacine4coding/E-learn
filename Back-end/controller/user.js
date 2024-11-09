@@ -3,17 +3,19 @@ import {
   generateToken,
   isTokenCorrect,
 } from "../middleware/jwt.js";
+import { generateStudientInfo } from "../middleware/studient.js";
+import { generateTeacherInfo } from "../middleware/teacher.js";
 import {
   comparePassword,
   hashingPassword,
   generateUserInfo,
 } from "../middleware/user.js";
-import Studient from "../models/Student.js";
 import Teacher from "../models/Teacher.js";
 import User from "../models/User.js";
 import { createNewStudient, getStudient } from "./studient.js";
 import { createNewTeacher, getTeacher } from "./teacher.js";
 
+// * normal auth
 export async function singup(req, res) {
   let { email, password, isteacher = false } = req.body;
   if (!email || !password) {
@@ -28,9 +30,9 @@ export async function singup(req, res) {
       return;
     }
     // create user account in (teacher/student)
-    let userAccount;
-    if (isteacher) userAccount = await createNewTeacher();
-    else userAccount = await createNewStudient();
+    let userAccount = isteacher
+      ? await createNewTeacher()
+      : await createNewStudient();
     if (!userAccount) {
       res.status(500).send({ message: "connot create user info" });
       return;
@@ -50,7 +52,7 @@ export async function singup(req, res) {
     const passwordHash = await hashingPassword(password);
     const newUser = await new User({
       isteacher,
-      userId: userAccount._id.toString(),
+      userId: userAccount.userId.toString(),
       email,
       username,
       password: passwordHash,
@@ -58,13 +60,13 @@ export async function singup(req, res) {
     // send response
     await generateToken(newUser, res);
     res.status(201).send({
-      message: "signup succesfuly",
-      userInfo: {
+      user: {
         ...generateUserInfo(newUser),
         userAccount,
       },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: error.message });
   }
 }
@@ -84,9 +86,9 @@ export async function login(req, res) {
       return;
     }
     // * check user info in (teacher/studient)
-    let userInfo;
-    if (checkUser.isteacher) userInfo = await getTeacher(checkUser.userId);
-    else userInfo = await getStudient(checkUser.userId);
+    const userInfo = checkUser.isteacher
+      ? await getTeacher(checkUser.userId)
+      : await getStudient(checkUser.userId);
     // * generate res and cookies(token)
     await generateToken(checkUser, res);
     res.status(200).send({
@@ -99,6 +101,38 @@ export async function login(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
+// * google auth
+export async function googleSingup(user, isteacher = false) {
+  if (!user) return false;
+  try {
+    const { sub: emailId } = user;
+    const isExist = await User.findOne({ emailId });
+    let userinfo = null;
+    if (!isExist) {
+      userinfo = isteacher
+        ? await createNewTeacher()
+        : await createNewStudient();
+      user = await new User({
+        email: user.email,
+        emailId,
+        password: "",
+        isHasPicture: true,
+        picture: user.picture,
+        userId: userinfo.userId,
+        isteacher,
+        username: user.email.split("@")[0],
+      }).save();
+    } else {
+      userinfo = isExist.isteacher
+        ? await getTeacher(isExist.userId)
+        : await getStudient(isExist.userId);
+    }
+    return { ...generateUserInfo(isExist), ...userinfo };
+  } catch (error) {
+    return false;
+  }
+}
+// * routes
 export async function isUserExist(userId) {
   try {
     const isUserExist = await User.findById(userId);
@@ -115,46 +149,44 @@ export async function isUserExist(userId) {
     return false;
   }
 }
-export async function logOut(undefined, res) {
-  addExistingToken("", res);
-  res.status(204).send();
-}
 export async function isLoggin(req, res) {
-  const token = req.cookies.token;
-  if (!token) {
-    res.status(204).send();
-    return;
-  }
-  const { isCorrect, userId } = await isTokenCorrect(token);
-  if (!isCorrect || !userId) {
-    res.status(204);
-    return;
-  }
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      res.status(204);
+    if (req.user) {
+      await generateToken(req.user, res);
+      res.status(200).send({
+        user: req.user,
+      });
       return;
     }
-    const userInfo = user.isteacher
-      ? generateTeacherInfo(await Teacher.findById(user.userId))
-      : generateStudientInfo(await Studient.findById(user.userId));
-    if (!userInfo) {
-      res
-        .status(500)
-        .send({ message: "user info don't found , please relogin" });
+    const { token } = req.cookies;
+    if (!token) {
+      res.status(204).send();
+      return;
     }
+    const { isCorrect, userId, isteacher } = isTokenCorrect(token);
+    if (!isCorrect || !userId) {
+      res.status(204).send();
+      return;
+    }
+    const userinfo = await User.findById(userId);
+    if (!userinfo) {
+      res.status(404).send({
+        message: "user not found ",
+      });
+      return;
+    }
+    const userDetails = userinfo.isteacher
+      ? await getTeacher(userinfo.userId)
+      : await getStudient(userinfo.userId);
+    await generateToken(userinfo, res);
     res.status(200).send({
-      userInfo: {
-        ...generateUserInfo(user),
-        ...userInfo,
-      },
+      userinfo: { ...generateUserInfo, ...userDetails },
     });
-    return;
   } catch (error) {
-    req.status(500).send({ message: error.massagse });
+    res.status(500).send({ message: error.message });
   }
 }
+// *
 export async function deleteAccount(req, res) {
   const { userId } = req.body;
   try {
@@ -165,26 +197,13 @@ export async function deleteAccount(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-export async function googleAuth(req, res) {
-  console.log(req.user);
-  console.log("is wordk");
-  if (req.user) {
-    res.status(200).send({
-      error: false,
-      message: "Successfully Loged In",
-      user: req.user,
-    });
-  } else {
-    res.status(403).json({ error: true, message: "Not Authorized" });
-  }
-}
 export function googleFaild(req, res) {
-  res.status(401).json({
-    error: true,
-    message: "Log in failure",
+  res.status(401).send({
+    message: "auth faild",
   });
 }
-export function googleLogOut(req, res) {
+export async function googleLogOut(req, res) {
   req.logout();
+  await addExistingToken("", res);
   res.redirect(process.env.CLIENT_URL);
 }

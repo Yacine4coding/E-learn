@@ -11,7 +11,8 @@ import studient from "./routes/Student.js";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import session from "express-session";
-import cookieSession from "cookie-session";
+import { googleSingup } from "./controller/user.js";
+import { generateGoogleProps } from "./middleware/user.js";
 dotenv.config();
 const app = express();
 connectDb();
@@ -22,9 +23,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(
-  session({ secret: "sddfqs", resave: false, saveUninitialized: true })
-);
+app.use(session({ secret: "sddfqs", resave: false, saveUninitialized: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // * google config
@@ -32,18 +31,20 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(
   new GoogleStrategy(
-    {
-      clientID: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "/user/google/callback",
-      scope: ["profile", "email"],
-    },
-    function (accessToken, refreshToken, profile, callback) {
-      console.log(profile);
-      callback(null, profile);
+    generateGoogleProps("/user/google/callback"),
+    async function (accessToken, refreshToken, profile, callback) {
+      callback(null, await googleSingup(profile._json));
     }
   )
 );
+// passport.use(
+//   new GoogleStrategy(
+//     generateGoogleProps("/teacher/google/callback"),
+//     async function (accessToken, refreshToken, profile, callback) {
+//       callback(null, await googleSingup(profile._json,true));
+//     }
+//   )
+// );
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
 // * google config end
