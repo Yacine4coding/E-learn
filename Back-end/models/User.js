@@ -11,6 +11,10 @@ const UserShcema = mongoose.Schema(
       type: String,
       require: true,
     },
+    notifications: {
+      type: Array,
+      default: [],
+    },
     email: {
       unique: true,
       type: String,

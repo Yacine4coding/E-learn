@@ -5,10 +5,6 @@ const teacherShcema = mongoose.Schema({
     type: String,
     default: "none",
   },
-  notification: {
-    type: Array,
-    default: [],
-  },
   courses: {
     type: {
       count: Number,

@@ -12,24 +12,11 @@ export async function comparePassword(pass, hashPass) {
 export function generateUserInfo(user) {
   const { username, isteacher, bio, userId, picture, isHasPicture } = user;
   return {
-    picture,
-    isHasPicture,
-    username,
     userId,
+    username,
     bio,
     isteacher,
+    picture,
+    isHasPicture,
   };
-}
-export function generateStudientInfo(studient) {
-  const { points, notifications, tasks } = studient;
-  return { points, notifications, tasks };
-}
-export function generateTeacherInfo(teacher) {
-  let { domain, notification, courses } = teacher;
-  courses = {
-    count: courses.count,
-    coursesId: courses.coursesId,
-  };
-
-  return { domain, notification, courses };
 }

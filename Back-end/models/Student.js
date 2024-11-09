@@ -5,10 +5,6 @@ const studientSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  notifications: {
-    type: Array,
-    default: [],
-  },
   tasks: {
     type: Array,
     default: [],

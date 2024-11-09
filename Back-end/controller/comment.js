@@ -4,17 +4,11 @@ import Comment from "../models/Comment.js";
 import { isUserExist } from "./user.js";
 // ? add post 
 export async function addComment(req, res) {
-  const { userId, user, isteacher, text } = req.body;
+  const { userId, user, text } = req.body;
   const { postId } = req.params;
   //   * check body req
   if (!text || !postId) {
-    res.status(404).send({ message: "post id or text not found" });
-    return;
-  }
-  if (isteacher) {
-    res
-      .status(400)
-      .send({ message: "teachers has not access to post section yet" });
+    res.status(422).send({ message: "post id or text not found" });
     return;
   }
   try {
@@ -30,13 +24,15 @@ export async function addComment(req, res) {
     }).save();
     comment = formatComment(comment, user);
     res.status(200).send({
-      message: "comment add succesfuly",
       comment,
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
+
+
+
 // ? get posts 
 export async function getPostComments(req, res) {
   const { isteacher } = req.body;

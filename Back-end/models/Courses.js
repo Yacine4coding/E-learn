@@ -10,13 +10,17 @@ const coursesShcema = mongoose.Schema(
       type: String,
       default: "",
     },
+    ammount: {
+      type: Number,
+      default: "",
+    },
     teacherId: {
       type: String,
       require: true,
     },
     chapterNumber: {
       type: Number,
-      min: 0,
+      min: 1,
       require: true,
     },
     chapters: {
