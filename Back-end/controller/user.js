@@ -204,6 +204,6 @@ export function googleFaild(req, res) {
 }
 export async function googleLogOut(req, res) {
   req.logout();
-  await addExistingToken("", res);
+  addExistingToken("", res);
   res.redirect(process.env.CLIENT_URL);
 }

@@ -10,11 +10,16 @@ import {
 import { verifyToken } from "../middleware/jwt.js";
 const user = express.Router();
 // * routes
+// ? post
 user.post("/signup", singup);
 user.post("/login", login);
-// user.get("/logout", logOut);
+// ? get
 user.get("/isLoggin", isLoggin);
+// ? update
+
+// ? delete
+user.delete("/", verifyToken, deleteAccount);
+// * google routes
 user.get("/login/failed", googleFaild);
 user.get("/logout", googleLogOut);
-user.delete("/", verifyToken, deleteAccount);
 export default user;

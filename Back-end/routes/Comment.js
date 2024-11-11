@@ -21,5 +21,5 @@ comment.put("/:commentId", verifyToken, updateComments);
 comment.put("/vote/up/:commentId", verifyToken, voteUp);
 comment.put("/vote/down/:commentId", verifyToken, voteDown);
 // * delete posts
-todo: comment.delete("/:commentId", verifyToken, deleteComment);
+comment.delete("/:commentId", verifyToken, deleteComment);
 export default comment;

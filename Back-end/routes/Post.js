@@ -16,7 +16,7 @@ post.post("/", verifyToken, addPost);
 // * get posts
 post.get("/", verifyToken, getPosts);
 post.get("/posts", verifyToken, posts);
-post.get("/userPost/:userId", verifyToken, getUserPosts);
+post.get("/userpost/:userId", verifyToken, getUserPosts);
 // * update data
 post.put("/:postId", verifyToken, updatePost);
 post.put("/vote/up/:postId", verifyToken, voteUp);

@@ -33,10 +33,13 @@ export async function deletePost(req, res) {
   }
   try {
     const isDeleted = await Post.deleteOne({ _id: postId, userId });
+    console.log(isDeleted);
     if (isDeleted.deletedCount) {
       res.status(204).send();
     } else {
-      res.status(400).send({ message: "delete faild" });
+      res
+        .status(400)
+        .send({ message: "delete faild are you sure is your post" });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -91,16 +94,20 @@ export async function getUserPosts(req, res) {
   }
 }
 export async function posts(req, res) {
-  const { user, userId } = req.body;
   try {
-    let posts = await Post.find({ userId });
+    let posts = await Post.find();
     if (!posts.length) {
       res.status(200).send({
         count: 0,
       });
       return;
     }
-    posts = posts.map((userpost) => formatPost(userpost, user));
+    for (let i = 0; i < posts.length; i++) {
+      const { isExist, user } = await isUserExist(posts[i].userId);
+      if (isExist) posts[i] = formatPost(posts[i], user)
+      else posts.splice(i,1);
+    }
+    console.log("samir");
     res.status(200).send({
       count: posts.length,
       posts,

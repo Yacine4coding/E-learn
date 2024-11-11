@@ -17,9 +17,9 @@ export function formatPost(post, user) {
 }
 export async function isPostExist(postId) {
   try {
-    if (!postId) return false;
+    if (!postId) return { isExist: false };
     const post = await Post.findById(postId);
-    return { isExist: Boolean(post), post };
+    return post ? { isExist: true, post } : { isExist: false };
   } catch (error) {
     return false;
   }

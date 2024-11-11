@@ -2,7 +2,7 @@ import { formatComment } from "../middleware/comment.js";
 import { isPostExist } from "../middleware/post.js";
 import Comment from "../models/Comment.js";
 import { isUserExist } from "./user.js";
-// ? add post 
+// ? add post
 export async function addComment(req, res) {
   const { userId, user, text } = req.body;
   const { postId } = req.params;
@@ -13,7 +13,8 @@ export async function addComment(req, res) {
   }
   try {
     //  * check if post is exist
-    if (!isPostExist(postId).isExist) {
+    const { isExist, post } = await isPostExist(postId);
+    if (!isExist) {
       res.status(404).send({ message: "post not found" });
       return;
     }
@@ -22,6 +23,8 @@ export async function addComment(req, res) {
       postId,
       text,
     }).save();
+    post.comment.push(comment._id.toString());
+    await post.save();
     comment = formatComment(comment, user);
     res.status(200).send({
       comment,
@@ -31,16 +34,9 @@ export async function addComment(req, res) {
   }
 }
 
-
-
-// ? get posts 
+// ? get posts
 export async function getPostComments(req, res) {
-  const { isteacher } = req.body;
   const { postId } = req.params;
-  if (isteacher) {
-    res.status(400).send({ message: "teachers has not access to posts yet" });
-    return;
-  }
   if (!postId) {
     res.status(404).send({ message: "post id not found" });
     return;
@@ -71,12 +67,7 @@ export async function getPostComments(req, res) {
   }
 }
 export async function getUserComments(req, res) {
-  const { isteacher } = req.body;
   const { userId } = req.params;
-  if (isteacher) {
-    res.status(400).send({ message: "teachers has not access to posts yet" });
-    return;
-  }
   if (!userId) {
     res.status(404).send({ message: "user id not found" });
     return;
@@ -149,10 +140,6 @@ export async function voteUp(req, res) {
     res.status(404).send({ message: "post id not found" });
     return;
   }
-  if (isteacher) {
-    res.status(500).send({ message: "teacher hasn't acces to posts yet" });
-    return;
-  }
   try {
     let comment = await Comment.findById(commentId);
     if (!comment) {
@@ -192,10 +179,6 @@ export async function voteDown(req, res) {
 
   if (!commentId) {
     res.status(404).send({ message: "comment id not found" });
-    return;
-  }
-  if (isteacher) {
-    res.status(500).send({ message: "teacher hasn't acces to posts yet" });
     return;
   }
   try {
