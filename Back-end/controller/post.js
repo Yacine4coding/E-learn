@@ -1,3 +1,4 @@
+import { addExistingToken } from "../middleware/jwt.js";
 import { formatPost } from "../middleware/post.js";
 import Post from "../models/Post.js";
 import { isUserExist } from "./user.js";
@@ -33,7 +34,6 @@ export async function deletePost(req, res) {
   }
   try {
     const isDeleted = await Post.deleteOne({ _id: postId, userId });
-    console.log(isDeleted);
     if (isDeleted.deletedCount) {
       res.status(204).send();
     } else {
@@ -51,9 +51,7 @@ export async function getPosts(req, res) {
   try {
     const posts = await Post.find({ userId });
     if (posts.length === 0) {
-      res.status(200).send({
-        count: 0,
-      });
+      res.status(204).send();
       return;
     }
     const postsFormat = posts.map((post) => formatPost(post, user));
@@ -79,9 +77,7 @@ export async function getUserPosts(req, res) {
     }
     let posts = await Post.find({ userId });
     if (!posts.length) {
-      res.status(200).send({
-        count: 0,
-      });
+      res.status(204).send();
       return;
     }
     posts = posts.map((userpost) => formatPost(userpost, user));
@@ -94,20 +90,18 @@ export async function getUserPosts(req, res) {
   }
 }
 export async function posts(req, res) {
+  if (req.cookies.token) addExistingToken(req.cookies.token, res);
   try {
     let posts = await Post.find();
     if (!posts.length) {
-      res.status(200).send({
-        count: 0,
-      });
+      res.status(204).send();
       return;
     }
     for (let i = 0; i < posts.length; i++) {
       const { isExist, user } = await isUserExist(posts[i].userId);
-      if (isExist) posts[i] = formatPost(posts[i], user)
-      else posts.splice(i,1);
+      if (isExist) posts[i] = formatPost(posts[i], user);
+      else posts.splice(i, 1);
     }
-    console.log("samir");
     res.status(200).send({
       count: posts.length,
       posts,

@@ -15,7 +15,7 @@ import connectDb from "./middleware/database.js";
 import user from "./routes/User.js";
 import post from "./routes/Post.js";
 import comment from "./routes/Comment.js";
-import studient from "./routes/Student.js";
+import studient from "./routes/studient.js";
 const app = express();
 // * config
 dotenv.config();

@@ -34,7 +34,7 @@ export async function singup(req, res) {
       ? await createNewTeacher()
       : await createNewStudient();
     if (!userAccount) {
-      res.status(500).send({ message: "connot create user info" });
+      res.status(500).send({ message: "Internal server error" });
       return;
     }
     // generate username
@@ -92,7 +92,7 @@ export async function login(req, res) {
     // * generate res and cookies(token)
     await generateToken(checkUser, res);
     res.status(200).send({
-      userInfo: {
+      user: {
         ...generateUserInfo(checkUser),
         ...userInfo,
       },
@@ -101,54 +101,7 @@ export async function login(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-// * google auth
-export async function googleSingup(user, isteacher = false) {
-  if (!user) return false;
-  try {
-    const { sub: emailId } = user;
-    const isExist = await User.findOne({ emailId });
-    let userinfo = null;
-    if (!isExist) {
-      userinfo = isteacher
-        ? await createNewTeacher()
-        : await createNewStudient();
-      user = await new User({
-        email: user.email,
-        emailId,
-        password: "",
-        isHasPicture: true,
-        picture: user.picture,
-        userId: userinfo.userId,
-        isteacher,
-        username: user.email.split("@")[0],
-      }).save();
-    } else {
-      userinfo = isExist.isteacher
-        ? await getTeacher(isExist.userId)
-        : await getStudient(isExist.userId);
-    }
-    return { ...generateUserInfo(isExist), ...userinfo };
-  } catch (error) {
-    return false;
-  }
-}
 // * routes
-export async function isUserExist(userId) {
-  try {
-    const isUserExist = await User.findById(userId);
-    if (!isUserExist) return { isExist: false };
-    return {
-      isExist: true,
-      user: {
-        username: isUserExist.username,
-        picture: isUserExist.picture,
-        isHasPicture: isUserExist.isHasPicture,
-      },
-    };
-  } catch (error) {
-    return false;
-  }
-}
 export async function isLoggin(req, res) {
   try {
     if (req.user) {
@@ -186,7 +139,7 @@ export async function isLoggin(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-// *
+// * delete
 export async function deleteAccount(req, res) {
   const { userId } = req.body;
   try {
@@ -197,6 +150,71 @@ export async function deleteAccount(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
+// * updates
+export async function updateUserInfo(req, res) {
+  const { userId, username, password, currentPasswrod, bio } = req.body;
+  if (!username && !password && !bio) {
+    res.statu(204).send();
+    return;
+  }
+  try {
+    let isUpdated = false;
+    let user = await user.findById(userId);
+    if (!user) {
+      res.status(404).send({ message: "user not found" });
+      return;
+    }
+    if (bio !== null && user.bio !== bio) {
+      user.bio = bio;
+      isUpdated = true;
+    }
+    if (username && username !== user.username) {
+      if (await User.findOne(username)) {
+        res.status(403).send({ message: "username is already exist" });
+        return;
+      }
+      user.username = username;
+      isUpdated = true;
+    }
+
+    if ((!password && currentPasswrod) || (password && !currentPasswrod)) {
+      res.status(404).send({
+        message: "password or current password are empty ",
+      });
+      return;
+    }
+    if (password && currentPasswrod) {
+      if (password !== currentPasswrod) {
+        res.status(400).send({ message: "confirm password incorrect" });
+        return;
+      }
+      if (
+        !user.password ||
+        (await comparePassword(currentPasswrod, user.password))
+      ) {
+        user.password = await hashingPassword(password);
+        isUpdated = true;
+      } else {
+        res.status(400).send({ message: "current password are incorrect" });
+        return;
+      }
+    }
+    if (!isUpdated) {
+      res.status(204).send();
+      return;
+    }
+    user = await user.save();
+    res.status(200).send({
+      user: {
+        username: user.username,
+        bio: user.bio,
+      },
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+}
+// * google auth
 export function googleFaild(req, res) {
   res.status(401).send({
     message: "auth faild",
@@ -206,4 +224,51 @@ export async function googleLogOut(req, res) {
   req.logout();
   addExistingToken("", res);
   res.redirect(process.env.CLIENT_URL);
+}
+// * function
+export async function isUserExist(userId) {
+  try {
+    const isUserExist = await User.findById(userId);
+    if (!isUserExist) return { isExist: false };
+    return {
+      isExist: true,
+      user: {
+        username: isUserExist.username,
+        picture: isUserExist.picture,
+        isHasPicture: isUserExist.isHasPicture,
+      },
+    };
+  } catch (error) {
+    return false;
+  }
+}
+export async function googleSingup(user, isteacher = false) {
+  if (!user) return false;
+  try {
+    const { sub: emailId } = user;
+    const isExist = await User.findOne({ emailId });
+    let userinfo = null;
+    if (!isExist) {
+      userinfo = isteacher
+        ? await createNewTeacher()
+        : await createNewStudient();
+      user = await new User({
+        email: user.email,
+        emailId,
+        password: "",
+        isHasPicture: true,
+        picture: user.picture,
+        userId: userinfo.userId,
+        isteacher,
+        username: user.email.split("@")[0],
+      }).save();
+    } else {
+      userinfo = isExist.isteacher
+        ? await getTeacher(isExist.userId)
+        : await getStudient(isExist.userId);
+    }
+    return { ...generateUserInfo(isExist), ...userinfo };
+  } catch (error) {
+    return false;
+  }
 }

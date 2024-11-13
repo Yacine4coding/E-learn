@@ -4,7 +4,7 @@ import { serve, setup } from "swagger-ui-express";
 const apiDoc = express.Router();
 const options = {
   definition: {
-    openait: "3.0.0",
+    openapi: "3.0.0",
     info: {
       title: "e-learn api document",
       version: "1.5",

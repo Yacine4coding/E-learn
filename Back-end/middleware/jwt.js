@@ -33,22 +33,18 @@ export async function isTokenCorrect(token) {
 export async function verifyToken(req, res, next) {
   const token = await req.cookies.token;
   if (!token) {
-    res.status(401).send({ message: "token not found" });
+    res.status(401).send({ message: "unAuth" });
     return;
   }
   const { userId, isCorrect, isteacher } = await isTokenCorrect(token);
   if (!isCorrect) {
-    res.status(505).send({ messgae: "auth : token not correct" });
-    return;
-  }
-  if (!userId) {
-    res.status(401).send({ message: "auth : user id not found" });
+    res.status(401).send({ messgae: "unAuth" });
     return;
   }
   try {
     const { isExist, user } = await isUserExist(userId);
     if (!isExist) {
-      res.status(401).send({ message: "auth : user not found" });
+      res.status(401).send({ message: "unAuth" });
       return;
     }
     req.body.userId = userId.toString();
@@ -57,7 +53,7 @@ export async function verifyToken(req, res, next) {
     addExistingToken(token, res);
     next();
   } catch (error) {
-    res.status(500).send("token has problem");
+    res.status(401).send("unAuth");
     return;
   }
 }

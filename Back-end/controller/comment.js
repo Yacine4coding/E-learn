@@ -38,16 +38,13 @@ export async function addComment(req, res) {
 export async function getPostComments(req, res) {
   const { postId } = req.params;
   if (!postId) {
-    res.status(404).send({ message: "post id not found" });
+    res.status(422).send({ message: "post id not found" });
     return;
   }
   try {
     let comments = await Comment.find({ postId });
     if (!comments.length) {
-      res.status(200).send({
-        count: 0,
-        comments: [],
-      });
+      res.status(201).send();
       return;
     }
     for (let i = 0; i < comments.length; i++) {
@@ -66,47 +63,18 @@ export async function getPostComments(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-export async function getUserComments(req, res) {
-  const { userId } = req.params;
-  if (!userId) {
-    res.status(404).send({ message: "user id not found" });
-    return;
-  }
-  try {
-    const { isExist, user } = await isUserExist(userId);
-    if (!isExist) {
-      res.status(404).send({ message: "user not found" });
-      return;
-    }
-    let comments = await Comment.find({ userId });
-    if (!comments.length) {
-      res.status(200).send({
-        count: 0,
-        comments: [],
-      });
-      return;
-    }
-    comments = comments.map((comment) => formatComment(comment, user));
-    res.status(200).send({
-      count: comments.length,
-      comments,
-    });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-}
 // ? update posts
 export async function updateComments(req, res) {
   const { userId, text, user } = req.body;
   const { commentId } = req.params;
   if (!commentId) {
-    res.status(404).send({
+    res.status(422).send({
       message: "post id not found",
     });
     return;
   }
   if (!text) {
-    res.status(404).send({
+    res.status(422).send({
       message: "text is empty",
     });
     return;
@@ -114,11 +82,11 @@ export async function updateComments(req, res) {
   try {
     let comment = await Comment.findById(commentId);
     if (!comment) {
-      res.status(404).send({ message: "post not found" });
+      res.status(404).send({ message: "comment not found" });
       return;
     }
     if (comment.userId !== userId) {
-      res.status(400).send({ message: "isn't your comment" });
+      res.status(403).send({ message: "isn't your comment" });
       return;
     }
     if (comment.text !== text) {
@@ -126,7 +94,6 @@ export async function updateComments(req, res) {
       comment = await comment.save();
     }
     res.status(200).send({
-      message: "comment are update successfuly",
       comment: formatComment(comment, user),
     });
   } catch (error) {
@@ -134,10 +101,10 @@ export async function updateComments(req, res) {
   }
 }
 export async function voteUp(req, res) {
-  const { userId, isteacher } = req.body;
+  const { userId } = req.body;
   const { commentId } = req.params;
   if (!commentId) {
-    res.status(404).send({ message: "post id not found" });
+    res.status(422).send({ message: "comment id not found" });
     return;
   }
   try {
@@ -178,7 +145,7 @@ export async function voteDown(req, res) {
   const { commentId } = req.params;
 
   if (!commentId) {
-    res.status(404).send({ message: "comment id not found" });
+    res.status(422).send({ message: "comment id not found" });
     return;
   }
   try {
@@ -218,13 +185,13 @@ export async function deleteComment(req, res) {
   const { commentId } = req.params;
   const { userId } = req.body;
   if (!commentId) {
-    res.status(404).send("comment id not found");
+    res.status(422).send("comment id not found");
     return;
   }
   try {
     const isDeleted = await Comment.deleteOne({ _id: commentId, userId });
     if (isDeleted.deletedCount) {
-      res.status(200).send({ message: "delete succefuly" });
+      res.status(204).send();
     } else {
       res.status(400).send({ message: "delete faild" });
     }

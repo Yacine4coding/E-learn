@@ -15,15 +15,14 @@ export function generateUserInfo(user) {
     isteacher,
     notifications,
     bio,
-    emailValidate,
-    userId,
+    emailId,
     isHasPicture,
     picture,
   } = user;
   return {
     userId,
     username,
-    emailValidate,
+    emailValidate : Boolean(emailId),
     bio,
     notifications,
     isteacher,
