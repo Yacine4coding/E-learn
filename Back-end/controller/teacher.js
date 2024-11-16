@@ -17,3 +17,11 @@ export async function getTeacher(userId) {
     return false;
   }
 }
+export async function deleteTeacher(teacherId) {
+  try {
+    await Teacher.findByIdAndDelete(teacherId);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

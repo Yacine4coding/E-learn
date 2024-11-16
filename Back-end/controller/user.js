@@ -12,8 +12,8 @@ import {
 } from "../middleware/user.js";
 import Teacher from "../models/Teacher.js";
 import User from "../models/User.js";
-import { createNewStudient, getStudient } from "./studient.js";
-import { createNewTeacher, getTeacher } from "./teacher.js";
+import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
+import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
 
 // * normal auth
 export async function singup(req, res) {
@@ -143,6 +143,14 @@ export async function isLoggin(req, res) {
 export async function deleteAccount(req, res) {
   const { userId } = req.body;
   try {
+    const user = await User.findById(userId);
+    const countInfoDeleted = user.isteacher
+      ? await deleteTeacher(user.userId)
+      : await deleteStudient(user.userId);
+    if (!countInfoDeleted) {
+      res.status(500).send("internal server error");
+      return;
+    }
     const deletedUser = await User.findByIdAndDelete(userId);
     if (deletedUser) res.status(204).send();
     else res.status(404).send({ message: "user not found" });
@@ -236,6 +244,7 @@ export async function isUserExist(userId) {
         username: isUserExist.username,
         picture: isUserExist.picture,
         isHasPicture: isUserExist.isHasPicture,
+        isteacher: isUserExist.isteacher,
       },
     };
   } catch (error) {

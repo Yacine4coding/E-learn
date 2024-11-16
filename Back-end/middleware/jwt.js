@@ -4,10 +4,9 @@ import { isUserExist } from "../controller/user.js";
 // export const TOKEN_OPTION = { httpOnly: true, secure: true };
 export const TOKEN_OPTION = { httpOnly: true };
 export async function generateToken(userInfo, res) {
-  const { isteacher, _id } = userInfo;
+  const { _id } = userInfo;
   const token = await jwt.sign(
     {
-      isteacher,
       userId: _id,
     },
     process.env.SECRET_KEY
@@ -20,11 +19,10 @@ export function addExistingToken(token, res) {
 export async function isTokenCorrect(token) {
   try {
     const isCorrectToken = jwt.verify(token, process.env.SECRET_KEY);
-    const { userId, isteacher } = isCorrectToken;
+    const { userId } = isCorrectToken;
     return {
       isCorrect: true,
       userId,
-      isteacher,
     };
   } catch (error) {
     return { isCorrect: false };
@@ -36,7 +34,7 @@ export async function verifyToken(req, res, next) {
     res.status(401).send({ message: "unAuth" });
     return;
   }
-  const { userId, isCorrect, isteacher } = await isTokenCorrect(token);
+  const { userId, isCorrect } = await isTokenCorrect(token);
   if (!isCorrect) {
     res.status(401).send({ messgae: "unAuth" });
     return;
@@ -48,8 +46,8 @@ export async function verifyToken(req, res, next) {
       return;
     }
     req.body.userId = userId.toString();
-    req.body.isteacher = isteacher;
     req.body.user = user;
+    req.body.isteacher = user.isteacher;
     addExistingToken(token, res);
     next();
   } catch (error) {

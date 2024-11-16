@@ -16,6 +16,7 @@ import user from "./routes/User.js";
 import post from "./routes/Post.js";
 import comment from "./routes/Comment.js";
 import studient from "./routes/studient.js";
+import courses from "./routes/Courses.js";
 const app = express();
 // * config
 dotenv.config();
@@ -49,6 +50,7 @@ app.use("/user", user);
 app.use("/post", post);
 app.use("/comment", comment);
 app.use("/studient", studient);
+app.use("/course",courses);
 app.use("/api-doc",apiDoc)
 
 // * google auth

@@ -18,6 +18,7 @@ export function generateUserInfo(user) {
     emailId,
     isHasPicture,
     picture,
+    userId,
   } = user;
   return {
     userId,

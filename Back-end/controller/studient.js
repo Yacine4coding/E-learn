@@ -44,3 +44,11 @@ export async function changePoint(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
+export async function deleteStudient(studientId) {
+  try {
+    await Studient.findByIdAndDelete(studientId);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
