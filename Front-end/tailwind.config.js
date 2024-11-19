@@ -1,11 +1,17 @@
-// /** @type {import('tailwindcss').Config} */
-
-export const content = [
-  "./pages/**/*.{js,ts,jsx,tsx}",
-  "./components/**/*.{js,ts,jsx,tsx}",
-  "./app/**/*.{js,ts,jsx,tsx}", // For the /app directory (Next.js 13+)
-];
-export const theme = {
-  extend: {},
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+    darkMode: ["class"],
+    content: [
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        gilroy: ['var(--font-Gilroy)', 'sans-serif'], // Use the CSS variable
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
-export const plugins = [];
