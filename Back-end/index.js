@@ -62,6 +62,9 @@ app.get(
     failureRedirect: "/user/login/failed",
   })
 );
+app.use((req,res)=>{
+  res.status(505).send("rout not found")
+})
 // listen port
 app.listen(process.env.PORT || 3001, () => {
   console.log(`http://localhost:${process.env.PORT || 3001}`);

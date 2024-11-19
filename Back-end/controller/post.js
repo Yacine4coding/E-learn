@@ -1,6 +1,7 @@
 import { addExistingToken } from "../middleware/jwt.js";
 import { formatPost } from "../middleware/post.js";
 import Post from "../models/Post.js";
+import { deletePostComment } from "./comment.js";
 import { isUserExist } from "./user.js";
 // ? add post
 export async function addPost(req, res) {
@@ -33,6 +34,7 @@ export async function deletePost(req, res) {
     return;
   }
   try {
+    await deletePostComment(postId);
     const isDeleted = await Post.deleteOne({ _id: postId, userId });
     if (isDeleted.deletedCount) {
       res.status(204).send();
@@ -224,5 +226,18 @@ export async function voteDown(req, res) {
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
+  }
+}
+// ! no testing
+export async function deleteUserPosts(userId) {
+  try {
+    const posts = await Post.find({ userId });
+    await posts.forEach(async (ele) => {
+      await deletePostComment(ele._id.toString());
+    });
+    await Post.deleteMany({ userId });
+    return true;
+  } catch (error) {
+    return false;
   }
 }

@@ -439,7 +439,7 @@ post.put("/vote/down/:postId", verifyToken, voteDown);
  * /post/:postId :
  *   delete:
  *     tags : [Post]
- *     summary : to delete the post 
+ *     summary : to delete the post (testing)
  *     parameters :
  *       - in: path
  *         name : postId

@@ -2,7 +2,6 @@ import { formatComment } from "../middleware/comment.js";
 import { isPostExist } from "../middleware/post.js";
 import Comment from "../models/Comment.js";
 import { isUserExist } from "./user.js";
-// ? add post
 export async function addComment(req, res) {
   const { userId, user, text } = req.body;
   const { postId } = req.params;
@@ -23,18 +22,13 @@ export async function addComment(req, res) {
       postId,
       text,
     }).save();
-    post.comment.push(comment._id.toString());
-    await post.save();
-    comment = formatComment(comment, user);
     res.status(200).send({
-      comment,
+      comment: await formatComment(comment, user),
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
-
-// ? get posts
 export async function getPostComments(req, res) {
   const { postId } = req.params;
   if (!postId) {
@@ -47,23 +41,32 @@ export async function getPostComments(req, res) {
       res.status(201).send();
       return;
     }
+    let normalComment = [];
+    let replies = [];
+
     for (let i = 0; i < comments.length; i++) {
-      const { isExist, user } = await isUserExist(comments[i].userId);
-      if (isExist) comments[i] = formatComment(comments[i], user);
-      else {
-        await Comment.findByIdAndDelete(comments[i]._id);
-        comments.splice(i, 1);
+      const comment = comments[i];
+      const { isExist, user: commentUser } = await isUserExist(comment.userId);
+      if (comment.reply.isreply) {
+        replies.push(await formatComment(comment, commentUser));
+      } else {
+        normalComment.push(await formatComment(comment, commentUser));
       }
     }
+    replies.forEach((reply) => {
+      const index = normalComment.indexOf({ id: reply.reply.commentId });
+      if (index > -1) {
+        normalComment.splice(index, 0, reply);
+      }
+    });
     res.status(200).send({
-      count: comments.length,
-      comments,
+      count: normalComment.length,
+      comments: normalComment,
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
-// ? update posts
 export async function updateComments(req, res) {
   const { userId, text, user } = req.body;
   const { commentId } = req.params;
@@ -94,7 +97,7 @@ export async function updateComments(req, res) {
       comment = await comment.save();
     }
     res.status(200).send({
-      comment: formatComment(comment, user),
+      comment: await formatComment(comment, user),
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -120,11 +123,12 @@ export async function voteUp(req, res) {
     }
     const isVotedUp = comment.vote.up.usersId.indexOf(userId);
     if (isVotedUp !== -1) {
+      console.log("remove");
       comment.vote.up.usersId.splice(isVotedUp, 1);
       comment.vote.up.count--;
     } else {
+      console.log("add");
       comment.vote.up.usersId.push(userId);
-      console.log(comment.vote.up);
       comment.vote.up.count++;
       const isVotedDown = comment.vote.down.usersId.indexOf(userId);
       if (isVotedDown !== -1) {
@@ -134,14 +138,14 @@ export async function voteUp(req, res) {
     }
     comment = await comment.save();
     res.status(200).send({
-      comment: formatComment(comment, commentOwner),
+      comment: await formatComment(comment, commentOwner),
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
 export async function voteDown(req, res) {
-  const { userId, isteacher } = req.body;
+  const { userId } = req.body;
   const { commentId } = req.params;
 
   if (!commentId) {
@@ -174,13 +178,12 @@ export async function voteDown(req, res) {
     }
     comment = await comment.save();
     res.status(200).send({
-      comment: formatComment(comment, commentOwner),
+      comment: await formatComment(comment, commentOwner),
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
-// ? delete post
 export async function deleteComment(req, res) {
   const { commentId } = req.params;
   const { userId } = req.body;
@@ -189,13 +192,78 @@ export async function deleteComment(req, res) {
     return;
   }
   try {
-    const isDeleted = await Comment.deleteOne({ _id: commentId, userId });
+    const isDeleted = await Comment.findOneAndDelete({
+      _id: commentId,
+      userId,
+    });
     if (isDeleted.deletedCount) {
+      await Comment.deleteMany({
+        reply: {
+          isreply: true,
+          commentId,
+        },
+      });
       res.status(204).send();
     } else {
       res.status(400).send({ message: "delete faild" });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
+  }
+}
+export async function addReply(req, res) {
+  const { userId, postId, commentId, text, user } = req.body;
+  if (!(postId && commentId && text)) {
+    res.status(422).send({ message: "one of body properties are empty" });
+    return;
+  }
+  try {
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      res.status(404).send({ message: "comment not found" });
+      return;
+    }
+    const commentOwnerId = comment.userId;
+    const reply = await new Comment({
+      postId,
+      text,
+      userId,
+      reply: {
+        isReply: true,
+        commentOwnerId,
+        commentId,
+      },
+    }).save();
+    res.status(200).send({
+      comment: formatComment(reply, user),
+    });
+  } catch (error) {
+    res.statu(500).send({
+      message: error.message,
+    });
+  }
+}
+// ! not testing
+export async function deleteUserComment(userId) {
+  try {
+    await Comment.deleteMany({
+      $or: [
+        { userId },
+        {
+          reply: { isReply: true, commentOwnerId: userId },
+        },
+      ],
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+export async function deletePostComment(postId) {
+  try {
+    await Comment.deleteMany({ postId });
+    return true;
+  } catch (error) {
+    return false;
   }
 }

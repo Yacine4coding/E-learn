@@ -1,6 +1,6 @@
 export function generateTeacherInfo(teacher) {
-  let { domain, _id: teacherId } = teacher;
-  return { domain, teacherId };
+  let { domain, _id: userId } = teacher;
+  return { domain, userId };
 }
 export function enableTeacher(req, res, next) {
   const { isteacher } = req.body;

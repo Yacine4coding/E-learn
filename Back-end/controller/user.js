@@ -3,23 +3,27 @@ import {
   generateToken,
   isTokenCorrect,
 } from "../middleware/jwt.js";
-import { generateStudientInfo } from "../middleware/studient.js";
-import { generateTeacherInfo } from "../middleware/teacher.js";
 import {
   comparePassword,
   hashingPassword,
   generateUserInfo,
 } from "../middleware/user.js";
-import Teacher from "../models/Teacher.js";
 import User from "../models/User.js";
+import { deleteUserComment } from "./comment.js";
+import { deleteUserPosts } from "./post.js";
 import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
 import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
 
 // * normal auth
 export async function singup(req, res) {
-  let { email, password, isteacher = false } = req.body;
+  let { email, password, isteacher = false, picture = "" } = req.body;
   if (!email || !password) {
     res.status(422).send({ message: "all inputs is required" });
+    return;
+  }
+  // * check email pattern
+  if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email)) {
+    res.status(400).send({ message: "email not correct" });
     return;
   }
   isteacher = Boolean(isteacher);
@@ -56,13 +60,15 @@ export async function singup(req, res) {
       email,
       username,
       password: passwordHash,
+      isHasPicture: Boolean(picture),
+      picture,
     }).save();
     // send response
     await generateToken(newUser, res);
     res.status(201).send({
       user: {
         ...generateUserInfo(newUser),
-        userAccount,
+        ...userAccount,
       },
     });
   } catch (error) {
@@ -116,7 +122,7 @@ export async function isLoggin(req, res) {
       res.status(204).send();
       return;
     }
-    const { isCorrect, userId, isteacher } = isTokenCorrect(token);
+    const { isCorrect, userId } = await isTokenCorrect(token);
     if (!isCorrect || !userId) {
       res.status(204).send();
       return;
@@ -133,7 +139,7 @@ export async function isLoggin(req, res) {
       : await getStudient(userinfo.userId);
     await generateToken(userinfo, res);
     res.status(200).send({
-      userinfo: { ...generateUserInfo, ...userDetails },
+      userinfo: { ...generateUserInfo(userinfo), ...userDetails },
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -144,8 +150,18 @@ export async function deleteAccount(req, res) {
   const { userId } = req.body;
   try {
     const user = await User.findById(userId);
+    // todo : set tasks delete
+    if (!(await deleteUserPosts(userId))) {
+      res.status(500).send("post delete error");
+      return;
+    }
+    if (!(await deleteUserComment(userId))) {
+      res.status(500).send("comments delete error");
+      return;
+    }
+    // ! update courses delete
     const countInfoDeleted = user.isteacher
-      ? await deleteTeacher(user.userId)
+      ? await deleteTeacher(user.userId, userId)
       : await deleteStudient(user.userId);
     if (!countInfoDeleted) {
       res.status(500).send("internal server error");

@@ -21,7 +21,6 @@ export function generateUserInfo(user) {
     userId,
   } = user;
   return {
-    userId,
     username,
     emailValidate : Boolean(emailId),
     bio,

@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addComment,
+  addReply,
   deleteComment,
   getPostComments,
   updateComments,
@@ -18,7 +19,7 @@ import { verifyToken } from "../middleware/jwt.js";
 const comment = express.Router();
 
 /**
- * @swagger 
+ * @swagger
  * /comment/:postId:
  *   post:
  *     tags: [Comment]
@@ -51,7 +52,7 @@ const comment = express.Router();
  *               type: object
  *               properties:
  *                 comment:
- *                   type: object 
+ *                   type: object
  *                   properties:
  *                     id:
  *                       type: string
@@ -73,6 +74,10 @@ const comment = express.Router();
  *                       type: boolean
  *                       description: Indicates if the user has a profile picture
  *                       example: true
+ *                     isreply:
+ *                        type: boolean
+ *                        description: is always true in this res
+ *                        example: false
  *                     vote:
  *                       type: object
  *                       properties:
@@ -99,9 +104,121 @@ const comment = express.Router();
  *       404:
  *         description: Post not found
  *       401:
- *         description: Unauthorized
+ *         description: unauth
+ *       500:
+ *         description: internal server error
  */
 comment.post("/:postId", verifyToken, addComment);
+
+/**
+ * @swagger
+ * /comment/addreply:
+ *   post:
+ *     tags: [Comment]
+ *     symmary: to add a reply for comment (testing)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - text
+ *               - postId
+ *               - commentId
+ *             properties:
+ *               text: 
+ *                 type: string
+ *                 example: this my reply
+ *               postId: 
+ *                 type: string
+ *                 example: dkfhmqls34r234
+ *               commentId: 
+ *                 type: string
+ *                 example: dkfhmqls34r234
+ *     responses:
+ *       200:
+ *         description: Successfully created a new comment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 comment:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       description: Unique ID of the comment
+ *                       example: lkshfd834j34HHG7
+ *                     text:
+ *                       type: string
+ *                       description: Comment content
+ *                       example: hi this is my first comment
+ *                     username:
+ *                       type: string
+ *                       description: Username of the post owner
+ *                       example: user123
+ *                     picture:
+ *                       type: string
+ *                       description: Link to the user's profile picture
+ *                       example: https://www.google.com/user/picture
+ *                     isHasPicture:
+ *                       type: boolean
+ *                       description: Indicates if the user has a profile picture
+ *                       example: true
+ *                     isreply:
+ *                        type: boolean
+ *                        description: is always true in this res
+ *                        example: false
+ *                     vote:
+ *                       type: object
+ *                       properties:
+ *                         up:
+ *                           type: object
+ *                           properties:
+ *                             count:
+ *                               type: number
+ *                               example: 123
+ *                             usersId:
+ *                               type: Array
+ *                               example: [1fsfq2q3,1d2s4f]
+ *                         down:
+ *                           type: object
+ *                           properties:
+ *                             count:
+ *                               type: number
+ *                               example: 123
+ *                             usersId:
+ *                               type: Array
+ *                               example: [1fsfq2q3,1d2s4f]
+ *                     replyInfo:
+ *                       description: this will send when isreply property are equal true
+ *                       type: object
+ *                       properties:
+ *                         picture:
+ *                           type: string
+ *                           description: return picture path or empty string
+ *                           example: false
+ *                         isHasPicture:
+ *                           type: boolean
+ *                           description: return if user have picture
+ *                           example: false
+ *                         username:
+ *                           type: string
+ *                           description: return user name of comment you reply it
+ *                           example: false
+ *     
+ *       404:
+ *         description: comment not found
+ *       422:
+ *         description: one of body properties are empty
+ *       500:
+ *         description: internal server error
+ *       401:
+ *         description: unauth 
+ */
+comment.post("/addreply/:commentId", verifyToken, addReply);
 
 /**
  * @swagger
@@ -219,14 +336,14 @@ comment.get("/:postId", verifyToken, getPostComments);
  *                             usersId:
  *                               type: Array
  *                               example: [1fsfq2q3,1d2s4f]
-*       422:
+ *       422:
  *         description: post id or text not found
  *       404:
  *         description: comment not found
  *       403:
  *         description: the user isn't the post owner
  *       500:
- *         description: internal server error 
+ *         description: internal server error
  */
 comment.put("/:commentId", verifyToken, updateComments);
 
@@ -309,7 +426,7 @@ comment.put("/vote/up/:commentId", verifyToken, voteUp);
  * /comment/vote/down/:commentId:
  *   put:
  *     tags: [Comment]
- *     summary: votting down 
+ *     summary: votting down
  *     parameters:
  *       - in: path
  *         name: commentId
@@ -386,7 +503,7 @@ comment.put("/vote/down/:commentId", verifyToken, voteDown);
  * /comment/:commentId:
  *   delete:
  *     tags: [Comment]
- *     summary: delete a comment
+ *     summary: delete a comment (testing)
  *     parameters:
  *       - in: path
  *         name: commentId

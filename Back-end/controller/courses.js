@@ -75,3 +75,57 @@ export async function getTeacherCourses(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
+// ! not testing
+export async function updateCourses(req, res) {
+  const { userId: teacherId, user, title, description, amount } = req.body;
+  const { courseId } = req.params;
+  try {
+    let course = await Courses.findById(courseId);
+    if (!course) {
+      res.status(400).send({ message: "post not found" });
+      return;
+    }
+    if (teacherId !== course._id.toString()) {
+      res.status(403).send({
+        message: "sorry !! but isn't your course",
+      });
+      return;
+    }
+    let isUpdated = false;
+    if (title && title !== course.title) {
+      course.title = title;
+      isUpdated = true;
+    }
+    if ((amount) => 0 && amount != course.amount) {
+      course.amount = amount;
+      isUpdated = true;
+    }
+    if (description && description !== course.description) {
+      course.description = description;
+      isUpdated = true;
+    }
+
+    // * end
+    if (!isUpdated) {
+      res.status(204).send();
+      return;
+    }
+    course = await course.save();
+    res.status(200).send({
+      course: generateCourse(course, user),
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+}
+// * functions
+export async function deleteTeacherCourses(teacherId) {
+  try {
+    await Courses.deleteMany({ teacherId });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

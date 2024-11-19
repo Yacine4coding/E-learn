@@ -40,8 +40,12 @@ import { verifyToken } from "../middleware/jwt.js";
  *                 example: yourpassword123
  *               isteacher:
  *                 type: boolean
- *                 remark: default value is false.
+ *                 description: default value is false.
  *                 example: true
+ *               picture:
+ *                 type: string
+ *                 description: avatar url or link
+ *                 example: avatarName.svg
  *     responses:
  *       201:
  *         description: Successful authentication
@@ -55,7 +59,7 @@ import { verifyToken } from "../middleware/jwt.js";
  *                   properties:
  *                     userId:
  *                       type: string
- *                       remark: his id in teacher/studien.
+ *                       description: his id in teacher/studien.
  *                       exemple: d7ZOFL34ld
  *                     username:
  *                       type: string
@@ -66,32 +70,34 @@ import { verifyToken } from "../middleware/jwt.js";
  *                     notification:
  *                       type: Array
  *                       exemple: []
- *                       remark: check notification form
- *                     emailValidation:
+ *                       description: check notification form
+ *                     emailValidate:
  *                       type: boolean
- *                       remark: is email validate or not.
+ *                       description: is email validate or not.
  *                     isteacher:
  *                       type: boolean
- *                       remark: is user teacher or not.
+ *                       description: is user teacher or not.
  *                     isHasPicture:
  *                       type: boolean
- *                       remark: is user has picture or not.
+ *                       description: is user has picture or not.
  *                     picture:
  *                       type: string
- *                       remark: picture of his email in type link .
+ *                       description: picture of his email in type link .
  *                       exemple : https://google.com/userid/picture
  *                     domain:
  *                       type: string
- *                       remark: this properties showed when user is teacher
+ *                       description: this properties showed when user is teacher
  *                       exemple: web developper
  *                     points:
  *                       type: number
- *                       remark: this properties showed when user isn't teacher
+ *                       description: this properties showed when user isn't teacher
  *                       exemple: 123
  *       422:
  *         description: all inputs is required
  *       409:
  *         description: email is already exist
+ *       400:
+ *         description: email not correct example@gmail.com
  *       500:
  *         description: Internal server error
  */
@@ -130,7 +136,7 @@ import { verifyToken } from "../middleware/jwt.js";
  *                   properties:
  *                     userId:
  *                       type: string
- *                       remark: his id in teacher/studien.
+ *                       description: his id in teacher/studien.
  *                       exemple: d7ZOFL34ld
  *                     username:
  *                       type: string
@@ -141,27 +147,27 @@ import { verifyToken } from "../middleware/jwt.js";
  *                     notification:
  *                       type: Array
  *                       exemple: []
- *                       remark: check notification form
+ *                       description: check notification form
  *                     emailValidation:
  *                       type: boolean
- *                       remark: is email validate or not.
+ *                       description: is email validate or not.
  *                     isteacher:
  *                       type: boolean
- *                       remark: is user teacher or not.
+ *                       description: is user teacher or not.
  *                     isHasPicture:
  *                       type: boolean
- *                       remark: is user has picture or not.
+ *                       description: is user has picture or not.
  *                     picture:
  *                       type: string
- *                       remark: picture of his email in type link .
+ *                       description: picture of his email in type link .
  *                       exemple : https://google.com/userid/picture
  *                     domain:
  *                       type: string
- *                       remark: this properties showed when user is teacher
+ *                       description: this properties showed when user is teacher
  *                       exemple: web developper
  *                     points:
  *                       type: number
- *                       remark: this properties showed when user isn't teacher
+ *                       description: this properties showed when user isn't teacher
  *                       exemple: 123
  *       422:
  *         description: all inputs is required
@@ -189,7 +195,7 @@ import { verifyToken } from "../middleware/jwt.js";
  *                   properties:
  *                     userId:
  *                       type: string
- *                       remark: his id in teacher/studien.
+ *                       description: his id in teacher/studien.
  *                       exemple: d7ZOFL34ld
  *                     username:
  *                       type: string
@@ -200,27 +206,27 @@ import { verifyToken } from "../middleware/jwt.js";
  *                     notification:
  *                       type: Array
  *                       exemple: []
- *                       remark: check notification form
+ *                       description: check notification form
  *                     emailValidation:
  *                       type: boolean
- *                       remark: is email validate or not.
+ *                       description: is email validate or not.
  *                     isteacher:
  *                       type: boolean
- *                       remark: is user teacher or not.
+ *                       description: is user teacher or not.
  *                     isHasPicture:
  *                       type: boolean
- *                       remark: is user has picture or not.
+ *                       description: is user has picture or not.
  *                     picture:
  *                       type: string
- *                       remark: picture of his email in type link .
+ *                       description: picture of his email in type link .
  *                       exemple : https://google.com/userid/picture
  *                     domain:
  *                       type: string
- *                       remark: this properties showed when user is teacher
+ *                       description: this properties showed when user is teacher
  *                       exemple: web developper
  *                     points:
  *                       type: number
- *                       remark: this properties showed when user isn't teacher
+ *                       description: this properties showed when user isn't teacher
  *                       exemple: 123
  *       204:
  *         description: is not loggin
@@ -244,18 +250,18 @@ import { verifyToken } from "../middleware/jwt.js";
  *             properties:
  *               username:
  *                 type: string
- *                 remark: if username not changed put it empty string
+ *                 description: if username not changed put it empty string
  *                 example: exemple@gmail.com
  *               password:
  *                 type: string
- *                 remark: if password not changed put it empty string
+ *                 description: if password not changed put it empty string
  *                 example: yourpassword123
  *               currentPassword:
  *                 type: string
  *                 example: yourpassword123
  *               bio:
  *                 type: string
- *                 remark: if bio not changed put the current bio
+ *                 description: if bio not changed put the current bio
  *                 example: yourpassword123
  *     responses:
  *       200:
@@ -306,7 +312,7 @@ import { verifyToken } from "../middleware/jwt.js";
  * /user/:
  *   delete:
  *     tags: [User]
- *     summary: delete account
+ *     summary: delete account (testing)
  *     responses:
  *       204:
  *         description: deleted succesfully

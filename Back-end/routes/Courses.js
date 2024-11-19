@@ -1,13 +1,13 @@
 import express from "express";
 import { verifyToken } from "../middleware/jwt.js";
-import { addCourse, getPersonellCourses, getTeacherCourses } from "../controller/courses.js";
+import { addCourse, getPersonellCourses, getTeacherCourses, updateCourses } from "../controller/courses.js";
 import { enableTeacher } from "../middleware/teacher.js";
 const courses = express.Router();
 /**
  * @swagger
  * tags:
  *   name: Course
- *   description: Operations related to courses management
+ *   description: Operations related to courses management (testing)
  */
 
 /**
@@ -164,7 +164,9 @@ courses.get("/", verifyToken, enableTeacher, getPersonellCourses);
 
  */
 courses.get("/:teacherId", verifyToken, getTeacherCourses);
-
+// ! no testing
+/** */
+courses.put("/:courseId", verifyToken,enableTeacher,updateCourses);
 export default courses;
 // todo: update course
 // todo: delete course by id
