@@ -1,21 +1,26 @@
+"use client"
+
 import React from 'react'
 import Image from 'next/image'
 import decoration from '@/public/prom/Rhône.svg'
+import { useRouter } from 'next/navigation'
 
 const Announse = () => {
 
+    const router = useRouter()
 
     const handleJoinClick = () => {
         console.log('Joining EduLink...')
+        router.push("/auth/Signup");
     }
 
   return (
     <div className="bg-[#1B283F] relative flex flex-col w-[90%]  h-[300px] mx-auto rounded-xl overflow-hidden">
         
-        <div className="font-gilroy flex justify-start flex-col items-start h-full w-full p-20">
-            <h1 className="text-white text-4xl font-medium mb-2">Join Edulink now to get 35% off</h1>
+        <div className="font-gilroy flex justify-center flex-col items-start h-full w-full p-20">
+            <h1 className="text-white text-4xl font-medium mb-2 mt-5">Join Edulink now to get 35% off</h1>
             <h2 className='text-gray-400 font-thin text-2xl leading-10'>join our responsive themes and mobile and desktop apps,<br /> enjoy a seamless experience on any device so will your blog the best visitor</h2>
-            <button className=' my-4 font-gilroy text-base py-2 px-6 font-bold border-2 border-green-500 bg-green-500 text-white hover:bg-transparent hover:border-white rounded-md hoverTransition '>Join EduLink</button>
+            <button onClick={handleJoinClick} className=' my-4 font-gilroy text-base py-2 px-6 font-bold border-2 border-green-500 bg-green-500 text-white hover:bg-transparent hover:border-white rounded-md hoverTransition '>Join EduLink</button>
         </div>
 
         <Image 

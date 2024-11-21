@@ -13,6 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Signup = () => {
 
@@ -20,6 +21,8 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  
+  const route = useRouter();
 
   const isButtonDisabled = !username || !email || !password;
 
@@ -27,6 +30,11 @@ const Signup = () => {
     event.preventDefault();
     // Add your sign-in logic here
     console.log(username, email, password);
+    route.push('/auth/UserChoice');
+  };
+
+  const handleGoogleclick = () => {
+    console.log("login with google");
   };
 
 
@@ -110,9 +118,13 @@ const Signup = () => {
             >
             Create an account
           </Button>
-          <Button variant="outline" className="w-full border-2 border-[#333333] bg-white rounded-[40px] font-gilroy font-medium p-6 text-[#111111] text-xl hover:bg-gray-200 hoverTransition">
+          <Button 
+            variant="outline" 
+            onClick={handleGoogleclick}
+            className="w-full border-2 border-[#333333] bg-white rounded-[40px] font-gilroy font-medium p-6 text-[#111111] text-xl hover:bg-gray-200 hoverTransition">
             <Image
               src={googleLogo}
+              alt='google logo'
               width="24"
               height="24"
             />

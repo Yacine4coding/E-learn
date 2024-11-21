@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "/components/ui/avatar";
 
 const Navbar = () => {
 
-  const [isLoged, setIsLoged] = useState(true);
+  const [isLoged, setIsLoged] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -19,13 +19,15 @@ const Navbar = () => {
 
   const handleLoginClick = () => {
     console.log("Login");
-    router.push("/auth/Login");
-    // setIsLoged(true);s
+    // router.push("/auth/Login");
+    setIsLoged(true);
+    setIsOpen(false);
   };
 
   const handleSignupClick = () => {
     console.log("Sign Up");
     router.push("/auth/Signup");
+    setIsOpen(false);
   };
 
   const handleInstructorClick = () => {
@@ -125,23 +127,26 @@ const Navbar = () => {
       <div className="md:hidden flex items-center">
       {isLoged? (
                   <>
-                    <span
-                      className='mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition'
-                      onClick={OnNavItems[2].onClick}
-                    >
-                      {OnNavItems[2].label}
-                    </span>
-                    <button
-                      className="nrmlBnt hoverTransition"
-                      onClick={OnNavItems[1].onClick}
-                    >
-                      {OnNavItems[1].label}
-                    </button>
+                  <button className="p-2 rounded" onClick={toggleMenu}>
                     <Avatar className="cursor-pointer">
                       <AvatarImage src="https://github.com/nutlope.png" />
                       <AvatarFallback>YB</AvatarFallback>
                     </Avatar>
-                  </>
+                  </button>
+                  {isOpen && (
+                    <div className="absolute top-20 right-4 bg-white shadow-md p-4 rounded transition-all duration-300 ease-in-out">
+                      {OnNavItems.map((item, index) => (
+                        <button
+                          key={index}
+                          className="block w-full py-2 px-4 text-left hover:bg-gray-100"
+                          onClick={item.onClick}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
                 
               ):(
                   <>
