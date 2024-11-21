@@ -2,7 +2,7 @@
 import "@/styles/globals.css"
 
 import localFont from "next/font/local";
-import LogedOffNav from "@/components/LogedOffNav";
+import Navbar from "@/components/Navbar";
 import MainFooter from "@/components/MainFooter";
 // import LogedInNav from "@/components/LogedInNav";
 
@@ -61,7 +61,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={Gilroy.variable}>
       <body>
-        <LogedOffNav />
+        <Navbar />
         {children}
         <MainFooter />
       </body>

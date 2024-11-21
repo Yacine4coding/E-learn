@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import Image from 'next/image'
 
@@ -26,11 +28,20 @@ const CourseCard = ( { title, creator, imageUrl, description, price, stars, view
   const discount = ((oldPrice - price) / oldPrice * 100).toFixed(0);
 
 
+  // Function to handle the click event on the course card
+  const handleCourseClick = () => {
+    // Navigate to the course page with the course's ID
+    console.log("Course clicked!");
+    
+    // Example: router.push(`/course/${course.id}`)
+  }
+
+
   return (
-    <div className="max-w-sm font-gilroy bg-white overflow-hidden w-[285px] ">
+    <div onClick={handleCourseClick} className="max-w-sm font-gilroy bg-white overflow-hidden w-[285px] cursor-pointer  ">
 
 
-      <div className="relative rounded-[23] w-full overflow-hidden">
+      <div className="relative rounded-[23] w-full overflow-hidden ">
         <div className='absolute flex flex-row'>
           <Badge className={"text-white text-[8px] font-gilroy font-extrabold rounded-2xl m-2 bg-green-500 p-[2px]"}>Best Seller</Badge>
           <Badge className={"text-white text-[8px] font-gilroy font-extrabold rounded-2xl my-2 bg-purple-700 p-[2px]"}>{discount}% OFF</Badge>
