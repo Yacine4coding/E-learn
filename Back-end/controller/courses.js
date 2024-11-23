@@ -10,6 +10,14 @@ export async function addCourse(req, res) {
     return;
   }
   try {
+    // * verify chapter
+    chapters.forEach(({ title, description, link }) => {
+      if (!(title && description && link)) {
+        res
+          .status(400)
+          .send({ message: "one of chapter information are empty" });
+      }
+    });
     const course = await new Courses({
       title,
       description,
