@@ -159,7 +159,6 @@ export async function deleteAccount(req, res) {
       res.status(500).send("comments delete error");
       return;
     }
-    // ! update courses delete
     const countInfoDeleted = user.isteacher
       ? await deleteTeacher(user.userId, userId)
       : await deleteStudient(user.userId);
@@ -168,22 +167,25 @@ export async function deleteAccount(req, res) {
       return;
     }
     const deletedUser = await User.findByIdAndDelete(userId);
-    if (deletedUser) res.status(204).send();
-    else res.status(404).send({ message: "user not found" });
+
+    if (deletedUser) {
+      addExistingToken("", res);
+      res.status(204).send();
+    } else res.status(404).send({ message: "user not found" });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
 // * updates
 export async function updateUserInfo(req, res) {
-  const { userId, username, password, currentPasswrod, bio } = req.body;
-  if (!username && !password && !bio) {
-    res.statu(204).send();
+  const { userId, username, password, currentPassword, bio } = req.body;
+  if (!username && !password && !bio && !currentPassword) {
+    res.status(204).send();
     return;
   }
   try {
     let isUpdated = false;
-    let user = await user.findById(userId);
+    let user = await User.findById(userId);
     if (!user) {
       res.status(404).send({ message: "user not found" });
       return;
@@ -193,28 +195,23 @@ export async function updateUserInfo(req, res) {
       isUpdated = true;
     }
     if (username && username !== user.username) {
-      if (await User.findOne(username)) {
+      if (await User.findOne({username})) {
         res.status(403).send({ message: "username is already exist" });
         return;
       }
       user.username = username;
       isUpdated = true;
     }
-
-    if ((!password && currentPasswrod) || (password && !currentPasswrod)) {
+    if ((!password && currentPassword) || (password && !currentPassword)) {
       res.status(404).send({
-        message: "password or current password are empty ",
+        message: "password or current password are empty",
       });
       return;
     }
-    if (password && currentPasswrod) {
-      if (password !== currentPasswrod) {
-        res.status(400).send({ message: "confirm password incorrect" });
-        return;
-      }
+    if (password && currentPassword) {
       if (
         !user.password ||
-        (await comparePassword(currentPasswrod, user.password))
+        (await comparePassword(currentPassword, user.password))
       ) {
         user.password = await hashingPassword(password);
         isUpdated = true;
@@ -229,10 +226,7 @@ export async function updateUserInfo(req, res) {
     }
     user = await user.save();
     res.status(200).send({
-      user: {
-        username: user.username,
-        bio: user.bio,
-      },
+      user: generateUserInfo(user),
     });
   } catch (error) {
     res.status(500).send({ message: error.message });

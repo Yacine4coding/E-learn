@@ -20,10 +20,11 @@ export async function getTeacher(userId) {
 }
 export async function deleteTeacher(teacherId, userId) {
   try {
-    await Teacher.findByIdAndDelete({ teacherId });
+    await Teacher.findByIdAndDelete(teacherId );
     await deleteTeacherCourses(userId);
     return true;
   } catch (error) {
+    console.log(error);
     return false;
   }
 }

@@ -7,7 +7,7 @@ const courses = express.Router();
  * @swagger
  * tags:
  *   name: Course
- *   description: Operations related to courses management (testing)
+ *   description: Operations related to courses management
  */
 
 /**
@@ -76,6 +76,8 @@ const courses = express.Router();
  *                 chapters:
  *                   type: Array
  *                   example: array of chapter format
+ *       400:
+ *         description: the chapter or the queez of chapter not correct
  *       403:
  *         description: the user is not a theacher
  *       401:

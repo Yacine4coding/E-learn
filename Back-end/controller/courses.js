@@ -1,23 +1,31 @@
-import { generateCourse } from "../middleware/course.js";
+import { generateCourse, testChpater } from "../middleware/course.js";
 import Courses from "../models/Course.js";
-import Teacher from "../models/Teacher.js";
 import { isUserExist } from "./user.js";
 
 export async function addCourse(req, res) {
   const { title, description, userId, user, chapters, amount } = req.body;
   if (!(title && description && chapters.length !== 0 && amount >= 0)) {
-    res.status(422).send({ message: "one of body properties is empty" });
+    res.status(422).send({
+      message:
+        "one of course properties are empty (title description chapters amount)",
+    });
     return;
   }
   try {
     // * verify chapter
-    chapters.forEach(({ title, description, link }) => {
-      if (!(title && description && link)) {
-        res
-          .status(400)
-          .send({ message: "one of chapter information are empty" });
+    let result = { isTrue: true };
+    chapters.forEach((ele) => {
+      if (!(ele.queezes instanceof Array)) queezes = [];
+      const verification = testChpater(ele);
+      if (!verification.isTrue) {
+        result = verification;
+        return;
       }
     });
+    if (!result.isTrue) {
+      res.status(400).send({ message: result.message });
+      return;
+    }
     const course = await new Courses({
       title,
       description,
@@ -52,7 +60,6 @@ export async function getPersonellCourses(req, res) {
 }
 export async function getTeacherCourses(req, res) {
   const { teacherId } = req.params;
-  console.log(teacherId);
   if (!teacherId) {
     res.status(422).send({
       message: "teacher id is empty",

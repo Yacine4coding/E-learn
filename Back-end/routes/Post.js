@@ -10,7 +10,6 @@ import {
   voteUp,
 } from "../controller/post.js";
 import { verifyToken } from "../middleware/jwt.js";
-// * post api doc config
 /**
  * @swagger
  * tags:
@@ -439,7 +438,7 @@ post.put("/vote/down/:postId", verifyToken, voteDown);
  * /post/:postId :
  *   delete:
  *     tags : [Post]
- *     summary : to delete the post (testing)
+ *     summary : to delete the post
  *     parameters :
  *       - in: path
  *         name : postId

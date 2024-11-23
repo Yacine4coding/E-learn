@@ -20,6 +20,116 @@ const comment = express.Router();
 
 /**
  * @swagger
+ * /comment/addreply:
+ *   post:
+ *     tags: [Comment]
+ *     summary: to add a reply for comment
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - text
+ *               - postId
+ *               - commentId
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 example: this my reply
+ *               postId:
+ *                 type: string
+ *                 example: dkfhmqls34r234
+ *               commentId:
+ *                 type: string
+ *                 example: dkfhmqls34r234
+ *     responses:
+ *       200:
+ *         description: Successfully created a new comment
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 comment:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       description: Unique ID of the comment
+ *                       example: lkshfd834j34HHG7
+ *                     text:
+ *                       type: string
+ *                       description: Comment content
+ *                       example: hi this is my first comment
+ *                     username:
+ *                       type: string
+ *                       description: Username of the post owner
+ *                       example: user123
+ *                     picture:
+ *                       type: string
+ *                       description: Link to the user's profile picture
+ *                       example: https://www.google.com/user/picture
+ *                     isHasPicture:
+ *                       type: boolean
+ *                       description: Indicates if the user has a profile picture
+ *                       example: true
+ *                     isreply:
+ *                        type: boolean
+ *                        description: is always true in this res
+ *                        example: false
+ *                     vote:
+ *                       type: object
+ *                       properties:
+ *                         up:
+ *                           type: object
+ *                           properties:
+ *                             count:
+ *                               type: number
+ *                               example: 123
+ *                             usersId:
+ *                               type: Array
+ *                               example: [1fsfq2q3,1d2s4f]
+ *                         down:
+ *                           type: object
+ *                           properties:
+ *                             count:
+ *                               type: number
+ *                               example: 123
+ *                             usersId:
+ *                               type: Array
+ *                               example: [1fsfq2q3,1d2s4f]
+ *                     replyInfo:
+ *                       description: this will send when isreply property are equal true
+ *                       type: object
+ *                       properties:
+ *                         picture:
+ *                           type: string
+ *                           description: return picture path or empty string
+ *                           example: false
+ *                         isHasPicture:
+ *                           type: boolean
+ *                           description: return if user have picture
+ *                           example: false
+ *                         username:
+ *                           type: string
+ *                           description: return user name of comment you reply it
+ *                           example: false
+ *
+ *       404:
+ *         description: comment not found
+ *       422:
+ *         description: one of body properties are empty
+ *       500:
+ *         description: internal server error
+ *       401:
+ *         description: unauth
+ */
+comment.post("/addreply", verifyToken, addReply);
+
+/**
+ * @swagger
  * /comment/:postId:
  *   post:
  *     tags: [Comment]
@@ -110,115 +220,6 @@ const comment = express.Router();
  */
 comment.post("/:postId", verifyToken, addComment);
 
-/**
- * @swagger
- * /comment/addreply:
- *   post:
- *     tags: [Comment]
- *     symmary: to add a reply for comment (testing)
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - text
- *               - postId
- *               - commentId
- *             properties:
- *               text: 
- *                 type: string
- *                 example: this my reply
- *               postId: 
- *                 type: string
- *                 example: dkfhmqls34r234
- *               commentId: 
- *                 type: string
- *                 example: dkfhmqls34r234
- *     responses:
- *       200:
- *         description: Successfully created a new comment
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 comment:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: Unique ID of the comment
- *                       example: lkshfd834j34HHG7
- *                     text:
- *                       type: string
- *                       description: Comment content
- *                       example: hi this is my first comment
- *                     username:
- *                       type: string
- *                       description: Username of the post owner
- *                       example: user123
- *                     picture:
- *                       type: string
- *                       description: Link to the user's profile picture
- *                       example: https://www.google.com/user/picture
- *                     isHasPicture:
- *                       type: boolean
- *                       description: Indicates if the user has a profile picture
- *                       example: true
- *                     isreply:
- *                        type: boolean
- *                        description: is always true in this res
- *                        example: false
- *                     vote:
- *                       type: object
- *                       properties:
- *                         up:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                         down:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                     replyInfo:
- *                       description: this will send when isreply property are equal true
- *                       type: object
- *                       properties:
- *                         picture:
- *                           type: string
- *                           description: return picture path or empty string
- *                           example: false
- *                         isHasPicture:
- *                           type: boolean
- *                           description: return if user have picture
- *                           example: false
- *                         username:
- *                           type: string
- *                           description: return user name of comment you reply it
- *                           example: false
- *     
- *       404:
- *         description: comment not found
- *       422:
- *         description: one of body properties are empty
- *       500:
- *         description: internal server error
- *       401:
- *         description: unauth 
- */
-comment.post("/addreply/:commentId", verifyToken, addReply);
 
 /**
  * @swagger
@@ -503,7 +504,7 @@ comment.put("/vote/down/:commentId", verifyToken, voteDown);
  * /comment/:commentId:
  *   delete:
  *     tags: [Comment]
- *     summary: delete a comment (testing)
+ *     summary: delete a comment
  *     parameters:
  *       - in: path
  *         name: commentId

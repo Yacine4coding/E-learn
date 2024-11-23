@@ -4,7 +4,6 @@ export function generateTeacherInfo(teacher) {
 }
 export function enableTeacher(req, res, next) {
   const { isteacher } = req.body;
-  console.log(isteacher);
   if (isteacher) next();
   else
     res.status(403).send({

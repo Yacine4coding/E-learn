@@ -7,8 +7,8 @@ export async function formatComment(comment, user) {
     up: vote.up,
     down: vote.down,
   };
-  if (reply.isreply) {
-    const { user: commentUser } = await isUserExist(commentOwnerId);
+  if (reply.isReply) {
+    const { user: commentUser } = await isUserExist(reply.commentOwnerId);
     reply = {
       isreply: reply.isreply,
       replyInfo: {
@@ -18,6 +18,7 @@ export async function formatComment(comment, user) {
       },
     };
   } else reply = { isreply: false };
+  console.log(reply);
   return {
     id,
     username,

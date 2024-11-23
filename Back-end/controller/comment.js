@@ -12,9 +12,9 @@ export async function addComment(req, res) {
   }
   try {
     //  * check if post is exist
-    const { isExist, post } = await isPostExist(postId);
+    const { isExist } = await isPostExist(postId);
     if (!isExist) {
-      res.status(404).send({ message: "post not found" });
+      res.status(404).send({ message: "post not found sss" });
       return;
     }
     let comment = await new Comment({
@@ -192,19 +192,17 @@ export async function deleteComment(req, res) {
     return;
   }
   try {
-    const isDeleted = await Comment.findOneAndDelete({
+    const isDeleted = await Comment.findByIdAndDelete({
       _id: commentId,
       userId,
     });
-    if (isDeleted.deletedCount) {
+    if (isDeleted) {
       await Comment.deleteMany({
-        reply: {
-          isreply: true,
-          commentId,
-        },
+        "reply.commentId": commentId,
       });
       res.status(204).send();
     } else {
+      console.log(isDeleted);
       res.status(400).send({ message: "delete faild" });
     }
   } catch (error) {
@@ -212,8 +210,8 @@ export async function deleteComment(req, res) {
   }
 }
 export async function addReply(req, res) {
-  const { userId, postId, commentId, text, user } = req.body;
-  if (!(postId && commentId && text)) {
+  const { userId, commentId, text, user } = req.body;
+  if (!(commentId && text)) {
     res.status(422).send({ message: "one of body properties are empty" });
     return;
   }
@@ -223,6 +221,7 @@ export async function addReply(req, res) {
       res.status(404).send({ message: "comment not found" });
       return;
     }
+    const { postId } = comment;
     const commentOwnerId = comment.userId;
     const reply = await new Comment({
       postId,
@@ -235,10 +234,10 @@ export async function addReply(req, res) {
       },
     }).save();
     res.status(200).send({
-      comment: formatComment(reply, user),
+      comment: await formatComment(reply, user),
     });
   } catch (error) {
-    res.statu(500).send({
+    res.status(500).send({
       message: error.message,
     });
   }

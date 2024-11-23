@@ -31,17 +31,20 @@ export async function isTokenCorrect(token) {
 export async function verifyToken(req, res, next) {
   const token = await req.cookies.token;
   if (!token) {
+    addExistingToken("", res);
     res.status(401).send({ message: "unAuth" });
     return;
   }
   const { userId, isCorrect } = await isTokenCorrect(token);
   if (!isCorrect) {
+    addExistingToken("", res);
     res.status(401).send({ messgae: "unAuth" });
     return;
   }
   try {
     const { isExist, user } = await isUserExist(userId);
     if (!isExist) {
+      addExistingToken("", res);
       res.status(401).send({ message: "unAuth" });
       return;
     }

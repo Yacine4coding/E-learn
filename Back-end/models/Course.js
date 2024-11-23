@@ -11,7 +11,7 @@ const coursesShcema = mongoose.Schema({
   },
   ammount: {
     type: Number,
-    default: "",
+    default: 0,
   },
   payCount: {
     type: Number,

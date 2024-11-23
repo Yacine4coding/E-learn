@@ -312,7 +312,7 @@ import { verifyToken } from "../middleware/jwt.js";
  * /user/:
  *   delete:
  *     tags: [User]
- *     summary: delete account (testing)
+ *     summary: delete account
  *     responses:
  *       204:
  *         description: deleted succesfully
