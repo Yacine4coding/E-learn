@@ -36,6 +36,14 @@ const commentSchema = mongoose.Schema(
         },
       },
     },
+    reply: {
+      type: Object,
+      default: {
+        isreply: false,
+        commentOwnerId: "",
+        commentId: "",
+      },
+    },
   },
   { timestamps: true }
 );

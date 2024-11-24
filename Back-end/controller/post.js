@@ -1,17 +1,15 @@
+import { addExistingToken } from "../middleware/jwt.js";
 import { formatPost } from "../middleware/post.js";
 import Post from "../models/Post.js";
+import { deletePostComment } from "./comment.js";
 import { isUserExist } from "./user.js";
-// ? add post 
+// ? add post
 export async function addPost(req, res) {
-  const { text, userId, isteacher, user } = req.body;
-  if (isteacher) {
-    res.status(500).send("techers don't has access to add posts yet");
-    return;
-  }
+  const { text, userId, user } = req.body;
   try {
     // check if text not empty
     if (!text) {
-      res.status(404).send("text is required");
+      res.status(422).send({ message: "text is required" });
       return;
     }
     // add new post
@@ -21,7 +19,6 @@ export async function addPost(req, res) {
     }).save();
     // hundle post response
     res.status(200).send({
-      message: "post add succesfuly",
       post: formatPost(post, user),
     });
   } catch (error) {
@@ -33,35 +30,30 @@ export async function deletePost(req, res) {
   const { postId } = req.params;
   const { userId } = req.body;
   if (!postId) {
-    res.status(404).send("post id not found");
+    res.status(422).send("post id not found");
     return;
   }
   try {
+    await deletePostComment(postId);
     const isDeleted = await Post.deleteOne({ _id: postId, userId });
     if (isDeleted.deletedCount) {
-      res.status(200).send({ message: "delete succefuly" });
+      res.status(204).send();
     } else {
-      res.status(400).send({ message: "delete faild" });
+      res
+        .status(400)
+        .send({ message: "delete faild are you sure is your post" });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
-// ? get posts 
+// ? get posts
 export async function getPosts(req, res) {
-  const { userId, isteacher, user } = req.body;
-  if (isteacher) {
-    res.status(500).send({
-      message: "teacher hasn't access to posts yet",
-    });
-  }
+  const { userId, user } = req.body;
   try {
     const posts = await Post.find({ userId });
     if (posts.length === 0) {
-      res.status(200).send({
-        count: 0,
-        message: "no post yet",
-      });
+      res.status(204).send();
       return;
     }
     const postsFormat = posts.map((post) => formatPost(post, user));
@@ -76,7 +68,7 @@ export async function getPosts(req, res) {
 export async function getUserPosts(req, res) {
   const { userId } = req.params;
   if (!userId) {
-    res.status(404).send({ message: "user id not found" });
+    res.status(422).send({ message: "user id not found" });
     return;
   }
   try {
@@ -85,38 +77,36 @@ export async function getUserPosts(req, res) {
       res.status(404).send({ message: "user not found" });
       return;
     }
-    let userposts = await Post.find({ userId });
-    if (!userposts.length) {
-      res.status(200).send({
-        count: 0,
-        userposts,
-      });
+    let posts = await Post.find({ userId });
+    if (!posts.length) {
+      res.status(204).send();
       return;
     }
-    userposts = userposts.map((userpost) => formatPost(userpost, user));
+    posts = posts.map((userpost) => formatPost(userpost, user));
     res.status(200).send({
-      count: userposts.length,
-      userposts,
+      count: posts.length,
+      posts,
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 }
 export async function posts(req, res) {
-  const { user, userId } = req.body;
+  if (req.cookies.token) addExistingToken(req.cookies.token, res);
   try {
-    let userposts = await Post.find({ userId });
-    if (!userposts.length) {
-      res.status(200).send({
-        count: 0,
-        userposts,
-      });
+    let posts = await Post.find();
+    if (!posts.length) {
+      res.status(204).send();
       return;
     }
-    userposts = userposts.map((userpost) => formatPost(userpost, user));
+    for (let i = 0; i < posts.length; i++) {
+      const { isExist, user } = await isUserExist(posts[i].userId);
+      if (isExist) posts[i] = formatPost(posts[i], user);
+      else posts.splice(i, 1);
+    }
     res.status(200).send({
-      count: userposts.length,
-      userposts,
+      count: posts.length,
+      posts,
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -124,16 +114,15 @@ export async function posts(req, res) {
 }
 // ? update posts
 export async function updatePost(req, res) {
-  const { isteacher, userId, text, user } = req.body;
+  const { userId, text, user } = req.body;
   const { postId } = req.params;
   //   check inputs
   if (!postId) {
-    res.status(404).send("postId is empty");
+    res.status(422).send("postId is empty");
     return;
   }
-
-  if (isteacher) {
-    res.status(500).send("teacher hasn't access for posts yet");
+  if (!text) {
+    res.status(422).send({ message: "text is required" });
     return;
   }
   try {
@@ -144,7 +133,7 @@ export async function updatePost(req, res) {
       return;
     }
     if (userId !== post.userId) {
-      res.status(400).send({ message: "sorry !! but isn't your post" });
+      res.status(403).send({ message: "sorry !! but isn't your post" });
       return;
     }
     // hundle update
@@ -153,7 +142,6 @@ export async function updatePost(req, res) {
       post = await post.save();
     }
     res.status(200).send({
-      message: "post is updated",
       post: formatPost(post, user),
     });
   } catch (error) {
@@ -161,16 +149,13 @@ export async function updatePost(req, res) {
   }
 }
 export async function voteUp(req, res) {
-  const { userId, isteacher } = req.body;
+  const { userId } = req.body;
   const { postId } = req.params;
   if (!postId) {
-    res.status(404).send({ message: "post id not found" });
+    res.status(422).send({ message: "post id not found" });
     return;
   }
-  if (isteacher) {
-    res.status(500).send({ message: "teacher hasn't acces to posts yet" });
-    return;
-  }
+
   try {
     let post = await Post.findById(postId);
     if (!post) {
@@ -179,7 +164,7 @@ export async function voteUp(req, res) {
     }
     const { isExist, user: postOwner } = await isUserExist(post.userId);
     if (!isExist) {
-      res.status(400).send({ message: "post owner not found" });
+      res.status(404).send({ message: "post owner not found" });
       return;
     }
     const isVotedUp = post.vote.up.usersId.indexOf(userId);
@@ -190,7 +175,6 @@ export async function voteUp(req, res) {
       post.vote.up.usersId.unshift(userId);
       post.vote.up.count++;
       const isVotedDown = post.vote.down.usersId.indexOf(userId);
-
       if (isVotedDown !== -1) {
         post.vote.down.usersId.splice(isVotedDown, 1);
         post.vote.down.count--;
@@ -205,15 +189,11 @@ export async function voteUp(req, res) {
   }
 }
 export async function voteDown(req, res) {
-  const { userId, isteacher } = req.body;
+  const { userId } = req.body;
   const { postId } = req.params;
 
   if (!postId) {
-    res.status(404).send({ message: "post id not found" });
-    return;
-  }
-  if (isteacher) {
-    res.status(500).send({ message: "teacher hasn't acces to posts yet" });
+    res.status(422).send({ message: "post id not found" });
     return;
   }
   try {
@@ -224,7 +204,7 @@ export async function voteDown(req, res) {
     }
     const { isExist, user: postOwner } = await isUserExist(post.userId);
     if (!isExist) {
-      res.status(400).send({ message: "post owner not found" });
+      res.status(404).send({ message: "post owner not found" });
       return;
     }
     const isVotedDown = post.vote.down.usersId.indexOf(userId);
@@ -246,5 +226,18 @@ export async function voteDown(req, res) {
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
+  }
+}
+// ! no testing
+export async function deleteUserPosts(userId) {
+  try {
+    const posts = await Post.find({ userId });
+    await posts.forEach(async (ele) => {
+      await deletePostComment(ele._id.toString());
+    });
+    await Post.deleteMany({ userId });
+    return true;
+  } catch (error) {
+    return false;
   }
 }

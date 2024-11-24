@@ -4,10 +4,9 @@ import { isUserExist } from "../controller/user.js";
 // export const TOKEN_OPTION = { httpOnly: true, secure: true };
 export const TOKEN_OPTION = { httpOnly: true };
 export async function generateToken(userInfo, res) {
-  const { isteacher, _id } = userInfo;
+  const { _id } = userInfo;
   const token = await jwt.sign(
     {
-      isteacher,
       userId: _id,
     },
     process.env.SECRET_KEY
@@ -17,29 +16,45 @@ export async function generateToken(userInfo, res) {
 export function addExistingToken(token, res) {
   res.cookie("token", token, TOKEN_OPTION);
 }
-export async function verifyToken(req, res, next) {
-  const token = await req.cookies.token;
+export async function isTokenCorrect(token) {
   try {
     const isCorrectToken = jwt.verify(token, process.env.SECRET_KEY);
-    // * hundle req
-    const { userId, isteacher } = isCorrectToken;
-    if (!userId) {
-      res.status(404).send({ message: "auth : user id not found" });
-      return;
-    }
-    // check user info
+    const { userId } = isCorrectToken;
+    return {
+      isCorrect: true,
+      userId,
+    };
+  } catch (error) {
+    return { isCorrect: false };
+  }
+}
+export async function verifyToken(req, res, next) {
+  const token = await req.cookies.token;
+  if (!token) {
+    addExistingToken("", res);
+    res.status(401).send({ message: "unAuth" });
+    return;
+  }
+  const { userId, isCorrect } = await isTokenCorrect(token);
+  if (!isCorrect) {
+    addExistingToken("", res);
+    res.status(401).send({ messgae: "unAuth" });
+    return;
+  }
+  try {
     const { isExist, user } = await isUserExist(userId);
     if (!isExist) {
-      res.status(500).send({ message: "auth : user not found" });
+      addExistingToken("", res);
+      res.status(401).send({ message: "unAuth" });
       return;
     }
     req.body.userId = userId.toString();
-    req.body.isteacher = isteacher;
     req.body.user = user;
+    req.body.isteacher = user.isteacher;
     addExistingToken(token, res);
     next();
   } catch (error) {
-    res.status(500).send("token has problem");
+    res.status(401).send("unAuth");
     return;
   }
 }

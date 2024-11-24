@@ -10,26 +10,31 @@ export async function comparePassword(pass, hashPass) {
   return isCorrectPassword;
 }
 export function generateUserInfo(user) {
-  const { username, isteacher, bio, userId, picture, isHasPicture } = user;
+  const {
+    username,
+    isteacher,
+    notifications,
+    bio,
+    emailId,
+    isHasPicture,
+    picture,
+    userId,
+  } = user;
   return {
+    username,
+    emailValidate : Boolean(emailId),
+    bio,
+    notifications,
+    isteacher,
     picture,
     isHasPicture,
-    username,
-    userId,
-    bio,
-    isteacher,
   };
 }
-export function generateStudientInfo(studient) {
-  const { points, notifications, tasks } = studient;
-  return { points, notifications, tasks };
-}
-export function generateTeacherInfo(teacher) {
-  let { domain, notification, courses } = teacher;
-  courses = {
-    count: courses.count,
-    coursesId: courses.coursesId,
+export function generateGoogleProps(callbackURL) {
+  return {
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL ,
+    scope: ["profile", "email"],
   };
-
-  return { domain, notification, courses };
 }
