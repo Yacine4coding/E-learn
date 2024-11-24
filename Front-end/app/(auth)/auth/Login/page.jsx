@@ -13,40 +13,83 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
+// back-end integration
+import axios from 'axios';
+
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const Login = () => {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
+
+  const [formData, setFormData] = useState({ username: '', password: '' });
+
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+
+  const [error, setError] = useState('');
+
+  const [loading, setLoading] = useState(false);
+
+
 
   const route = useRouter();
 
 
 
-  const isButtonDisabled = !email || !password;
+  // const isButtonDisabled = !formData;
 
   const handleRememberMe = (e) => {
     setRememberMe(e);
-    // Add your remember-me logic here
-    
   }
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Add your sign-in logic 
-    console.log("login with email");
-    console.log(email, password);
-    route.push('/auth/UserChoice');
-  };
 
   const handleGoogleclick = () => {
     console.log("login with google");
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:3001/user/login', formData);
+      console.log('Login successful:', response.data);
+
+      // Store user data (e.g., token, user info) locally
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Redirect or update UI
+      alert('Login successful!');
+      route.push('/');
+    } catch (err) {
+      if (err.response) {
+        // Handle error based on status codes
+        if (err.response.status === 400) {
+          setError('Username or password is incorrect.');
+        } else if (err.response.status === 422) {
+          setError('All inputs are required.');
+        } else {
+          setError('Something went wrong. Please try again later.');
+        }
+      } else {
+        setError('Network error. Please check your connection.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
 
@@ -60,7 +103,7 @@ const Login = () => {
           </Link>
         </p>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-6 w-full h-[70%]">
+      <form onSubmit={handleLogin} className="space-y-6 w-full h-[70%]">
         <div className='text-[#666666]'>
           <Label htmlFor="email" className="font-normal font-gilroy text-base">Email address</Label>
           <Input
@@ -68,8 +111,11 @@ const Login = () => {
             placeholder="Enter you Email address"
             id="email"
             type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+            required
+            // onChange={(event) => setEmail(event.target.value)}
           />
         </div>
         <div className='text-[#666666]'>
@@ -106,8 +152,11 @@ const Login = () => {
             placeholder="Enter your password"
             id="password"
             type={showPassword? 'text' : 'password'}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+            // onChange={(event) => setPassword(event.target.value)}
           />
           <p className='text-sm font-normal font-gilroy text-right'>
             <Link href='/auth/ForgotPassword' className='underline text-[#111111] hover:text-[#666666] hoverTransition'>
@@ -128,13 +177,14 @@ const Login = () => {
             Remember me
           </label>
         </div>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <Button 
           type="submit" 
           variant="secondary" 
           className="w-full rounded-[40px] font-gilroy font-medium p-6 bg-[#111111] text-white text-xl disabled:opacity-50 hover:opacity-90 hoverTransition"
-          disabled={isButtonDisabled}
+          disabled={loading}
           >
-          Log in
+          {loading ? 'Logging in...' : 'Login'}
         </Button>
         <Button 
           variant="outline" 
