@@ -22,19 +22,11 @@ export function generateUserInfo(user) {
   } = user;
   return {
     username,
-    emailValidate : Boolean(emailId),
+    emailValidate: Boolean(emailId),
     bio,
     notifications,
     isteacher,
     picture,
     isHasPicture,
-  };
-}
-export function generateGoogleProps(callbackURL) {
-  return {
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL ,
-    scope: ["profile", "email"],
   };
 }

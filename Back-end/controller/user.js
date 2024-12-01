@@ -195,7 +195,7 @@ export async function updateUserInfo(req, res) {
       isUpdated = true;
     }
     if (username && username !== user.username) {
-      if (await User.findOne({username})) {
+      if (await User.findOne({ username })) {
         res.status(403).send({ message: "username is already exist" });
         return;
       }

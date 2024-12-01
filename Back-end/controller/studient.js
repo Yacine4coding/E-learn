@@ -1,22 +1,7 @@
 import { generateStudientInfo } from "../middleware/studient.js";
-import Studient from "../models/Student.js";
+import Studient from "../models/Studient.js";
 
-export async function createNewStudient() {
-  try {
-    const studient = await new Studient().save();
-    return generateStudientInfo(studient);
-  } catch (error) {
-    return false;
-  }
-}
-export async function getStudient(userId) {
-  try {
-    const studient = await Studient.findById(userId);
-    return generateStudientInfo(studient);
-  } catch (error) {
-    return false;
-  }
-}
+
 export async function changePoint(req, res) {
   const { points } = req.body;
   const { userId } = req.params;
@@ -44,10 +29,31 @@ export async function changePoint(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
+export async function buyCourse (req,res) {
+    
+}
+
+// functions
 export async function deleteStudient(studientId) {
   try {
     await Studient.findByIdAndDelete(studientId);
     return true;
+  } catch (error) {
+    return false;
+  }
+}
+export async function createNewStudient() {
+  try {
+    const studient = await new Studient().save();
+    return generateStudientInfo(studient);
+  } catch (error) {
+    return false;
+  }
+}
+export async function getStudient(userId) {
+  try {
+    const studient = await Studient.findById(userId);
+    return generateStudientInfo(studient);
   } catch (error) {
     return false;
   }
