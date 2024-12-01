@@ -26,10 +26,6 @@ const postSchema = mongoose.Schema(
         down: { count: 0, usersId: [] },
       },
     },
-    comment: {
-      type: Array,
-      default: [],
-    },
   },
   { timestamps: true }
 );
