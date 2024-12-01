@@ -166,7 +166,6 @@ courses.get("/", verifyToken, enableTeacher, getPersonellCourses);
 
  */
 courses.get("/:teacherId", verifyToken, getTeacherCourses);
-// ! no testing
 /** */
 courses.put("/:courseId", verifyToken,enableTeacher,updateCourses);
 export default courses;

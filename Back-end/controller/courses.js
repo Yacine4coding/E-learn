@@ -90,7 +90,6 @@ export async function getTeacherCourses(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-// ! not testing
 export async function updateCourses(req, res) {
   const { userId: teacherId, user, title, description, amount } = req.body;
   const { courseId } = req.params;
@@ -136,6 +135,16 @@ export async function updateCourses(req, res) {
   }
 }
 // * functions
+export async function getCoursesById(id, user) {
+  try {
+    let courses = await Course.find({ teacherId: id });
+    if (courses.length !== 0) return null;
+    courses = courses.map((course) => generateCourse(course, user));
+    return courses;
+  } catch (error) {
+    return null;
+  }
+}
 export async function deleteTeacherCourses(teacherId) {
   try {
     await Courses.deleteMany({ teacherId });
