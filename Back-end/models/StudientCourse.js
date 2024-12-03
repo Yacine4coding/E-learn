@@ -7,8 +7,8 @@ const studientCourse = new mongoose.Schema(
     progress: {
       type: Object,
       default: {
-        chapterNumber: 1,
-        pusrsentage: 0,
+        chapterNumber: 0,
+        for100: 0,
       },
     },
   },

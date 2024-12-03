@@ -1,6 +1,8 @@
 import { generateStudientInfo } from "../middleware/studient.js";
 import Studient from "../models/Studient.js";
-
+import StudientCourse from "../models/StudientCourse.js";
+import { deleteCouseById, getCourseById } from "./courses.js";
+import { isUserExist } from "./user.js";
 
 export async function changePoint(req, res) {
   const { points } = req.body;
@@ -29,8 +31,91 @@ export async function changePoint(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-export async function buyCourse (req,res) {
-    
+export async function buyCourse(req, res) {
+  const { courseId } = req.params;
+  const { userId: studientId } = req.body;
+  try {
+    const course = await getCourseById(courseId);
+    const isAlreadyBuy = await StudientCourse.findOne({ courseId, studientId });
+    switch (true) {
+      case Boolean(isAlreadyBuy):
+        res
+          .status(400)
+          .send({ message: "studient is already buy this course" });
+        return;
+      case !course:
+        res.status(400).send({ message: "no course with this id" });
+        return;
+    }
+    const newAct = await new StudientCourse({ courseId, studientId }).save();
+    res.status(200).send({
+      course,
+      progress,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function updateProgress(req, res) {
+  const { userId: studientId, newChapterNumber } = req.body;
+  const { courseId } = req.params;
+  try {
+    const course = await getCourseById(courseId);
+    let act = await StudientCourse.findOne({ courseId, studientId });
+    switch (true) {
+      case !Boolean(act):
+        res.status(400).send({ message: "this studient don't buy the course" });
+        return;
+      case act.studientId !== studientId:
+        res
+          .status(422)
+          .send({ message: "the id isn't match with studient id of act" });
+        return;
+      case !course:
+        res.status(400).send({ message: "no course with this id" });
+        return;
+      case act.progress.chapterNumber > newChapterNumber ||
+        course.chapterNumber < newChapterNumber:
+        res.status(400).send({
+          message: "chapter number must be gratter than current chapter number",
+        });
+        return;
+    }
+    const progress = {
+      chapterNumber: newChapterNumber,
+
+      progress: parseFloat(
+        (newChapterNumber / course.chapterNumber) * 100
+      ).toFixed(2),
+    };
+    await StudientCourse.updateOne({ _id: act._id }, { $set: { progress } });
+    console.log(act);
+    res.status(200).send({
+      course,
+      progress,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function deleteStudientCourse(req, res) {
+  const { courseId } = req.params;
+  const { userId: studientId } = req.body;
+  try {
+    if (!(await StudientCourse.deleteOne({ courseId, studientId }))) {
+      res.status(400).send({ message: "no studient course buy it" });
+      return;
+    }
+    const course = await getCourseById(courseId);
+    const { isExist } = await isUserExist(course.teacherId);
+    if (!isExist) {
+      await deleteCouseById(courseId);
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).send({ message: "internal server error" });
+  }
 }
 
 // functions

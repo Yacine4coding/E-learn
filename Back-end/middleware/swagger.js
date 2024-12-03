@@ -15,8 +15,9 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/**.js", "./index.js"],
+  apis: ["./routes/**.js", "./index.js", "./api-doc/**.js"],
 };
 const swaggerJsDoc = swaggerJSDoc(options);
 apiDoc.use("", serve, setup(swaggerJsDoc));
+
 export default apiDoc;

@@ -15,7 +15,7 @@ export async function addCourse(req, res) {
     // * verify chapter
     let result = { isTrue: true };
     chapters.forEach((ele) => {
-      if (!(ele.queezes instanceof Array)) queezes = [];
+      if (!(ele.queezes instanceof Array)) ele.queezes = [];
       const verification = testChpater(ele);
       if (!verification.isTrue) {
         result = verification;
@@ -35,7 +35,7 @@ export async function addCourse(req, res) {
       chapterNumber: chapters.length,
     }).save();
     res.status(201).send({
-      course: generateCourse(course, user),
+      course: generateCourse(course, user, true),
     });
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -145,9 +145,28 @@ export async function getCoursesById(id, user) {
     return null;
   }
 }
+export async function getCourseById(courseId) {
+  try {
+    const course = await Courses.findById(courseId);
+    if (!course) return null;
+    const { isExist, user } = await isUserExist(course.teacherId);
+    if (!isExist) return null;
+    return generateCourse(course, user, true);
+  } catch (error) {
+    return null;
+  }
+}
 export async function deleteTeacherCourses(teacherId) {
   try {
     await Courses.deleteMany({ teacherId });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+export async function deleteCouseById(courseId) {
+  try {
+    await Courses.findByIdAndDelete({ teacherId });
     return true;
   } catch (error) {
     return false;

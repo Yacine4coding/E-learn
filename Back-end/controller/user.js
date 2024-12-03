@@ -167,7 +167,6 @@ export async function deleteAccount(req, res) {
       return;
     }
     const deletedUser = await User.findByIdAndDelete(userId);
-
     if (deletedUser) {
       addExistingToken("", res);
       res.status(204).send();
@@ -178,7 +177,14 @@ export async function deleteAccount(req, res) {
 }
 // * updates
 export async function updateUserInfo(req, res) {
-  const { userId, username, password, currentPassword, bio } = req.body;
+  const {
+    userId,
+    username,
+    password,
+    currentPassword,
+    bio = false,
+    email = false,
+  } = req.body;
   if (!username && !password && !bio && !currentPassword) {
     res.status(204).send();
     return;
@@ -190,8 +196,16 @@ export async function updateUserInfo(req, res) {
       res.status(404).send({ message: "user not found" });
       return;
     }
-    if (bio !== null && user.bio !== bio) {
+    if (bio !== false && user.bio !== bio) {
       user.bio = bio;
+      isUpdated = true;
+    }
+    if (email !== false && user.email !== email) {
+      if (await User.findOne({ email })) {
+        res.status(403).send({ message: "username is already exist" });
+        return;
+      }
+      user.email = email;
       isUpdated = true;
     }
     if (username && username !== user.username) {

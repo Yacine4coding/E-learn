@@ -1,4 +1,4 @@
-export function generateCourse(course, user) {
+export function generateCourse(course, user, allData = false) {
   const {
     _id: id,
     title,
@@ -9,18 +9,29 @@ export function generateCourse(course, user) {
     chapterNumber,
   } = course;
   const { username, isHasPicture, picture } = user;
-  return {
-    id,
-    title,
-    description,
-    amount,
-    chapterNumber,
-    chapters,
-    payCount,
-    username,
-    isHasPicture,
-    picture,
-  };
+  const result = allData
+    ? {
+        id,
+        title,
+        description,
+        amount,
+        chapterNumber,
+        chapters,
+        payCount,
+        username,
+        isHasPicture,
+        picture,
+      }
+    : {
+        id,
+        title,
+        description,
+        amount,
+        username,
+        isHasPicture,
+        picture,
+      };
+  return result;
 }
 export function testChpater(chapter) {
   const { title, link, queezes } = chapter;
@@ -28,7 +39,6 @@ export function testChpater(chapter) {
     isTrue: true,
   };
   if (!(title && link)) {
-    console.log("a");
     return {
       isTrue: false,
       message: "one of chapter information are empty (title or link)",
