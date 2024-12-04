@@ -4,9 +4,16 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import session from "express-session";
 import { googleSingup } from "../controller/user.js";
 import dotenv from "dotenv";
-dotenv.config()
+dotenv.config();
 const google = express.Router();
-google.use(session({ secret: "sddfqs", resave: false, saveUninitialized: true }));
+google.use(
+  session({
+    secret: "sddfqs",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { httpOnly: true, secure: false },
+  })
+);
 google.use(passport.initialize());
 google.use(passport.session());
 passport.use(
@@ -18,7 +25,10 @@ passport.use(
       scope: ["profile", "email"],
     },
     async function (accessToken, refreshToken, profile, callback) {
-      callback(null, await googleSingup(profile._json));
+      const res = await googleSingup(profile._json);
+      console.log(res);
+      console.log(profile._json);
+      callback(null, res);
     }
   )
 );
@@ -29,7 +39,7 @@ google.get(
   "/callback",
   passport.authenticate("google", {
     successRedirect: process.env.CLIENT_URL,
-    failureRedirect: "/login/failed",
+    failureRedirect: "/google/failed",
   })
 );
 

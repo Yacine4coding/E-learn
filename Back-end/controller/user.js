@@ -108,8 +108,15 @@ export async function login(req, res) {
   }
 }
 // * routes
+export async function logout(req, res) {
+  await addExistingToken("", res);
+  res.status(204).send();
+}
 export async function isLoggin(req, res) {
   try {
+
+    console.log("req.user");
+    console.log(req.user);
     if (req.user) {
       await generateToken(req.user, res);
       res.status(200).send({
@@ -142,6 +149,7 @@ export async function isLoggin(req, res) {
       userinfo: { ...generateUserInfo(userinfo), ...userDetails },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: error.message });
   }
 }

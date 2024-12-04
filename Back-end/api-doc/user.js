@@ -250,3 +250,13 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+/**
+ * @swagger
+ *   /user/logout:
+ *     get:
+ *       summary: log out of account
+ *       tags: [User]
+ *       responses:
+ *         204:
+ *           description: log out succesfuly
+ */
