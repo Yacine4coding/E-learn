@@ -1,9 +1,8 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { Button } from "/components/ui/button";
 import { Input } from "/components/ui/input";
 import { Label } from "/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 
 import Image from "next/image";
 import googleLogo from "@/public/google.svg";
@@ -13,10 +12,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { googleAuth, login } from "@/request/auth";
-import { useDispatch } from "react-redux";
-import { setState } from "@/redux/user";
 const Login = () => {
-  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,11 +21,23 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const { status } = await login(username, password);
-    if (status === 200) {
-      route.push("/auth/UserChoice");
-      return;
+    switch (status) {
+      case 200:
+        route.push("/auth/UserChoice");
+        break;
+      case 400:
+        console.log("400");
+        console.log(data.message);
+        break;
+      case 422:
+        console.log("422");
+        console.log(data.message);
+        break;
+      case 500:
+        console.log("500");
+        console.log(data.message);
+        break;
     }
-    
   };
   const handleGoogleclick = () => {
     googleAuth();
@@ -47,16 +55,22 @@ const Login = () => {
           </Link>
         </p>
       </div>
-      <form onSubmit={(e)=>e.preventDefault()}  className="space-y-6 w-full h-[70%]">
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        className="space-y-6 w-full h-[70%]"
+      >
         <div className="text-[#666666]">
-          <Label htmlFor="email" className="font-normal font-gilroy text-base">
-            Email address
+          <Label
+            htmlFor="username"
+            className="font-normal font-gilroy text-base"
+          >
+            username
           </Label>
           <Input
             className="rounded-xl text-base h-[45px] p-4"
             placeholder="Enter you username"
             id="username"
-            type="username"
+            type="text"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
           />

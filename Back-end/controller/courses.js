@@ -1,4 +1,8 @@
-import { generateCourse, testChpater } from "../middleware/course.js";
+import {
+  generateCourse,
+  sortCourse,
+  testChpater,
+} from "../middleware/course.js";
 import Courses from "../models/Course.js";
 import { isUserExist } from "./user.js";
 
@@ -134,6 +138,27 @@ export async function updateCourses(req, res) {
     });
   }
 }
+export async function bestCourses(req, res) {
+  const { count } = req.params;
+  if (count <= 0) {
+    res.status(400).send({ message: "count need to be greater than 0" });
+    return;
+  }
+  try {
+    let courses = await Courses.find();
+    if (courses.length === 0) return res.status(204).send();
+    if (courses.length <= count) return res.status(200).send({ courses });
+    courses = sortCourse();
+    if (!courses)
+      return res.status(400).send({ message: "probleme in sort function" });
+    courses.length = count;
+    res.status(200).send({ courses });
+  } catch (error) {
+    res.status(500).send({
+      message: "internal server error",
+    });
+  }
+}
 // * functions
 export async function getCoursesById(id, user) {
   try {
@@ -151,6 +176,17 @@ export async function getCourseById(courseId) {
     if (!course) return null;
     const { isExist, user } = await isUserExist(course.teacherId);
     if (!isExist) return null;
+    return generateCourse(course, user, true);
+  } catch (error) {
+    return null;
+  }
+}
+export async function incrementCourseBuy(courseId) {
+  try {
+    const course = await Courses.findById(courseId);
+    if (!course) return null;
+    course.buyCount++;
+    await course.save();
     return generateCourse(course, user, true);
   } catch (error) {
     return null;

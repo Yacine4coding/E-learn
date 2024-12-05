@@ -14,26 +14,20 @@ import { deleteUserPosts } from "./post.js";
 import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
 import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
 
-// * normal auth
 export async function singup(req, res) {
   let { email, password, isteacher = false, picture = "" } = req.body;
-  if (!email || !password) {
-    res.status(422).send({ message: "all inputs is required" });
-    return;
-  }
-  // * check email pattern
-  if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email)) {
-    res.status(400).send({ message: "email not correct" });
-    return;
-  }
   isteacher = Boolean(isteacher);
   try {
-    // check if email is already exist
-    if (await User.findOne({ email })) {
-      res.status(409).send({ message: "email is already exist" });
-      return;
+    // hundle params
+    switch (true) {
+      case !email || !password:
+        return res.status(422).send({ message: "all inputs is required" });
+      case !/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email):
+        return res.status(400).send({ message: "email not correct" });
+      case Boolean(await User.findOne({ email })):
+        return res.status(409).send({ message: "email is already exist" });
     }
-    // create user account in (teacher/student)
+    // create user info
     let userAccount = isteacher
       ? await createNewTeacher()
       : await createNewStudient();
@@ -47,10 +41,7 @@ export async function singup(req, res) {
     let isUserExist = false;
     do {
       isUserExist = await User.findOne({ username });
-      if (isUserExist) {
-        // generate new username
-        username = `${username}${parseInt(Math.random() * 100)}`;
-      }
+      if (isUserExist) username = `${username}${parseInt(Math.random() * 100)}`;
     } while (isUserExist);
     // hashing password
     const passwordHash = await hashingPassword(password);
@@ -77,25 +68,24 @@ export async function singup(req, res) {
   }
 }
 export async function login(req, res) {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    res.status(422).send({ message: "all inputs are required" });
-    return;
-  }
   try {
+    const { username, password } = req.body;
+    if (!username || !password)
+      res.status(422).send({ message: "all inputs are required" });
     const checkUser = await User.findOne({ username });
-    // ! don't find user or password isn't match
-    if (!checkUser || !comparePassword(password, checkUser?.password)) {
-      res.status(400).send({
-        message: "username or password is inccorect",
-      });
-      return;
+    switch (true) {
+      case Boolean(!checkUser):
+        return res.status(400).send({
+          message: "username are incorrect",
+        });
+      case Boolean(!(await comparePassword(password, checkUser?.password))):
+        return res.status(400).send({
+          message: "password is inccorect",
+        });
     }
-    // * check user info in (teacher/studient)
     const userInfo = checkUser.isteacher
       ? await getTeacher(checkUser.userId)
       : await getStudient(checkUser.userId);
-    // * generate res and cookies(token)
     await generateToken(checkUser, res);
     res.status(200).send({
       user: {
@@ -107,16 +97,12 @@ export async function login(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-// * routes
 export async function logout(req, res) {
-  await addExistingToken("", res);
+  addExistingToken("", res);
   res.status(204).send();
 }
 export async function isLoggin(req, res) {
   try {
-
-    console.log("req.user");
-    console.log(req.user);
     if (req.user) {
       await generateToken(req.user, res);
       res.status(200).send({
@@ -125,22 +111,11 @@ export async function isLoggin(req, res) {
       return;
     }
     const { token } = req.cookies;
-    if (!token) {
-      res.status(204).send();
-      return;
-    }
+    if (!token) return res.status(204).send();
     const { isCorrect, userId } = await isTokenCorrect(token);
-    if (!isCorrect || !userId) {
-      res.status(204).send();
-      return;
-    }
+    if (!isCorrect || !userId) return res.status(204).send();
     const userinfo = await User.findById(userId);
-    if (!userinfo) {
-      res.status(404).send({
-        message: "user not found ",
-      });
-      return;
-    }
+    if (!userinfo) return res.status(204).send();
     const userDetails = userinfo.isteacher
       ? await getTeacher(userinfo.userId)
       : await getStudient(userinfo.userId);
@@ -153,12 +128,10 @@ export async function isLoggin(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-// * delete
 export async function deleteAccount(req, res) {
   const { userId } = req.body;
   try {
     const user = await User.findById(userId);
-    // todo : set tasks delete
     if (!(await deleteUserPosts(userId))) {
       res.status(500).send("post delete error");
       return;
@@ -180,10 +153,9 @@ export async function deleteAccount(req, res) {
       res.status(204).send();
     } else res.status(404).send({ message: "user not found" });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).send({ message: "internal server error" });
   }
 }
-// * updates
 export async function updateUserInfo(req, res) {
   const {
     userId,
@@ -193,10 +165,8 @@ export async function updateUserInfo(req, res) {
     bio = false,
     email = false,
   } = req.body;
-  if (!username && !password && !bio && !currentPassword) {
-    res.status(204).send();
-    return;
-  }
+  if (!username && !password && !bio && !currentPassword && !email)
+    return res.status(204).send();
   try {
     let isUpdated = false;
     let user = await User.findById(userId);
@@ -209,27 +179,22 @@ export async function updateUserInfo(req, res) {
       isUpdated = true;
     }
     if (email !== false && user.email !== email) {
-      if (await User.findOne({ email })) {
-        res.status(403).send({ message: "username is already exist" });
-        return;
-      }
+      if (await User.findOne({ email }))
+        return res.status(403).send({ message: "username is already exist" });
       user.email = email;
       isUpdated = true;
     }
     if (username && username !== user.username) {
-      if (await User.findOne({ username })) {
-        res.status(403).send({ message: "username is already exist" });
-        return;
-      }
+      if (await User.findOne({ username }))
+        return res.status(403).send({ message: "username is already exist" });
       user.username = username;
       isUpdated = true;
     }
-    if ((!password && currentPassword) || (password && !currentPassword)) {
-      res.status(404).send({
+    if ((!password && currentPassword) || (password && !currentPassword))
+      return res.status(404).send({
         message: "password or current password are empty",
       });
-      return;
-    }
+
     if (password && currentPassword) {
       if (
         !user.password ||
@@ -242,16 +207,13 @@ export async function updateUserInfo(req, res) {
         return;
       }
     }
-    if (!isUpdated) {
-      res.status(204).send();
-      return;
-    }
+    if (!isUpdated) return res.status(204).send();
     user = await user.save();
     res.status(200).send({
       user: generateUserInfo(user),
     });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).send({ message: "internal server error" });
   }
 }
 // * google auth
@@ -259,11 +221,6 @@ export function googleFaild(req, res) {
   res.status(401).send({
     message: "auth faild",
   });
-}
-export async function googleLogOut(req, res) {
-  req.logout();
-  addExistingToken("", res);
-  res.redirect(process.env.CLIENT_URL);
 }
 // * function
 export async function isUserExist(userId) {

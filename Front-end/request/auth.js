@@ -1,9 +1,5 @@
 import axios from "axios";
-
-const APIURL = "http://localhost:5000";
-const CREDENTIALS = {
-  withCredentials: true,
-};
+import { APIURL, CREDENTIALS } from "./reqParams";
 export function googleAuth() {
   console.log("open");
   window.open(`${APIURL}/google/callback`, "_self");
@@ -31,6 +27,7 @@ export async function login(username, password) {
   try {
     if (!username || !password) {
       console.log("error");
+      return { status: 10 };
     }
     const { data, status } = await axios.post(
       `${APIURL}/user/login`,
@@ -40,8 +37,11 @@ export async function login(username, password) {
       },
       CREDENTIALS
     );
+    console.log(data);
+    console.log(status);
     return { data, status };
   } catch (error) {
+    console.log(error);
     const { data, status } = error.response;
     return { data, status };
   }
@@ -58,11 +58,8 @@ export async function isLoggin() {
 }
 export async function logOut() {
   try {
-    const res = await axios.get(`${APIURL}/user/logout`, CREDENTIALS);
-    const { data, status } = res;
-    return { data, status };
+    await axios.get(`${APIURL}/user/logout`, CREDENTIALS);
   } catch (error) {
-    const { data, status } = error.response;
-    return { data, status };
+    console.log(error);
   }
 }

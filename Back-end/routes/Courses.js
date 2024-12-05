@@ -2,6 +2,7 @@ import express from "express";
 import { verifyToken } from "../middleware/jwt.js";
 import {
   addCourse,
+  bestCourses,
   getPersonellCourses,
   getTeacherCourses,
   updateCourses,
@@ -12,6 +13,8 @@ const courses = express.Router();
 courses.post("/", verifyToken, enableTeacher, addCourse);
 courses.get("/", verifyToken, enableTeacher, getPersonellCourses);
 courses.get("/:teacherId", verifyToken, getTeacherCourses);
+courses.get("/bestCourses/:count",bestCourses);
+
 /** */
 courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);
 export default courses;

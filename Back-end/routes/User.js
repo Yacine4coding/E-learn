@@ -2,7 +2,6 @@ import express from "express";
 import {
   deleteAccount,
   googleFaild,
-  googleLogOut,
   isLoggin,
   login,
   logout,
@@ -19,6 +18,5 @@ user.get("/logout", logout);
 user.put("/", verifyToken, updateUserInfo);
 user.delete("/", verifyToken, deleteAccount);
 user.get("/login/failed", googleFaild);
-user.get("/logout", googleLogOut);
 
 export default user;

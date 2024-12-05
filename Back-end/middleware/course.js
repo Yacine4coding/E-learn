@@ -7,6 +7,7 @@ export function generateCourse(course, user, allData = false) {
     chapters,
     payCount,
     chapterNumber,
+    buyCount,
   } = course;
   const { username, isHasPicture, picture } = user;
   const result = allData
@@ -21,6 +22,7 @@ export function generateCourse(course, user, allData = false) {
         username,
         isHasPicture,
         picture,
+        buyCount,
       }
     : {
         id,
@@ -69,4 +71,22 @@ export function testChpater(chapter) {
     }
   });
   return result;
+}
+export function sortCourse(courses) {
+  switch (true) {
+    case !(courses instanceof Array):
+      return false;
+    case courses.length === 0:
+      return false;
+  }
+  for (let i = courses.length; i > 1; i--) {
+    for (let j = 0; j < i; j++) {
+      if (courses[j].buyCount < courses[j + 1].buyCount) {
+        let k = courses[j];
+        courses[j] = courses[j + 1];
+        courses[j + 1] = k;
+      }
+    }
+  }
+  return courses;
 }

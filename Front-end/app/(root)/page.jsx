@@ -10,8 +10,38 @@ import GetStarted from "@/components/GetStarted";
 
 import Image from "next/image";
 import heroPic from "@/public/hero.png";
+import { useEffect, useState } from "react";
+import { bestCourses } from "@/request/courses";
 
 export default function Home() {
+  const [courses, setCourses] = useState([]);
+  console.log(courses);
+  useEffect(() => {
+    (async function () {
+      const { status, data } = await bestCourses(5);
+      switch (status) {
+        case 10:
+          console.log("10");
+          break;
+        case 204:
+          console.log("204");
+          break;
+        case 200:
+          setCourses(data.courses);
+          console.log("204");
+          break;
+        case 400:
+          console.log("400");
+          console.log(data);
+          break;
+        case 500:
+          console.log("500");
+          console.log(data);
+          break;
+      }
+    })();
+  }, []);
+
   return (
     <div className="overflow-x-hidden">
       <div className="block absolute -z-10 inset-0">
@@ -27,7 +57,7 @@ export default function Home() {
       <div className="absolute -z-10 inset-0 bg-[#1B1B1B] opacity-70"></div>
       <Hero />
       <Search />
-      <Courses />
+      <Courses courses={courses}/>
       <Announse />
       <Trending />
       <Upcoming />

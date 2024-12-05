@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
@@ -10,11 +9,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "/components/ui/avatar";
 import { isLoggin, logOut } from "@/request/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { setState } from "@/redux/user";
-
 const Navbar = () => {
   const [isLoged, setIsLoged] = useState(false);
   const dispatch = useDispatch();
-  const data = useSelector((s) => s.user);
+  const user = useSelector((s) => s.user);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   useEffect(() => {
@@ -23,9 +21,13 @@ const Navbar = () => {
         data: { userinfo },
         status,
       } = await isLoggin();
-      if (status === 200) {
-        dispatch(setState(userinfo));
-        setIsLoged(true);
+      switch (status) {
+        case 200:
+          dispatch(setState(userinfo));
+          setIsLoged(true);
+          break;
+        case 500:
+          console.log(500);
       }
     })();
   }, []);
@@ -40,7 +42,7 @@ const Navbar = () => {
   };
   const handleInstructorClick = () => {
     console.log("Become Instructor");
-    // router.push("/Instructor");
+    router.push("/Instructor");
   };
   const handleProfileClick = () => {
     // router.push("/profile");
@@ -89,7 +91,7 @@ const Navbar = () => {
               {OnNavItems[1].label}
             </button>
             <Avatar className="cursor-pointer" onClick={handleProfileClick}>
-              <AvatarImage src="https://github.com/nutlope.png" />
+              <AvatarImage src={user.picture} />
               <AvatarFallback>YB</AvatarFallback>
             </Avatar>
           </>

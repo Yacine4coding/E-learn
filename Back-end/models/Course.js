@@ -17,6 +17,10 @@ const coursesShcema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  buyCount: {
+    type: Number,
+    default: 0,
+  },
   teacherId: {
     type: String,
     require: true,

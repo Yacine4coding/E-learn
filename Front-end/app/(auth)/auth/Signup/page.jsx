@@ -11,18 +11,33 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { googleAuth, signup } from "@/request/auth";
 const Signup = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const route = useRouter();
   const isButtonDisabled = !email || !password;
   const handleSubmit = async (event) => {
-    event.preventDefault();
     const { data, status } = await signup(email, password);
-    if (status === 201) {
-      route.push("/auth/UserChoice");
-      return;
+    switch (status) {
+      case 201:
+        route.push("/auth/UserChoice");
+        break;
+      case 400:
+        console.log(400);
+        console.log(data.message);
+        break;
+      case 409:
+        console.log(409);
+        console.log(data.message);
+        break;
+      case 422:
+        console.log(422);
+        console.log(data.message);
+        break;
+      case 500:
+        console.log(500);
+        console.log(data.message);
+        break;
     }
   };
   const handleGoogleclick = () => {

@@ -1,7 +1,7 @@
 import { generateStudientInfo } from "../middleware/studient.js";
 import Studient from "../models/Studient.js";
 import StudientCourse from "../models/StudientCourse.js";
-import { deleteCouseById, getCourseById } from "./courses.js";
+import { deleteCouseById, getCourseById, incrementCourseBuy } from "./courses.js";
 import { isUserExist } from "./user.js";
 
 export async function changePoint(req, res) {
@@ -48,6 +48,7 @@ export async function buyCourse(req, res) {
         return;
     }
     const newAct = await new StudientCourse({ courseId, studientId }).save();
+    await incrementCourseBuy()
     res.status(200).send({
       course,
       progress,

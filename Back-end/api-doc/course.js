@@ -117,6 +117,9 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 
+
+
+
 /**
  * @swagger
  * /course/:teacherId:
@@ -169,6 +172,48 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  *       422:
  *         description: teacher id is empty
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /course/bestCourses/:count:
+ *   get:
+ *     tags: [Course]
+ *     summary: get best courses
+ *     parameters:
+ *       - in: path
+ *         name: count
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: the unique id of teacher who want to get his courses
+ *         example: 1HG6Rfjg54hgk
+ *     responses:
+ *       200:
+ *         description: the courses of the teacher
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 courses:
+ *                   type: array
+ *                   description: array of normal courses schema
+ *                   example: array of normal courses schema
+ *       204:
+ *         description: the app don't have coureses yet
+ *       400:
+ *         description: the count in parameter must be greater than 0
  *         content:
  *           application/json:
  *             schema:
