@@ -117,9 +117,6 @@
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 
-
-
-
 /**
  * @swagger
  * /course/:teacherId:
@@ -214,6 +211,93 @@
  *         description: the app don't have coureses yet
  *       400:
  *         description: the count in parameter must be greater than 0
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+/**
+ * @swagger
+ * /course/:courseId:
+ *   put:
+ *     tags: [Course]
+ *     summary: get best courses
+ *     parameters:
+ *       - in: path
+ *         name: couseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: the unique id of course who want to update it
+ *         example: 1HG6Rfjg54hgk
+ *     responses:
+ *       200:
+ *         description: the courses updated succesfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/fullCourseSchema'
+ *       204:
+ *         description: nothin update
+ *       403:
+ *         desctiprion: the user isn't the course owner
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       400:
+ *         description: post not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /course/courseById:
+ *   get:
+ *     tags: [Course]
+ *     summary: get course by id
+ *     responses:
+ *       200:
+ *         description: result of req
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 related:
+ *                   type: string
+ *                   example: none or teacher or owner
+ *                 course:
+ *                   $ref: '#/components/schemas/fullCourseSchema'
+ *       422:
+ *         description: course id are required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: course not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       400:
+ *         description: unavaible
  *         content:
  *           application/json:
  *             schema:

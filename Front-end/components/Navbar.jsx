@@ -10,9 +10,8 @@ import { isLoggin, logOut } from "@/request/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { setState } from "@/redux/user";
 const Navbar = () => {
-  const [isLoged, setIsLoged] = useState(false);
   const dispatch = useDispatch();
-  const user = useSelector((s) => s.user);
+  const {user,isLoggin:isLoged} = useSelector((s) => s.user);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   useEffect(() => {
@@ -24,7 +23,6 @@ const Navbar = () => {
       switch (status) {
         case 200:
           dispatch(setState(userinfo));
-          setIsLoged(true);
           break;
         case 500:
           console.log(500);
@@ -41,7 +39,6 @@ const Navbar = () => {
     setIsOpen(false);
   };
   const handleInstructorClick = () => {
-    console.log("Become Instructor");
     router.push("/Instructor");
   };
   const handleProfileClick = () => {
@@ -50,7 +47,6 @@ const Navbar = () => {
   const handleLogoutClick = async () => {
     await logOut();
     dispatch(setState(null));
-    setIsLoged(false);
   };
   const OffnavItems = [
     { label: "Login", onClick: handleLoginClick },
@@ -78,12 +74,14 @@ const Navbar = () => {
       <div className="hidden md:flex items-center justify-end">
         {isLoged ? (
           <>
-            <span
-              className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
-              onClick={OnNavItems[2].onClick}
-            >
-              {OnNavItems[2].label}
-            </span>
+            {!user.isteacher && (
+              <span
+                className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
+                onClick={OnNavItems[2].onClick}
+              >
+                {OnNavItems[2].label}
+              </span>
+            )}
             <button
               className="nrmlBnt hoverTransition"
               onClick={OnNavItems[1].onClick}

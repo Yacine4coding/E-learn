@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import User from "../models/User.js";
 
 export async function hashingPassword(password) {
   const salt = await bcrypt.genSalt(10);
@@ -29,4 +30,14 @@ export function generateUserInfo(user) {
     picture,
     isHasPicture,
   };
+}
+export async function generateUserName(email) {
+  let username = email.split("@")[0];
+  // check if userename is already exist
+  let isUserExist = false;
+  do {
+    isUserExist = await User.findOne({ username });
+    if (isUserExist) username = `${username}${parseInt(Math.random() * 1000)}`;
+  } while (isUserExist);
+  return username;
 }

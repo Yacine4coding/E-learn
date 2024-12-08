@@ -55,6 +55,40 @@
  *         chapters:
  *           type: Array
  *           example: array of chapter schemas
+ *     chapterSchema:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           example: intro of kinks indian defence
+ *         description:
+ *           type: string
+ *           example: description of chapter
+ *           description: the picture of user if he have it
+ *         link:
+ *           type: string
+ *           example: link of vedio youtube
+ *         queez:
+ *           type: Array
+ *           example: array of queez schema
+ *     queezSchema:
+ *       type: object
+ *       properties:
+ *         question:
+ *           type: string
+ *           example: intro of kinks indian defence
+ *         choiches:
+ *           type: Array
+ *           example: array of choices
+ *     choicesSchema:
+ *       type: object
+ *       properties:
+ *         text:
+ *           type: string
+ *           example: intro of kinks indian defence
+ *         number:
+ *           type: number
+ *           example: 2
  */
 /**
  * @swagger

@@ -37,8 +37,6 @@ export async function login(username, password) {
       },
       CREDENTIALS
     );
-    console.log(data);
-    console.log(status);
     return { data, status };
   } catch (error) {
     console.log(error);

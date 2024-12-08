@@ -6,7 +6,4 @@ const teacher = express.Router();
 
 
 teacher.get("/dashboard",verifyToken , enableTeacher , getTeacherDashboard);
-
-
-
 export default teacher ; 

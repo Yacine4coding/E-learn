@@ -4,10 +4,12 @@ import {
   testChpater,
 } from "../middleware/course.js";
 import Courses from "../models/Course.js";
+import StudientCourse from "../models/StudientCourse.js";
 import { isUserExist } from "./user.js";
 
 export async function addCourse(req, res) {
-  const { title, description, userId, user, chapters, amount } = req.body;
+  const { title, description, userId, user, chapters = [], amount } = req.body;
+  const picture = req.file || "";
   if (!(title && description && chapters.length !== 0 && amount >= 0)) {
     res.status(422).send({
       message:
@@ -36,6 +38,7 @@ export async function addCourse(req, res) {
       teacherId: userId,
       chapters,
       amount,
+      picture,
       chapterNumber: chapters.length,
     }).save();
     res.status(201).send({
@@ -95,7 +98,14 @@ export async function getTeacherCourses(req, res) {
   }
 }
 export async function updateCourses(req, res) {
-  const { userId: teacherId, user, title, description, amount } = req.body;
+  const {
+    userId: teacherId,
+    user,
+    title,
+    description,
+    amount,
+    link,
+  } = req.body;
   const { courseId } = req.params;
   try {
     let course = await Courses.findById(courseId);
@@ -122,7 +132,10 @@ export async function updateCourses(req, res) {
       course.description = description;
       isUpdated = true;
     }
-
+    if (link && link !== course.link) {
+      course.title = title;
+      isUpdated = true;
+    }
     // * end
     if (!isUpdated) {
       res.status(204).send();
@@ -147,6 +160,11 @@ export async function bestCourses(req, res) {
   try {
     let courses = await Courses.find();
     if (courses.length === 0) return res.status(204).send();
+    for (let i = 0; i < courses.length; i++) {
+      const { user } = await isUserExist(courses[i].teacherId);
+      courses[i] = generateCourse(courses[i], user);
+    }
+    console.log(courses);
     if (courses.length <= count) return res.status(200).send({ courses });
     courses = sortCourse();
     if (!courses)
@@ -154,15 +172,44 @@ export async function bestCourses(req, res) {
     courses.length = count;
     res.status(200).send({ courses });
   } catch (error) {
+    console.log(error);
     res.status(500).send({
       message: "internal server error",
     });
   }
 }
+export async function courseById(req, res) {
+  const { courseId, userId = false } = req.body;
+  if (!courseId)
+    return res.status(422).send({ message: "course id are required" });
+  try {
+    const course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    const { isExist, user } = await isUserExist(course.teacherId);
+    if (!isExist) return res.status(400).send({ message: "unavaible" });
+    let related = "none";
+    switch (true) {
+      case userId === course.teacherId:
+        related = "owner";
+        break;
+      case Boolean(
+        await StudientCourse.findOne({ courseId, studientId: userId })
+      ):
+        related = "studient";
+        break;
+    }
+    return res.status(200).send({
+      course: generateCourse(course, user, "none" !== related),
+      related,
+    });
+  } catch (error) {
+    res.status(500).send({ message: "internal server error" });
+  }
+}
 // * functions
 export async function getCoursesById(id, user) {
   try {
-    let courses = await Course.find({ teacherId: id });
+    let courses = await Courses.find({ teacherId: id });
     if (courses.length !== 0) return null;
     courses = courses.map((course) => generateCourse(course, user));
     return courses;

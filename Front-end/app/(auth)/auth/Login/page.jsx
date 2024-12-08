@@ -20,7 +20,7 @@ const Login = () => {
   const isButtonDisabled = !username || !password;
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const { status } = await login(username, password);
+    const { status, data } = await login(username, password);
     switch (status) {
       case 200:
         route.push("/auth/UserChoice");
@@ -83,7 +83,6 @@ const Login = () => {
             >
               Password
             </Label>
-
             <div className="w-18">
               {showPassword ? (
                 <button
@@ -114,14 +113,6 @@ const Login = () => {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
-          <p className="text-sm font-normal font-gilroy text-right">
-            <Link
-              href="/auth/ForgotPassword"
-              className="underline text-[#111111] hover:text-[#666666] hoverTransition"
-            >
-              Forgot your password
-            </Link>
-          </p>
         </div>
         <Button
           variant="secondary"

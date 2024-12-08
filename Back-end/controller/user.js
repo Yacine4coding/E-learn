@@ -7,6 +7,7 @@ import {
   comparePassword,
   hashingPassword,
   generateUserInfo,
+  generateUserName,
 } from "../middleware/user.js";
 import User from "../models/User.js";
 import { deleteUserComment } from "./comment.js";
@@ -36,13 +37,7 @@ export async function singup(req, res) {
       return;
     }
     // generate username
-    let username = email.split("@")[0];
-    // check if userename is already exist
-    let isUserExist = false;
-    do {
-      isUserExist = await User.findOne({ username });
-      if (isUserExist) username = `${username}${parseInt(Math.random() * 100)}`;
-    } while (isUserExist);
+    const username = await generateUserName(email);
     // hashing password
     const passwordHash = await hashingPassword(password);
     const newUser = await new User({
@@ -258,7 +253,7 @@ export async function googleSingup(user, isteacher = false) {
         picture: user.picture,
         userId: userinfo.userId,
         isteacher,
-        username: user.email.split("@")[0],
+        username: await generateUserName(user.email),
       }).save();
     } else {
       userinfo = isExist.isteacher

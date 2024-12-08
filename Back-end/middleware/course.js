@@ -8,8 +8,9 @@ export function generateCourse(course, user, allData = false) {
     payCount,
     chapterNumber,
     buyCount,
+    picture
   } = course;
-  const { username, isHasPicture, picture } = user;
+  const { username, picture : userPicture } = user;
   const result = allData
     ? {
         id,
@@ -20,8 +21,8 @@ export function generateCourse(course, user, allData = false) {
         chapters,
         payCount,
         username,
-        isHasPicture,
         picture,
+        userPicture,
         buyCount,
       }
     : {
@@ -30,8 +31,8 @@ export function generateCourse(course, user, allData = false) {
         description,
         amount,
         username,
-        isHasPicture,
         picture,
+        userPicture,
       };
   return result;
 }
