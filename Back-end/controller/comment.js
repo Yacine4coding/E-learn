@@ -242,7 +242,6 @@ export async function addReply(req, res) {
     });
   }
 }
-// ! not testing
 export async function deleteUserComment(userId) {
   try {
     await Comment.deleteMany({

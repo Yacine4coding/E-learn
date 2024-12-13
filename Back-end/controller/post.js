@@ -228,7 +228,6 @@ export async function voteDown(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-// ! no testing
 export async function deleteUserPosts(userId) {
   try {
     const posts = await Post.find({ userId });

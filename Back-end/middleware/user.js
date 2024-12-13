@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import User from "../models/User.js";
 
 export async function hashingPassword(password) {
   const salt = await bcrypt.genSalt(10);
@@ -22,7 +23,7 @@ export function generateUserInfo(user) {
   } = user;
   return {
     username,
-    emailValidate : Boolean(emailId),
+    emailValidate: Boolean(emailId),
     bio,
     notifications,
     isteacher,
@@ -30,11 +31,13 @@ export function generateUserInfo(user) {
     isHasPicture,
   };
 }
-export function generateGoogleProps(callbackURL) {
-  return {
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL ,
-    scope: ["profile", "email"],
-  };
+export async function generateUserName(email) {
+  let username = email.split("@")[0];
+  // check if userename is already exist
+  let isUserExist = false;
+  do {
+    isUserExist = await User.findOne({ username });
+    if (isUserExist) username = `${username}${parseInt(Math.random() * 1000)}`;
+  } while (isUserExist);
+  return username;
 }

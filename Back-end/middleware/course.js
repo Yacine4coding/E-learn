@@ -1,4 +1,4 @@
-export function generateCourse(course, user) {
+export function generateCourse(course, user, allData = false) {
   const {
     _id: id,
     title,
@@ -7,20 +7,34 @@ export function generateCourse(course, user) {
     chapters,
     payCount,
     chapterNumber,
+    buyCount,
+    picture
   } = course;
-  const { username, isHasPicture, picture } = user;
-  return {
-    id,
-    title,
-    description,
-    amount,
-    chapterNumber,
-    chapters,
-    payCount,
-    username,
-    isHasPicture,
-    picture,
-  };
+  const { username, picture : userPicture } = user;
+  const result = allData
+    ? {
+        id,
+        title,
+        description,
+        amount,
+        chapterNumber,
+        chapters,
+        payCount,
+        username,
+        picture,
+        userPicture,
+        buyCount,
+      }
+    : {
+        id,
+        title,
+        description,
+        amount,
+        username,
+        picture,
+        userPicture,
+      };
+  return result;
 }
 export function testChpater(chapter) {
   const { title, link, queezes } = chapter;
@@ -28,7 +42,6 @@ export function testChpater(chapter) {
     isTrue: true,
   };
   if (!(title && link)) {
-    console.log("a");
     return {
       isTrue: false,
       message: "one of chapter information are empty (title or link)",
@@ -59,4 +72,22 @@ export function testChpater(chapter) {
     }
   });
   return result;
+}
+export function sortCourse(courses) {
+  switch (true) {
+    case !(courses instanceof Array):
+      return false;
+    case courses.length === 0:
+      return false;
+  }
+  for (let i = courses.length; i > 1; i--) {
+    for (let j = 0; j < i; j++) {
+      if (courses[j].buyCount < courses[j + 1].buyCount) {
+        let k = courses[j];
+        courses[j] = courses[j + 1];
+        courses[j + 1] = k;
+      }
+    }
+  }
+  return courses;
 }

@@ -9,11 +9,15 @@ const coursesShcema = mongoose.Schema({
     type: String,
     default: "",
   },
-  ammount: {
+  amount: {
     type: Number,
     default: 0,
   },
   payCount: {
+    type: Number,
+    default: 0,
+  },
+  buyCount: {
     type: Number,
     default: 0,
   },
@@ -30,6 +34,10 @@ const coursesShcema = mongoose.Schema({
     type: Array,
     default: [],
   },
+  picture: {
+    type : String,
+    require : true,
+  }
 });
 const Courses = mongoose.model("course", coursesShcema);
 export default Courses;

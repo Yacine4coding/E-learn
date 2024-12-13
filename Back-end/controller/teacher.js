@@ -20,11 +20,19 @@ export async function getTeacher(userId) {
 }
 export async function deleteTeacher(teacherId, userId) {
   try {
-    await Teacher.findByIdAndDelete(teacherId );
+    await Teacher.findByIdAndDelete(teacherId);
     await deleteTeacherCourses(userId);
     return true;
   } catch (error) {
     console.log(error);
     return false;
+  }
+}
+export async function getTeacherDashboard(req, res) {
+  const { userId, user } = req.body;
+  try {
+    const courses = await getCoursesById(userId, user);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
   }
 }
