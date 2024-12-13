@@ -22,9 +22,6 @@ import { useRouter } from 'next/navigation';
 
 const Login = () => {
 
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-
   const [formData, setFormData] = useState({ username: '', password: '' });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -32,16 +29,9 @@ const Login = () => {
 
 
   const [error, setError] = useState('');
-
   const [loading, setLoading] = useState(false);
 
-
-
   const route = useRouter();
-
-
-
-  // const isButtonDisabled = !formData;
 
   const handleRememberMe = (e) => {
     setRememberMe(e);
@@ -56,15 +46,19 @@ const Login = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+
+  // handle Login
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    console.log(formData,  process.env.API);
     
     setError('');
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:3001/user/login', formData);
+      const response = await axios.post("http://localhost:3001/user/login", formData);
       console.log('Login successful:', response.data);
 
       // Store user data (e.g., token, user info) locally
@@ -115,7 +109,6 @@ const Login = () => {
             value={formData.username}
             onChange={handleInputChange}
             required
-            // onChange={(event) => setEmail(event.target.value)}
           />
         </div>
         <div className='text-[#666666]'>
@@ -156,15 +149,14 @@ const Login = () => {
             value={formData.password}
             onChange={handleInputChange}
             required
-            // onChange={(event) => setPassword(event.target.value)}
           />
-          <p className='text-sm font-normal font-gilroy text-right'>
+          {/* <p className='text-sm font-normal font-gilroy text-right'>
             <Link href='/auth/ForgotPassword' className='underline text-[#111111] hover:text-[#666666] hoverTransition'>
             Forgot your password
             </Link>
-          </p>
+          </p> */}
         </div>
-        <div className="flex items-center space-x-2">
+        {/* <div className="flex items-center space-x-2">
           <Checkbox
             id="terms"  
             checked={rememberMe}
@@ -176,7 +168,7 @@ const Login = () => {
           >
             Remember me
           </label>
-        </div>
+        </div> */}
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <Button 
           type="submit" 

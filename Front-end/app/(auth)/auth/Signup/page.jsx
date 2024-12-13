@@ -14,27 +14,82 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import avatar from '@/public/avatars/avatar.png'
+// backend
+import axios from 'axios';
 
 const Signup = () => {
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    isteacher: false,
+    picture: "avatar.png",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
   
   const route = useRouter();
 
-  const isButtonDisabled = !username || !email || !password;
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Add your sign-in logic here
-    console.log(username, email, password);
-    route.push('/auth/UserChoice');
-  };
 
   const handleGoogleclick = () => {
     console.log("login with google");
+  };
+
+
+  
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log(formData);
+    
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:3001/user/signup', formData);
+      setMessage(`Signup successful! Welcome, ${response.data.user.username}`);
+      route.push("/auth/UserChoice");
+
+    } catch (error) {
+      if (error.response) {
+        // Handle specific errors based on status code
+        switch (error.response.status) {
+          case 400:
+            setMessage('Invalid email format.');
+            break;
+          case 409:
+            setMessage('Email already exists.');
+            break;
+          case 422:
+            setMessage('All inputs are required.');
+            break;
+          case 500:
+            setMessage('Internal server error');
+            break;
+          default:
+            setMessage('Something went wrong. Please try again.');
+        }
+      } else {
+        setMessage('Server unreachable.');
+      }
+    }finally{
+      setLoading(false);
+    }
   };
 
 
@@ -49,7 +104,7 @@ const Signup = () => {
           </p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-6 w-full h-[70%]">
-          <div className='text-[#666666]'>
+          {/* <div className='text-[#666666]'>
             <Label htmlFor="username" className="font-normal font-gilroy text-base">What should we call you?</Label>
             <Input
               className="rounded-xl text-base h-[45px] p-4"
@@ -59,7 +114,7 @@ const Signup = () => {
               value={username}
               onChange={(event) => setUsername(event.target.value)}
             />
-          </div>
+          </div> */}
           <div className='text-[#666666]'>
             <Label htmlFor="email" className="font-normal font-gilroy text-base">What's your email?</Label>
             <Input
@@ -67,56 +122,59 @@ const Signup = () => {
               placeholder="Enter you Email address"
               id="email"
               type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
             />
           </div>
           <div className='text-[#666666]'>
             <div className="flex flex-row justify-between items-start">
               <Label htmlFor="password" className="font-normal font-gilroy text-base">Create a password</Label>
 
-                <div className="w-18">
-                {showPassword 
-                  ? ( 
-                    <button
-                      type="button"
-                      className="flex flex-row justify-between items-center w-full text-gray-500 hoverTransition hover:text-gray-900"
-                      onClick={() => setShowPassword(!showPassword)}
-                      >
-                      <VisibilityOffIcon fontSize="small" className='pr-1'/> 
-                      <span className='text-md font-gilroy'>Hide</span>
-                    </button>
-                  )
-                  : ( 
-                    <button
-                      type="button"
-                      className="flex flex-row justify-between items-center w-full text-gray-500 hoverTransition hover:text-gray-900"
-                      onClick={() => setShowPassword(!showPassword)}
-                      >
-                      <VisibilityIcon fontSize="small" className='pr-1'/> 
-                      <span className='text-md font-gilroy'>Show</span>
-                    </button>
-                  )
-                }
-                </div>
+              <div className="w-18">
+              {showPassword 
+                ? ( 
+                  <button
+                    type="button"
+                    className="flex flex-row justify-between items-center w-full text-gray-500 hoverTransition hover:text-gray-900"
+                    onClick={() => setShowPassword(!showPassword)}
+                    >
+                    <VisibilityOffIcon fontSize="small" className='pr-1'/> 
+                    <span className='text-md font-gilroy'>Hide</span>
+                  </button>
+                )
+                : ( 
+                  <button
+                    type="button"
+                    className="flex flex-row justify-between items-center w-full text-gray-500 hoverTransition hover:text-gray-900"
+                    onClick={() => setShowPassword(!showPassword)}
+                    >
+                    <VisibilityIcon fontSize="small" className='pr-1'/> 
+                    <span className='text-md font-gilroy'>Show</span>
+                  </button>
+                )
+              }
+              </div>
             </div>
             <Input
               className="rounded-xl text-base h-[45px] px-4"
               placeholder="Enter your password"
               id="password"
               type={showPassword? 'text' : 'password'}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
             />
             <p className='text-sm font-normal font-gilroy text-[#666666]'>Use 8 or more characters with a mix of letters, numbers & symbols</p>
           </div>
+          {message && <p>{message}</p>}
           <Button 
             type="submit" 
             variant="secondary" 
             className="w-full rounded-[40px] font-gilroy font-medium p-6 bg-[#111111] text-white text-xl disabled:opacity-50 hover:opacity-90 hoverTransition"
-            disabled={isButtonDisabled}
+            disabled={loading}
             >
-            Create an account
+            {loading ? 'Creating an account...' : 'Create an account'}
           </Button>
           <Button 
             variant="outline" 
