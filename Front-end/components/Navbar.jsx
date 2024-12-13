@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 import "@/styles/globals.css"; // Ensure the path to your CSS is correct
@@ -8,11 +8,20 @@ import logo from "../public/logo.png"; // Ensure the path to your logo is correc
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "/components/ui/avatar";
 
+import avtr from '@/public/avatars/avatar.png'
+
+// backend
+import axios from 'axios';
+
 const Navbar = () => {
 
   const [isLoged, setIsLoged] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const [user, setUser] = useState(null); // Store user data
+  const [loading, setLoading] = useState(true); // Loading state
+
   const router = useRouter();
 
   // loged off handlers
@@ -35,7 +44,8 @@ const Navbar = () => {
     router.push("/Instructor");
   };
 
-  // loged on handlers
+  // loged in handlers
+
   const handleProfileClick = () => {
     console.log("My Profile");
     router.push("/profile");
@@ -45,6 +55,32 @@ const Navbar = () => {
     console.log("Logout");
     setIsLoged(false);
   };
+
+
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:3001/user/isLoggin');
+
+  //     if (response.data.isLoggedIn) {
+  //       setIsLoged(true); // Set loged in state
+  //       setUser(response.data.user); // Store user data
+  //     }
+  //     // else {
+  //     //   router.push('/auth/Login'); // Redirect to login page if not logged in
+  //     // }
+  //   } catch (error) {
+  //     console.error('Error checking login status:', error);
+  //     // router.push('/login'); // Redirect to login page on error
+  //   } finally {
+  //     setLoading(false); // Stop loading
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   checkLoginStatus();
+  // }, [router]);
+
+  // if (loading) return <p>Loading...</p>;
 
 
   const OffnavItems = [
@@ -90,7 +126,7 @@ const Navbar = () => {
                       {OnNavItems[1].label}
                     </button>
                     <Avatar className="cursor-pointer" onClick={handleProfileClick}>
-                      <AvatarImage src="https://github.com/nutlope.png" />
+                      <AvatarImage src='../public/avatars/avatar.png' />
                       <AvatarFallback>YB</AvatarFallback>
                     </Avatar>
                   </>
