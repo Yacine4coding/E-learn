@@ -42,7 +42,7 @@ const Signup = () => {
 
 
   
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
@@ -62,7 +62,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post('http://localhost:3001/user/signup', formData);
-      setMessage(`Signup successful! Welcome, ${response.data.user.username}`);
+      setError(`Signup successful! Welcome, ${response.data.user.username}`);
       route.push("/auth/UserChoice");
 
     } catch (error) {
@@ -70,22 +70,22 @@ const Signup = () => {
         // Handle specific errors based on status code
         switch (error.response.status) {
           case 400:
-            setMessage('Invalid email format.');
+            setError('Invalid email format.');
             break;
           case 409:
-            setMessage('Email already exists.');
+            setError('Email already exists.');
             break;
           case 422:
-            setMessage('All inputs are required.');
+            setError('All inputs are required.');
             break;
           case 500:
-            setMessage('Internal server error');
+            setError('Internal server error');
             break;
           default:
-            setMessage('Something went wrong. Please try again.');
+            setError('Something went wrong. Please try again.');
         }
       } else {
-        setMessage('Server unreachable.');
+        setError('Server unreachable.');
       }
     }finally{
       setLoading(false);
@@ -167,7 +167,7 @@ const Signup = () => {
             />
             <p className='text-sm font-normal font-gilroy text-[#666666]'>Use 8 or more characters with a mix of letters, numbers & symbols</p>
           </div>
-          {message && <p>{message}</p>}
+          {error && <p>{error}</p>}
           <Button 
             type="submit" 
             variant="secondary" 
