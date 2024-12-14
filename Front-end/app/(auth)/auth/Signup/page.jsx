@@ -128,12 +128,16 @@ const Signup = () => {
             Use 8 or more characters with a mix of letters, numbers & symbols
           </p>
         </div>
-        {error && <p>{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm font-gilroy text-center">
+            {error}
+          </p>
+        )}
         <Button 
           type="submit" 
           variant="secondary" 
           className="w-full rounded-[40px] font-gilroy font-medium p-6 bg-[#111111] text-white text-xl disabled:opacity-50 hover:opacity-90 hoverTransition"
-          disabled={loading}
+          disabled={loading || isButtonDisabled}
           onClick={handleSubmit}
           >
           {loading ? 'Creating an account...' : 'Create an account'}

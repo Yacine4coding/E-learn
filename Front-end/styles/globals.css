@@ -11,7 +11,7 @@
     }    
 
     .hoverTransition{
-        @apply hover:transition-all duration-200 ease-in;
+        @apply hover:transition-all duration-100 ease-in;
     }
 
     .nrmlBnt{

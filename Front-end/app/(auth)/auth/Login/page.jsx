@@ -48,6 +48,11 @@ const Login = () => {
         console.log(data.message);
         setError(data.message);
         break;
+      default:
+        console.log("Somthing went wrong,please try again later");
+        setError("Somthing went wrong,please try again later");
+        break;
+        
     }
   };
   const handleGoogleclick = () => {

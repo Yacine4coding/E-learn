@@ -14,7 +14,7 @@ const Navbar = () => {
   const {user,isLoggin:isLoged} = useSelector((s) => s.user);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [user, setUser] = useState(null); // Store user data
+  const [Error, setError] = useState(null); // Store user data
   const [loading, setLoading] = useState(true); // Loading state
 
   const router = useRouter();
