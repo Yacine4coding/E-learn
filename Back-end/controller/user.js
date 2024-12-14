@@ -66,7 +66,7 @@ export async function login(req, res) {
   try {
     const { username, password } = req.body;
     if (!username || !password)
-      res.status(422).send({ message: "all inputs are required" });
+      return res.status(422).send({ message: "all inputs are required" });
     const checkUser = await User.findOne({ username });
     switch (true) {
       case Boolean(!checkUser):
@@ -94,6 +94,16 @@ export async function login(req, res) {
 }
 export async function logout(req, res) {
   addExistingToken("", res);
+  await req.logout((err) => {
+    if (err) {
+      return res.status(400).send(err);
+    }
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(400).send(err);
+      }
+    });
+  });
   res.status(204).send();
 }
 export async function isLoggin(req, res) {
@@ -101,7 +111,7 @@ export async function isLoggin(req, res) {
     if (req.user) {
       await generateToken(req.user, res);
       res.status(200).send({
-        user: req.user,
+        userinfo: req.user,
       });
       return;
     }
@@ -165,14 +175,14 @@ export async function updateUserInfo(req, res) {
   try {
     let isUpdated = false;
     let user = await User.findById(userId);
-    if (!user) {
-      res.status(404).send({ message: "user not found" });
-      return;
-    }
+    if (!user) 
+      return res.status(404).send({ message: "user not found" });
     if (bio !== false && user.bio !== bio) {
       user.bio = bio;
       isUpdated = true;
     }
+    if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email)) 
+      return res.status(400).send({message : "email format are inccorect"});
     if (email !== false && user.email !== email) {
       if (await User.findOne({ email }))
         return res.status(403).send({ message: "username is already exist" });
@@ -186,7 +196,7 @@ export async function updateUserInfo(req, res) {
       isUpdated = true;
     }
     if ((!password && currentPassword) || (password && !currentPassword))
-      return res.status(404).send({
+      return res.status(400).send({
         message: "password or current password are empty",
       });
 
@@ -208,6 +218,7 @@ export async function updateUserInfo(req, res) {
       user: generateUserInfo(user),
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "internal server error" });
   }
 }

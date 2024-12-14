@@ -9,7 +9,7 @@ import { isUserExist } from "./user.js";
 
 export async function addCourse(req, res) {
   const { title, description, userId, user, chapters = [], amount } = req.body;
-  const picture = req.file || "";
+  const picture = req.file;
   if (!(title && description && chapters.length !== 0 && amount >= 0)) {
     res.status(422).send({
       message:
@@ -56,7 +56,7 @@ export async function getPersonellCourses(req, res) {
       res.status(204).send();
       return;
     }
-    courses = courses.map((course) => generateCourse(course, user));
+    courses = courses.map((course) => generateCourse(course, user , true));
     res.status(200).send({
       count: courses.length,
       courses,
@@ -164,7 +164,6 @@ export async function bestCourses(req, res) {
       const { user } = await isUserExist(courses[i].teacherId);
       courses[i] = generateCourse(courses[i], user);
     }
-    console.log(courses);
     if (courses.length <= count) return res.status(200).send({ courses });
     courses = sortCourse();
     if (!courses)
@@ -172,7 +171,6 @@ export async function bestCourses(req, res) {
     courses.length = count;
     res.status(200).send({ courses });
   } catch (error) {
-    console.log(error);
     res.status(500).send({
       message: "internal server error",
     });

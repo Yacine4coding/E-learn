@@ -50,6 +50,8 @@ export async function isLoggin() {
     const { data, status } = res;
     return { data, status };
   } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
     const { data, status } = error.response;
     return { data, status };
   }

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { isUserExist } from "../controller/user.js";
 
 // export const TOKEN_OPTION = { httpOnly: true, secure: true };
-export const TOKEN_OPTION = { httpOnly: true };
+export const TOKEN_OPTION = { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 };
 export async function generateToken(userInfo, res) {
   const { _id } = userInfo;
   const token = await jwt.sign(

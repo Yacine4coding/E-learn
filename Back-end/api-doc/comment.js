@@ -31,7 +31,7 @@
  *                 type: string
  *                 example: dkfhmqls34r234
  *     responses:
- *       200:
+ *       201:
  *         description: Successfully created a new comment
  *         content:
  *           application/json:
@@ -39,79 +39,17 @@
  *               type: object
  *               properties:
  *                 comment:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: Unique ID of the comment
- *                       example: lkshfd834j34HHG7
- *                     text:
- *                       type: string
- *                       description: Comment content
- *                       example: hi this is my first comment
- *                     username:
- *                       type: string
- *                       description: Username of the post owner
- *                       example: user123
- *                     picture:
- *                       type: string
- *                       description: Link to the user's profile picture
- *                       example: https://www.google.com/user/picture
- *                     isHasPicture:
- *                       type: boolean
- *                       description: Indicates if the user has a profile picture
- *                       example: true
- *                     isreply:
- *                        type: boolean
- *                        description: is always true in this res
- *                        example: false
- *                     vote:
- *                       type: object
- *                       properties:
- *                         up:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                         down:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                     replyInfo:
- *                       description: this will send when isreply property are equal true
- *                       type: object
- *                       properties:
- *                         picture:
- *                           type: string
- *                           description: return picture path or empty string
- *                           example: false
- *                         isHasPicture:
- *                           type: boolean
- *                           description: return if user have picture
- *                           example: false
- *                         username:
- *                           type: string
- *                           description: return user name of comment you reply it
- *                           example: false
- *
+ *                   $ref: '#/components/schemas/commentSchema'
  *       404:
  *         description: comment not found
  *       422:
- *         description: one of body properties are empty
+ *         description: text are empty
  *       500:
  *         description: internal server error
  *       401:
  *         description: unauth
  */
+
 /**
  * @swagger
  * /comment/:postId:
@@ -138,7 +76,7 @@
  *                 type: string
  *                 example: hi this my first comment
  *     responses:
- *       200:
+ *       201:
  *         description: Successfully created a new comment
  *         content:
  *           application/json:
@@ -146,55 +84,9 @@
  *               type: object
  *               properties:
  *                 comment:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: Unique ID of the comment
- *                       example: lkshfd834j34HHG7
- *                     text:
- *                       type: string
- *                       description: Comment content
- *                       example: hi this is my first comment
- *                     username:
- *                       type: string
- *                       description: Username of the post owner
- *                       example: user123
- *                     picture:
- *                       type: string
- *                       description: Link to the user's profile picture
- *                       example: https://www.google.com/user/picture
- *                     isHasPicture:
- *                       type: boolean
- *                       description: Indicates if the user has a profile picture
- *                       example: true
- *                     isreply:
- *                        type: boolean
- *                        description: is always true in this res
- *                        example: false
- *                     vote:
- *                       type: object
- *                       properties:
- *                         up:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                         down:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
+ *                   $ref: '#/components/schemas/commentSchema'
  *       422:
- *         description: Post ID or text not found
+ *         description: text are empty
  *       404:
  *         description: Post not found
  *       401:
@@ -202,6 +94,7 @@
  *       500:
  *         description: internal server error
  */
+
 /**
  * @swagger
  * /comment/:postId:
@@ -229,15 +122,14 @@
  *                 comments:
  *                   type: Array
  *                   example: array of comment format
- *       201:
+ *       204:
  *         description: no comment yet
- *       422:
- *         description: post id not found
  *       401:
  *         description: Unauthorized
  *       500:
  *         description: internal server error
  */
+
 /**
  * @swagger
  * /comment/:commentId:
@@ -266,58 +158,16 @@
  *                  example: hello i update my comment
  *     responses:
  *       200:
- *         description: the comment is update successfuly
+ *         description: update successfuly
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 comment:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: Unique ID of the comment
- *                       example: lkshfd834j34HHG7
- *                     text:
- *                       type: string
- *                       description: Comment content
- *                       example: hi this is my first comment
- *                     username:
- *                       type: string
- *                       description: Username of the post owner
- *                       example: user123
- *                     picture:
- *                       type: string
- *                       description: Link to the user's profile picture
- *                       example: https://www.google.com/user/picture
- *                     isHasPicture:
- *                       type: boolean
- *                       description: Indicates if the user has a profile picture
- *                       example: true
- *                     vote:
- *                       type: object
- *                       properties:
- *                         up:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                         down:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
+ *                   $ref: '#/components/schemas/commentSchema'
  *       422:
- *         description: post id or text not found
+ *         description: text are empty
  *       404:
  *         description: comment not found
  *       403:
@@ -325,6 +175,7 @@
  *       500:
  *         description: internal server error
  */
+
 /**
  * @swagger
  * /comment/vote/up/:commentId:
@@ -341,53 +192,14 @@
  *           example: 1HG6Rfjg54hgk
  *     responses:
  *       200:
- *         description: voting up  or delete vote successfuly
+ *         description: vote up
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 comment:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: id of comment.
- *                       example: d7ZOFL34ld
- *                     username:
- *                       type: string
- *                       example: example
- *                     isHasPicture:
- *                       type: boolean
- *                       description: is user has picture or not.
- *                     picture:
- *                       type: string
- *                       description: picture of his email in type link .
- *                       example : https://google.com/userid/picture
- *                     text:
- *                       type: string
- *                       example: hi is my first comment
- *                     vote:
- *                       type: object
- *                       properties:
- *                         up:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                         down:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
+ *                   $ref: '#/components/schemas/commentSchema'
  *       422:
  *         description: comment id or text are empty
  *       404:
@@ -412,59 +224,17 @@
  *           description: The unique identifier of the comment who want to vote or delete vote.
  *           example: 1HG6Rfjg54hgk
  *     responses:
- *       200:
- *         description: voting down or delete vote down successfuly
+ *       201:
+ *         description: vote down
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 comment:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: Unique ID of the comment
- *                       example: lkshfd834j34HHG7
- *                     text:
- *                       type: string
- *                       description: Comment content
- *                       example: hi this is my first comment
- *                     username:
- *                       type: string
- *                       description: Username of the post owner
- *                       example: user123
- *                     picture:
- *                       type: string
- *                       description: Link to the user's profile picture
- *                       example: https://www.google.com/user/picture
- *                     isHasPicture:
- *                       type: boolean
- *                       description: Indicates if the user has a profile picture
- *                       example: true
- *                     vote:
- *                       type: object
- *                       properties:
- *                         up:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
- *                         down:
- *                           type: object
- *                           properties:
- *                             count:
- *                               type: number
- *                               example: 123
- *                             usersId:
- *                               type: Array
- *                               example: [1fsfq2q3,1d2s4f]
+ *                   $ref: '#/components/schemas/commentSchema'
  *       422:
- *         description: comment id or text are empty
+ *         description: text are empty
  *       404:
  *         description: comment or comment owner not found
  *       401:
@@ -492,6 +262,6 @@
  *         description: delete faild
  *       401:
  *         description: unAuthorization
- *       422:
- *         description: comment id not found
+ *       500:
+ *         description: internal server error
  */

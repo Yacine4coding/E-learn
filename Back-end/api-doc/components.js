@@ -94,6 +94,75 @@
  * @swagger
  * components:
  *   schemas:
+ *     commentSchema:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique ID of the comment
+ *           example: lkshfd834j34HHG7
+ *         text:
+ *           type: string
+ *           description: Comment content
+ *           example: hi this is my first comment
+ *         username:
+ *           type: string
+ *           description: Username of the post owner
+ *           example: user123
+ *         picture:
+ *           type: string
+ *           description: Link to the user's profile picture
+ *           example: https://www.google.com/user/picture
+ *         isHasPicture:
+ *           type: boolean
+ *           description: Indicates if the user has a profile picture
+ *           example: true
+ *         isreply:
+ *            type: boolean
+ *            description: is always true in this res
+ *            example: false
+ *         vote:
+ *           type: object
+ *           properties:
+ *             up:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: number
+ *                   example: 123
+ *                 usersId:
+ *                   type: Array
+ *                   example: [1fsfq2q3,1d2s4f]
+ *             down:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: number
+ *                   example: 123
+ *                 usersId:
+ *                   type: Array
+ *                   example: [1fsfq2q3,1d2s4f]
+ *         replyInfo:
+ *           description: this will send when isreply property are equal true
+ *           type: object
+ *           properties:
+ *             picture:
+ *               type: string
+ *               description: return picture path or empty string
+ *               example: false
+ *             isHasPicture:
+ *               type: boolean
+ *               description: return if user have picture
+ *               example: false
+ *             username:
+ *               type: string
+ *               description: return user name of comment you reply it
+ *               example: false
+ */
+/**
+ * @swagger
+ * components:
+ *   schemas:
  *     userSchema:
  *       type: object
  *       properties:
