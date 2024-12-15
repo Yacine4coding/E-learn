@@ -14,9 +14,16 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const route = useRouter();
   const isButtonDisabled = !email || !password;
   const handleSubmit = async (event) => {
+
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+
     const { data, status } = await signup(email, password);
     switch (status) {
       case 201:
@@ -25,14 +32,17 @@ const Signup = () => {
       case 400:
         console.log(400);
         console.log(data.message);
+        setError(data.message);
         break;
       case 409:
         console.log(409);
         console.log(data.message);
+        setError(data.message);
         break;
       case 422:
         console.log(422);
         console.log(data.message);
+        setError(data.message);
         break;
       case 500:
         console.log(500);
@@ -118,13 +128,19 @@ const Signup = () => {
             Use 8 or more characters with a mix of letters, numbers & symbols
           </p>
         </div>
-        <Button
-          variant="secondary"
+        {error && (
+          <p className="text-red-500 text-sm font-gilroy text-center">
+            {error}
+          </p>
+        )}
+        <Button 
+          type="submit" 
+          variant="secondary" 
           className="w-full rounded-[40px] font-gilroy font-medium p-6 bg-[#111111] text-white text-xl disabled:opacity-50 hover:opacity-90 hoverTransition"
-          disabled={isButtonDisabled}
+          disabled={loading || isButtonDisabled}
           onClick={handleSubmit}
-        >
-          Create an account
+          >
+          {loading ? 'Creating an account...' : 'Create an account'}
         </Button>
         <Button
           variant="outline"

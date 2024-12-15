@@ -1,7 +1,7 @@
 import Hero from "@/components/Hero";
 import Search from "@/components/Search";
 import Courses from "@/components/Courses";
-import Announse from "@/components/promos/Announse";
+import Announse from "@/components/promos/AnnounseSt";
 import Trending from "@/components/Trending";
 import Upcoming from "@/components/Upcoming";
 
@@ -28,7 +28,10 @@ export default function Home() {
       <Hero />
       <Search />
       <Courses/>
-      <Announse />
+      <Announse 
+        titel="Join Edulink now to get 35% off" 
+        discription="join our responsive themes and mobile and desktop apps,<br /> enjoy a seamless experience on any device so will your blog the best visitor" 
+        />
       <Trending />
       <Upcoming />
       <GetStarted />

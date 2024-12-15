@@ -12,31 +12,49 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { googleAuth, login } from "@/request/auth";
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const route = useRouter();
   const isButtonDisabled = !username || !password;
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setLoading(true);
+    setError('');
+
     const { status, data } = await login(username, password);
+
     switch (status) {
       case 200:
-        route.push("/auth/UserChoice");
+        route.push(`/dashboards/User`);
         break;
       case 400:
         console.log("400");
         console.log(data.message);
+        setError(data.message);
         break;
       case 422:
         console.log("422");
         console.log(data.message);
+        setError(data.message);
         break;
       case 500:
         console.log("500");
         console.log(data.message);
+        setError(data.message);
         break;
+      default:
+        console.log("Somthing went wrong,please try again later");
+        setError("Somthing went wrong,please try again later");
+        break;
+        
     }
   };
   const handleGoogleclick = () => {
@@ -114,13 +132,18 @@ const Login = () => {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
+        {error && (
+          <p className="text-red-500 text-sm font-gilroy text-center">
+            {error}
+          </p>
+        )}
         <Button
           variant="secondary"
           onClick={handleSubmit}
           className="w-full rounded-[40px] font-gilroy font-medium p-6 bg-[#111111] text-white text-xl disabled:opacity-50 hover:opacity-90 hoverTransition"
-          disabled={isButtonDisabled}
+          disabled={loading || isButtonDisabled}
         >
-          Log in
+          {loading? "Logging in..." : "Login"}
         </Button>
         <Button
           variant="outline"
