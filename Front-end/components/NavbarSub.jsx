@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Bell, ChevronDown, Search, ShoppingCart } from 'lucide-react'
 import logo from '@/public/logo.png'
-import { useState } from "react";
+import { useState } from "react"
 
 import { Button } from '@/components/ui/button'
 import {
@@ -16,35 +16,35 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 
-
 const NavbarSub = () => {
-
-    const [email, setEmail] = useState('bensidahmedyacine.off@gmail.com');
-    const [username, setUsername] = useState('Yacine Bensidahmed');
-
-
+  const [email, setEmail] = useState('bensidahmedyacine.off@gmail.com')
+  const [username, setUsername] = useState('Yacine Bensidahmed')
 
   return (
     <header className="border-b">
-      <div className="flex h-16 items-center justify-around w-full px-4 md:px-6">
-
-        {/* Logo Section */}
-        <div className="flex items-center">
-            <Image src={logo} alt="logo image" height={43} width={43} />
-            <span className="ml-2 text-lg text-Black font-extrabold">Edulink</span>
+      <div className="flex h-16 items-center justify-between w-full px-4 md:px-6 relative">
+        {/* Logo Section - Absolute Left */}
+        <div className="flex items-center absolute left-4">
+          <Image src={logo} alt="logo image" height={43} width={43} />
+          <span className="ml-2 text-lg text-Black font-extrabold">Edulink</span>
         </div>
 
-        <div className="flex items-center gap-4">
-            <form className="mr-10 hidden md:block lg:w-[300px]">
+        {/* Search Section - Middle */}
+        <div className="flex-1 flex justify-center">
+          <form className="w-full max-w-[300px]">
             <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
                 type="search"
                 placeholder="Search for course"
-                className="pl-8"
-                />
+                className="pl-8 w-full"
+              />
             </div>
-            </form>
+          </form>
+        </div>
+
+        {/* Profile and Icons - Absolute Right */}
+        <div className="flex items-center gap-4 absolute right-4">
           <Button variant="ghost" className="hidden md:block">
             Become Instructor
           </Button>
@@ -97,5 +97,5 @@ const NavbarSub = () => {
   )
 }
 
-export default NavbarSub;
+export default NavbarSub
 

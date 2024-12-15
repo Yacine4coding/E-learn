@@ -49,25 +49,34 @@ const Navbar = () => {
   // loged in handlers
 
   const handleProfileClick = () => {
-    // router.push("/profile");
+    router.push("/dashboards/User");
   };
+
+  
   const handleLogoutClick = async () => {
     await logOut();
     dispatch(setState(null));
   };
+
+
+
   const OffnavItems = [
     { label: "Login", onClick: handleLoginClick },
     { label: "Sign Up", onClick: handleSignupClick },
     { label: "Become Instructor", onClick: handleInstructorClick },
   ];
+
   const OnNavItems = [
     { label: "My Profile", onClick: handleProfileClick },
     { label: "Log out", onClick: handleLogoutClick },
     { label: "Become Instructor", onClick: handleInstructorClick },
   ];
+
+
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
+
   return (
     <nav className="flex justify-between font-gilroy items-center py-4 px-6 bg-transparent">
       {/* Logo Section */}

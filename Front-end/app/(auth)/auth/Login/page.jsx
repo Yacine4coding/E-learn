@@ -12,6 +12,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { googleAuth, login } from "@/request/auth";
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,9 +30,10 @@ const Login = () => {
     setError('');
 
     const { status, data } = await login(username, password);
+
     switch (status) {
       case 200:
-        route.push("/auth/UserChoice");
+        route.push(`/dashboards/User`);
         break;
       case 400:
         console.log("400");
