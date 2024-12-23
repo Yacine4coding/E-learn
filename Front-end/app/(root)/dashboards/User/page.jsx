@@ -13,7 +13,7 @@ import cours4 from "@/public/couseTest/Placeholder4.png";
 import AnnounseNd from "@/components/promos/AnnounseNd";
 import { getDashboard } from "@/request/user";
 
-const courses = [
+const cour = [
   {
     title: "Introduction to Web Development",
     creator: "John Doe",
@@ -73,7 +73,7 @@ const courses = [
 
 const UserDashboard = () => {
   const [anounseVisibility, setAnounseVisibility] = useState(true);
-  const [cours, setCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
   // GET DASHBOARD INFORMATION
   useEffect(() => {
     (async function () {
@@ -117,10 +117,10 @@ const UserDashboard = () => {
                 All Courses
               </TabsTrigger>
               <TabsTrigger
-                value="wishlist"
+                value="Favorite"
                 className="font-gilroy font-bold text-sm"
               >
-                Wishlist
+                Favorite
               </TabsTrigger>
               <TabsTrigger
                 value="completed"
@@ -142,34 +142,36 @@ const UserDashboard = () => {
                 {courses.map((course, i) => (
                   <CourseCard
                     key={i}
-                    creator={course.creator}
-                    imageUrl={course.imageUrl}
-                    progress={course.Progress}
-                    totalLectures={course.TotalLecturs}
+                    creator={course.teacherName}
+                    courseId={course.courseId}
+                    imageUrl={course.picture}
+                    progress={course.progress}
+                    totalLectures={course.chapterNumber}
                     menuIcon={true}
                   />
                 ))}
               </div>
             </TabsContent>
 
-            {/* Wishlist */}
-            <TabsContent value="wishlist" className="mt-6">
+            {/* Favorite */}
+            <TabsContent value="Favorite" className="mt-6">
               <div className="mb-8 font-gilroy">
-                <h1 className="text-2xl font-bold ">Wishlist</h1>
+                <h1 className="text-2xl font-bold ">Favorite</h1>
                 <p className="text-gray-500 font-medium">
                   List of your favorite courses
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {courses.map((course, i) => (
-                  <CourseCard
-                    key={i}
-                    creator={course.creator}
-                    imageUrl={course.imageUrl}
-                    progress={course.Progress}
-                    totalLectures={course.TotalLecturs}
-                    favIcon={true}
-                  />
+                  course.isFavorite&&<CourseCard
+                  key={i}
+                  creator={course.teacherName}
+                  courseId={course.courseId}
+                  imageUrl={course.picture}
+                  progress={course.progress}
+                  totalLectures={course.chapterNumber}
+                  favIcon={true}
+                />
                 ))}
               </div>
             </TabsContent>
@@ -183,16 +185,20 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map((course, i) => (
-                  <CourseCard
-                    key={i}
-                    creator={course.creator}
-                    imageUrl={course.imageUrl}
-                    progress={course.Progress}
-                    totalLectures={course.TotalLecturs}
-                    completIcon={true}
-                  />
-                ))}
+                {courses.map(
+                  (course, i) =>
+                    course.chapterNumber === course.progress && (
+                      <CourseCard
+                        key={i}
+                        creator={course.teacherName}
+                        courseId={course.courseId}
+                        imageUrl={course.picture}
+                        progress={course.progress}
+                        totalLectures={course.chapterNumber}
+                        completIcon={true}
+                      />
+                    )
+                )}
               </div>
             </TabsContent>
           </Tabs>
