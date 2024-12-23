@@ -297,16 +297,15 @@ export async function isUserExist(userId) {
   }
 }
 export async function googleSingup(user, isteacher = false) {
-  if (!user) return false;
   try {
     const { sub: emailId } = user;
-    const isExist = await User.findOne({ emailId });
+    let isExist = await User.findOne({ emailId });
     let userinfo = null;
     if (!isExist) {
       userinfo = isteacher
         ? await createNewTeacher()
         : await createNewStudient();
-      user = await new User({
+      isExist = await new User({
         email: user.email,
         emailId,
         password: "",
