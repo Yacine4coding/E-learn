@@ -69,7 +69,9 @@ export async function login(req, res) {
     const { username, password } = req.body;
     if (!username || !password)
       return res.status(422).send({ message: "all inputs are required" });
-    const checkUser = await User.findOne({ username });
+    const checkUser = await User.findOne({
+      $or: [{ username }, { email: username }],
+    });
     switch (true) {
       case Boolean(!checkUser):
         return res.status(400).send({
