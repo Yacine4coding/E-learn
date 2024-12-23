@@ -1,7 +1,11 @@
 import { generateStudientInfo } from "../middleware/studient.js";
 import Studient from "../models/Studient.js";
 import StudientCourse from "../models/StudientCourse.js";
-import { deleteCouseById, getCourseById, incrementCourseBuy } from "./courses.js";
+import {
+  deleteCouseById,
+  getCourseById,
+  incrementCourseBuy,
+} from "./courses.js";
 import { isUserExist } from "./user.js";
 
 export async function changePoint(req, res) {
@@ -48,12 +52,12 @@ export async function buyCourse(req, res) {
         return;
     }
     const newAct = await new StudientCourse({ courseId, studientId }).save();
-    await incrementCourseBuy()
+    await incrementCourseBuy();
     res.status(200).send({
-      course,
-      progress,
+      message: "buy succesfully",
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "internal server error" });
   }
 }
@@ -139,7 +143,19 @@ export async function createNewStudient() {
 export async function getStudient(userId) {
   try {
     const studient = await Studient.findById(userId);
+    console.log(studient);
     return generateStudientInfo(studient);
+  } catch (error) {
+    return false;
+  }
+}
+export async function updateCourse(userId, obj) {
+  try {
+    await Studient.updateOne(
+      { _id: userId},
+      { $set: { ...obj } }
+    );
+    return true ;
   } catch (error) {
     return false;
   }

@@ -248,6 +248,26 @@
  */
 /**
  * @swagger
+ * user/dashboard:
+ *  get:
+ *    tags: [User]
+ *    summary: get dashboard of user (studient or teacher)
+ *    responses:
+ *      200:
+ *        description: (theacher dashboard format) if user is teacher else (user dashboard)
+ *      204:
+ *        description: user hasn't data in dashboard
+ *      401:
+ *        description: unauth
+ *      500:
+ *        description: internal server error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ */
+/**
+ * @swagger
  *   /user/logout:
  *     get:
  *       summary: log out of account

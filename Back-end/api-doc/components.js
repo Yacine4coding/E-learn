@@ -24,6 +24,37 @@
  *         teacherId:
  *           type: string
  *           example: lkds34kdjsD30RC
+ *     UserDashboard:
+ *       type: object
+ *       properties:
+ *         isFavorite:
+ *           type: boolean
+ *           example: false
+ *         isInWishList:
+ *           type: boolean
+ *           example: true
+ *         picture:
+ *           type: string
+ *           example: https://google.com/userPicture
+ *           description: the picture of course
+ *         courseId:
+ *           type: string
+ *           example: lkds34kdjsD30RC
+ *         description:
+ *           type: string
+ *           example: this for kink's endian defence
+ *         teacherName:
+ *           type: string
+ *           example: medjahed
+ *         teacherProfileImg:
+ *           type: string
+ *           example: img of teahcer
+ *         progress:
+ *           type: number
+ *           example: number of chapters he complete
+ *         chapterNumber:
+ *           type: string
+ *           example: number of chapters in course
  *     fullCourseSchema:
  *       type: object
  *       properties:

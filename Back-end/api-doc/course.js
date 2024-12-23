@@ -264,6 +264,88 @@
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+/**
+ * @swagger
+ * /favorite/:courseId:
+ *   put:
+ *     tags: [Course]
+ *     summary: add or remove a course in favorite list
+ *     parameters:
+ *       - in: path
+ *         name: couseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: the unique id of course who want to update it
+ *         example: 1HG6Rfjg54hgk
+ *     responses:
+ *       200:
+ *         description: add or remove succesfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: course not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: un auth
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+/**
+ * @swagger
+ * /wishlist/:courseId:
+ *   put:
+ *     tags: [Course]
+ *     summary: add or remove a course in wishlist list
+ *     parameters:
+ *       - in: path
+ *         name: couseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: the unique id of course who want to update it
+ *         example: 1HG6Rfjg54hgk
+ *     responses:
+ *       200:
+ *         description: add or remove succesfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: course not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: un auth
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+
 
 /**
  * @swagger
