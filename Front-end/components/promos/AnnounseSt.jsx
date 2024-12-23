@@ -1,16 +1,20 @@
 "use client"
 
-import React from 'react'
+import React,{ useState } from 'react'
 import Image from 'next/image'
 import decoration from '@/public/prom/Rhône.svg'
+
 import { useRouter } from 'next/navigation'
 
 const Announse = ({ title }) => {
 
-    const router = useRouter()
+    const router = useRouter();
+
+    const [loading, setLoading] = useState(false);
 
     const handleJoinClick = () => {
-        console.log('Joining EduLink...')
+        console.log('Joining EduLink...');
+        setLoading(true);
         router.push("/auth/Signup");
     }
 
@@ -22,7 +26,12 @@ const Announse = ({ title }) => {
             <h2 className='text-gray-400 font-thin text-2xl leading-10'>
                 join our responsive E-learning platform,<br /> enjoy a seamless experience on any device so will your blog the best visitor
             </h2>
-            <button onClick={handleJoinClick} className=' my-4 font-gilroy text-base py-2 px-6 font-bold border-2 border-green-500 bg-green-500 text-white hover:bg-transparent hover:border-white rounded-md hoverTransition '>Join EduLink</button>
+            <button 
+            onClick={handleJoinClick} 
+            disabled={loading}
+            className=' my-4 font-gilroy text-base py-2 px-6 font-bold border-2 border-green-500 bg-green-500 text-white hover:bg-transparent hover:border-white rounded-md hoverTransition disabled:bg-gray-500'>
+                {loading ? "Joining EduLink..." : "Join EduLink"}
+            </button>
         </div>
 
         <Image 

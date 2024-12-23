@@ -9,12 +9,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "/components/ui/avatar";
 import { isLoggin, logOut } from "@/request/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { setState } from "@/redux/user";
+import Link from "next/link";
 const Navbar = () => {
   const dispatch = useDispatch();
   const {user,isLoggin:isLoged} = useSelector((s) => s.user);
   const [isOpen, setIsOpen] = useState(false);
 
-  const [Error, setError] = useState(null); // Store user data
+  const [Error, setError] = useState(""); // Store user data
   const [loading, setLoading] = useState(true); // Loading state
 
   const router = useRouter();
@@ -28,9 +29,10 @@ const Navbar = () => {
         case 200:
           dispatch(setState(userinfo));
           break;
-        case 500:
-          console.log(500);
+          case 500:
+            console.log(500);
       }
+      setLoading(false);
     })();
   }, []);
 
@@ -56,6 +58,7 @@ const Navbar = () => {
   const handleLogoutClick = async () => {
     await logOut();
     dispatch(setState(null));
+    router.push("/");
   };
 
 
@@ -77,13 +80,17 @@ const Navbar = () => {
     setIsOpen((prev) => !prev);
   };
 
+  if(loading){
+    return <div className="w-full text-center mt-8 bg-white">Loading...</div>;
+  }
+
   return (
-    <nav className="flex justify-between font-gilroy items-center py-4 px-6 bg-transparent">
+    <nav className="flex justify-between font-gilroy items-center py-4 px-6 bg-[#405E93]">
       {/* Logo Section */}
-      <div className="flex items-center">
+      <Link href="/" className="flex items-center">
         <Image src={logo} alt="logo image" height={43} width={43} />
         <span className="ml-2 text-lg text-white font-extrabold">Edulink</span>
-      </div>
+      </Link>
 
       {/* Desktop Navigation */}
 

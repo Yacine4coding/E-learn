@@ -49,6 +49,7 @@ const Signup = () => {
         console.log(data.message);
         break;
     }
+    setLoading(false);
   };
   const handleGoogleclick = () => {
     googleAuth();
@@ -129,9 +130,9 @@ const Signup = () => {
           </p>
         </div>
         {error && (
-          <p className="text-red-500 text-sm font-gilroy text-center">
+          <span className="text-red-500 text-sm font-gilroy text-start font-medium">
             {error}
-          </p>
+          </span>
         )}
         <Button 
           type="submit" 
