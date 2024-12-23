@@ -59,7 +59,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={Gilroy.variable}>
       <body>
-        <ReduxContainer>{children}</ReduxContainer>
+        {children}
       </body>
     </html>
   );

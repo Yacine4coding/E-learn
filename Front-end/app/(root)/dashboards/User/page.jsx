@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import CourseCard from "@/components/CourseCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/CustomUI/tabs";
@@ -11,7 +11,7 @@ import cours2 from "@/public/couseTest/Placeholder2.png";
 import cours3 from "@/public/couseTest/Placeholder3.png";
 import cours4 from "@/public/couseTest/Placeholder4.png";
 import AnnounseNd from "@/components/promos/AnnounseNd";
-
+import { getDashboard } from "@/request/user";
 
 const courses = [
   {
@@ -73,7 +73,21 @@ const courses = [
 
 const UserDashboard = () => {
   const [anounseVisibility, setAnounseVisibility] = useState(true);
-
+  const [cours, setCourses] = useState([]);
+  // GET DASHBOARD INFORMATION
+  useEffect(() => {
+    (async function () {
+      const { data, status } = await getDashboard();
+      // HUNDLE RESPONSE
+      switch (status) {
+        case 200:
+          setCourses(data);
+          break;
+        case 500:
+          console.log("error");
+      }
+    })();
+  }, []);
   // Handle tab change visibility
   const handleTabChange = (tab) => {
     if (tab === "all-courses") {
@@ -96,13 +110,22 @@ const UserDashboard = () => {
             className="w-[90%] flex flex-col justify-center items-center"
           >
             <TabsList>
-              <TabsTrigger value="all-courses" className="font-gilroy font-bold text-sm">
+              <TabsTrigger
+                value="all-courses"
+                className="font-gilroy font-bold text-sm"
+              >
                 All Courses
               </TabsTrigger>
-              <TabsTrigger value="wishlist" className="font-gilroy font-bold text-sm">
+              <TabsTrigger
+                value="wishlist"
+                className="font-gilroy font-bold text-sm"
+              >
                 Wishlist
               </TabsTrigger>
-              <TabsTrigger value="completed" className="font-gilroy font-bold text-sm">
+              <TabsTrigger
+                value="completed"
+                className="font-gilroy font-bold text-sm"
+              >
                 Completed
               </TabsTrigger>
             </TabsList>
@@ -111,7 +134,9 @@ const UserDashboard = () => {
             <TabsContent value="all-courses" className="mt-6">
               <div className="mb-8 font-gilroy">
                 <h1 className="text-2xl font-bold ">My Course</h1>
-                <p className="text-gray-500 font-medium">List of your courses</p>
+                <p className="text-gray-500 font-medium">
+                  List of your courses
+                </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {courses.map((course, i) => (
@@ -131,19 +156,21 @@ const UserDashboard = () => {
             <TabsContent value="wishlist" className="mt-6">
               <div className="mb-8 font-gilroy">
                 <h1 className="text-2xl font-bold ">Wishlist</h1>
-                <p className="text-gray-500 font-medium">List of your favorite courses</p>
+                <p className="text-gray-500 font-medium">
+                  List of your favorite courses
+                </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {courses.map((course, i) => (
-                    <CourseCard
-                      key={i}
-                      creator={course.creator}
-                      imageUrl={course.imageUrl}
-                      progress={course.Progress}
-                      totalLectures={course.TotalLecturs}
-                      favIcon={true}
-                    />
-                  ))}
+                {courses.map((course, i) => (
+                  <CourseCard
+                    key={i}
+                    creator={course.creator}
+                    imageUrl={course.imageUrl}
+                    progress={course.Progress}
+                    totalLectures={course.TotalLecturs}
+                    favIcon={true}
+                  />
+                ))}
               </div>
             </TabsContent>
 
@@ -151,27 +178,29 @@ const UserDashboard = () => {
             <TabsContent value="completed" className="mt-6">
               <div className="mb-8 font-gilroy">
                 <h1 className="text-2xl font-bold ">Completed</h1>
-                <p className="text-gray-500 font-medium">List of your completed courses</p>
+                <p className="text-gray-500 font-medium">
+                  List of your completed courses
+                </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {courses.map((course, i) => (
-                    <CourseCard
-                      key={i}
-                      creator={course.creator}
-                      imageUrl={course.imageUrl}
-                      progress={course.Progress}
-                      totalLectures={course.TotalLecturs}
-                      completIcon={true}
-                    />
-                  ))}
+                {courses.map((course, i) => (
+                  <CourseCard
+                    key={i}
+                    creator={course.creator}
+                    imageUrl={course.imageUrl}
+                    progress={course.Progress}
+                    totalLectures={course.TotalLecturs}
+                    completIcon={true}
+                  />
+                ))}
               </div>
             </TabsContent>
           </Tabs>
         </div>
       </main>
-        {anounseVisibility && (
-          <AnnounseNd title={"Join Edulink and get amizing discount"} />
-        )}
+      {anounseVisibility && (
+        <AnnounseNd title={"Join Edulink and get amizing discount"} />
+      )}
     </div>
   );
 };
