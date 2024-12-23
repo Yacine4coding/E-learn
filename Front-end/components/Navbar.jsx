@@ -12,7 +12,7 @@ import { setState } from "@/redux/user";
 import Link from "next/link";
 const Navbar = () => {
   const dispatch = useDispatch();
-  const {user,isLoggin:isLoged} = useSelector((s) => s.user);
+  const { user, isLoggin: isLoged } = useSelector((s) => s.user);
   const [isOpen, setIsOpen] = useState(false);
 
   const [Error, setError] = useState(""); // Store user data
@@ -29,8 +29,12 @@ const Navbar = () => {
         case 200:
           dispatch(setState(userinfo));
           break;
-          case 500:
-            console.log(500);
+        case 10:
+          console.log(10);
+          setError("catch error");
+        case 500:
+          setError(data.message);
+          console.log(500);
       }
       setLoading(false);
     })();
@@ -54,14 +58,11 @@ const Navbar = () => {
     router.push("/dashboards/User");
   };
 
-  
   const handleLogoutClick = async () => {
     await logOut();
     dispatch(setState(null));
     router.push("/");
   };
-
-
 
   const OffnavItems = [
     { label: "Login", onClick: handleLoginClick },
@@ -74,7 +75,6 @@ const Navbar = () => {
     { label: "Log out", onClick: handleLogoutClick },
     { label: "Become Instructor", onClick: handleInstructorClick },
   ];
-
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -112,7 +112,9 @@ const Navbar = () => {
               {OnNavItems[1].label}
             </button>
             <Avatar className="cursor-pointer" onClick={handleProfileClick}>
-              <AvatarImage src={user.picture} />
+              <AvatarImage
+                src={user.picture || "https://github.com/nutlope.png"}
+              />
               <AvatarFallback>YB</AvatarFallback>
             </Avatar>
           </>
@@ -147,7 +149,9 @@ const Navbar = () => {
           <>
             <button className="p-2 rounded" onClick={toggleMenu}>
               <Avatar className="cursor-pointer">
-                <AvatarImage src="https://github.com/nutlope.png" />
+                <AvatarImage
+                  src={user.picture || "https://github.com/nutlope.png"}
+                />
                 <AvatarFallback>YB</AvatarFallback>
               </Avatar>
             </button>

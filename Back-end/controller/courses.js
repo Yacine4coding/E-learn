@@ -5,12 +5,23 @@ import {
 } from "../middleware/course.js";
 import Courses from "../models/Course.js";
 import StudientCourse from "../models/StudientCourse.js";
+import { getStudient, updateCourse } from "./studient.js";
 import { isUserExist } from "./user.js";
 
 export async function addCourse(req, res) {
-  const { title, description, userId, user, chapters = [], amount } = req.body;
-  const picture = req.file || "";
-  if (!(title && description && chapters.length !== 0 && amount >= 0)) {
+  const {
+    title,
+    description,
+    userId,
+    user,
+    chapters = [],
+    amount,
+    picture,
+  } = req.body;
+  // const picture = req.file;
+  if (
+    !(picture && title && description && chapters.length !== 0 && amount >= 0)
+  ) {
     res.status(422).send({
       message:
         "one of course properties are empty (title description chapters amount)",
@@ -56,7 +67,7 @@ export async function getPersonellCourses(req, res) {
       res.status(204).send();
       return;
     }
-    courses = courses.map((course) => generateCourse(course, user));
+    courses = courses.map((course) => generateCourse(course, user, true));
     res.status(200).send({
       count: courses.length,
       courses,
@@ -164,7 +175,6 @@ export async function bestCourses(req, res) {
       const { user } = await isUserExist(courses[i].teacherId);
       courses[i] = generateCourse(courses[i], user);
     }
-    console.log(courses);
     if (courses.length <= count) return res.status(200).send({ courses });
     courses = sortCourse();
     if (!courses)
@@ -172,7 +182,6 @@ export async function bestCourses(req, res) {
     courses.length = count;
     res.status(200).send({ courses });
   } catch (error) {
-    console.log(error);
     res.status(500).send({
       message: "internal server error",
     });
@@ -206,6 +215,47 @@ export async function courseById(req, res) {
     res.status(500).send({ message: "internal server error" });
   }
 }
+export async function wishlistCourses(req, res) {
+  const { secondId } = req.body;
+  const { courseId } = req.params;
+  try {
+    // CHECK IF COURSE EXIST
+    const { isExist } = await getCourseById(courseId);
+    if (!isExist) return res.status(404).send({ message: "course not found" });
+    const { wishlist } = await getStudient(secondId);
+    const indexOfCourseId = wishlist.indexOf(courseId);
+    if (indexOfCourseId === -1) {
+      wishlist.push(courseId);
+      await updateCourse(secondId, { wishlist });
+      return res.status(200).send({ message: "add succesfully" });
+    }
+    wishlist.splice(indexOfCourseId, 1);
+    await updateCourse(secondId, { wishlist });
+    res.status(200).send({ message: "delete successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function favoriteCourses(req, res) {
+  const { secondId } = req.body;
+  const { courseId } = req.params;
+  try {
+    const { favorite } = await getStudient(secondId);
+    const indexOfCourseId = favorite.indexOf(courseId);
+    if (indexOfCourseId === -1) {
+      favorite.push(courseId);
+      await updateCourse(secondId, { favorite });
+      return res.status(200).send({ message: "add succesfully" });
+    }
+    favorite.splice(indexOfCourseId, 1);
+    await updateCourse(secondId, { favorite });
+    res.status(200).send({ message: "delete successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
 // * functions
 export async function getCoursesById(id, user) {
   try {
@@ -234,7 +284,7 @@ export async function incrementCourseBuy(courseId) {
     if (!course) return null;
     course.buyCount++;
     await course.save();
-    return generateCourse(course, user, true);
+    return true;
   } catch (error) {
     return null;
   }

@@ -129,10 +129,6 @@
  *               $ref: '#/components/schemas/userSchema'
  *       204:
  *         description: is not loggin
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Internal server error
  *         content:
@@ -156,7 +152,7 @@
  *               username:
  *                 type: string
  *                 description: if username not changed put it empty string
- *                 example: exemple@gmail.com
+ *                 example: exemple
  *               password:
  *                 type: string
  *                 description: if password not changed put it empty string
@@ -191,8 +187,14 @@
  *                       exemple: hi i'm user
  *       204:
  *         description: nothing change
+ *       401:
+ *         description: unauth
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
- *         description: for two reason are in exemple
+ *         description: user not found
  *         content:
  *           application/json:
  *             schema:
@@ -243,6 +245,26 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ */
+/**
+ * @swagger
+ * user/dashboard:
+ *  get:
+ *    tags: [User]
+ *    summary: get dashboard of user (studient or teacher)
+ *    responses:
+ *      200:
+ *        description: (theacher dashboard format) if user is teacher else (user dashboard)
+ *      204:
+ *        description: user hasn't data in dashboard
+ *      401:
+ *        description: unauth
+ *      500:
+ *        description: internal server error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
  */
 /**
  * @swagger

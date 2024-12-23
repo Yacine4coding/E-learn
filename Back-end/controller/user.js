@@ -9,8 +9,10 @@ import {
   generateUserInfo,
   generateUserName,
 } from "../middleware/user.js";
+import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
 import { deleteUserComment } from "./comment.js";
+import { getCourseById } from "./courses.js";
 import { deleteUserPosts } from "./post.js";
 import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
 import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
@@ -66,8 +68,10 @@ export async function login(req, res) {
   try {
     const { username, password } = req.body;
     if (!username || !password)
-      res.status(422).send({ message: "all inputs are required" });
-    const checkUser = await User.findOne({ username });
+      return res.status(422).send({ message: "all inputs are required" });
+    const checkUser = await User.findOne({
+      $or: [{ username }, { email: username }],
+    });
     switch (true) {
       case Boolean(!checkUser):
         return res.status(400).send({
@@ -94,6 +98,16 @@ export async function login(req, res) {
 }
 export async function logout(req, res) {
   addExistingToken("", res);
+  await req.logout((err) => {
+    if (err) {
+      return res.status(400).send(err);
+    }
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(400).send(err);
+      }
+    });
+  });
   res.status(204).send();
 }
 export async function isLoggin(req, res) {
@@ -101,7 +115,7 @@ export async function isLoggin(req, res) {
     if (req.user) {
       await generateToken(req.user, res);
       res.status(200).send({
-        user: req.user,
+        userinfo: req.user,
       });
       return;
     }
@@ -165,14 +179,13 @@ export async function updateUserInfo(req, res) {
   try {
     let isUpdated = false;
     let user = await User.findById(userId);
-    if (!user) {
-      res.status(404).send({ message: "user not found" });
-      return;
-    }
+    if (!user) return res.status(404).send({ message: "user not found" });
     if (bio !== false && user.bio !== bio) {
       user.bio = bio;
       isUpdated = true;
     }
+    if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email))
+      return res.status(400).send({ message: "email format are inccorect" });
     if (email !== false && user.email !== email) {
       if (await User.findOne({ email }))
         return res.status(403).send({ message: "username is already exist" });
@@ -186,7 +199,7 @@ export async function updateUserInfo(req, res) {
       isUpdated = true;
     }
     if ((!password && currentPassword) || (password && !currentPassword))
-      return res.status(404).send({
+      return res.status(400).send({
         message: "password or current password are empty",
       });
 
@@ -208,7 +221,54 @@ export async function updateUserInfo(req, res) {
       user: generateUserInfo(user),
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function getUserDashboard(req, res) {
+  const { userId, isteacher } = req.body;
+  try {
+    if (isteacher)
+      return res.status(500).send({ message: "feature is comming" });
+    // GET STUDIENT OBJECT
+    const { userId: secondId } = await User.findById(userId);
+    // STUDIENT DASHBOARD
+    const userInfo = await getStudient(secondId);
+    let userCourses = await StudientCourse.find({ studientId: userId }); // return array of courses or null
+
+    if (!userCourses) res.status(204).send();
+    // FORMAT COURSES
+    for (let i = 0; i < userCourses.length; i++) {
+      const {
+        courseId,
+        progress: { chapterNumber: progress },
+      } = userCourses[i];
+      const {
+        username: teacherName,
+        picture,
+        description,
+        teacherProfileImg,
+        chapterNumber,
+      } = await getCourseById(courseId);
+      const isFavorite = userInfo.favorite.includes(courseId);
+      const isInWishList = userInfo.wishlist.includes(courseId);
+      userCourses[i] = {
+        isFavorite,
+        isInWishList,
+        picture,
+        description,
+        teacherName,
+        teacherProfileImg,
+        chapterNumber,
+        progress,
+        courseId,
+      };
+    }
+
+    res.status(200).send({ courses: userCourses });
+  } catch (error) {
+    console.log(error);
+    res.status(505).send({ message: "internal server error" });
   }
 }
 // * google auth
@@ -229,6 +289,7 @@ export async function isUserExist(userId) {
         picture: isUserExist.picture,
         isHasPicture: isUserExist.isHasPicture,
         isteacher: isUserExist.isteacher,
+        secondId: isUserExist.userId,
       },
     };
   } catch (error) {

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { isUserExist } from "../controller/user.js";
 
 // export const TOKEN_OPTION = { httpOnly: true, secure: true };
-export const TOKEN_OPTION = { httpOnly: true };
+export const TOKEN_OPTION = { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 };
 export async function generateToken(userInfo, res) {
   const { _id } = userInfo;
   const token = await jwt.sign(
@@ -51,10 +51,13 @@ export async function verifyToken(req, res, next) {
     req.body.userId = userId.toString();
     req.body.user = user;
     req.body.isteacher = user.isteacher;
+    req.body.secondId = user.secondId;
     addExistingToken(token, res);
     next();
   } catch (error) {
-    res.status(401).send("unAuth");
+    console.log("verify token error");
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
     return;
   }
 }

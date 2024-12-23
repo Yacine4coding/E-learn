@@ -24,6 +24,37 @@
  *         teacherId:
  *           type: string
  *           example: lkds34kdjsD30RC
+ *     UserDashboard:
+ *       type: object
+ *       properties:
+ *         isFavorite:
+ *           type: boolean
+ *           example: false
+ *         isInWishList:
+ *           type: boolean
+ *           example: true
+ *         picture:
+ *           type: string
+ *           example: https://google.com/userPicture
+ *           description: the picture of course
+ *         courseId:
+ *           type: string
+ *           example: lkds34kdjsD30RC
+ *         description:
+ *           type: string
+ *           example: this for kink's endian defence
+ *         teacherName:
+ *           type: string
+ *           example: medjahed
+ *         teacherProfileImg:
+ *           type: string
+ *           example: img of teahcer
+ *         progress:
+ *           type: number
+ *           example: number of chapters he complete
+ *         chapterNumber:
+ *           type: string
+ *           example: number of chapters in course
  *     fullCourseSchema:
  *       type: object
  *       properties:
@@ -89,6 +120,75 @@
  *         number:
  *           type: number
  *           example: 2
+ */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     commentSchema:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique ID of the comment
+ *           example: lkshfd834j34HHG7
+ *         text:
+ *           type: string
+ *           description: Comment content
+ *           example: hi this is my first comment
+ *         username:
+ *           type: string
+ *           description: Username of the post owner
+ *           example: user123
+ *         picture:
+ *           type: string
+ *           description: Link to the user's profile picture
+ *           example: https://www.google.com/user/picture
+ *         isHasPicture:
+ *           type: boolean
+ *           description: Indicates if the user has a profile picture
+ *           example: true
+ *         isreply:
+ *            type: boolean
+ *            description: is always true in this res
+ *            example: false
+ *         vote:
+ *           type: object
+ *           properties:
+ *             up:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: number
+ *                   example: 123
+ *                 usersId:
+ *                   type: Array
+ *                   example: [1fsfq2q3,1d2s4f]
+ *             down:
+ *               type: object
+ *               properties:
+ *                 count:
+ *                   type: number
+ *                   example: 123
+ *                 usersId:
+ *                   type: Array
+ *                   example: [1fsfq2q3,1d2s4f]
+ *         replyInfo:
+ *           description: this will send when isreply property are equal true
+ *           type: object
+ *           properties:
+ *             picture:
+ *               type: string
+ *               description: return picture path or empty string
+ *               example: false
+ *             isHasPicture:
+ *               type: boolean
+ *               description: return if user have picture
+ *               example: false
+ *             username:
+ *               type: string
+ *               description: return user name of comment you reply it
+ *               example: false
  */
 /**
  * @swagger

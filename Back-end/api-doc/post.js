@@ -85,7 +85,7 @@
  *     tags: [Post]
  *     summary: get post of user connnecting
  *     responses:
- *       201:
+ *       204:
  *         description : no posts
  *       200:
  *         description: user post
@@ -149,7 +149,7 @@
  *         description: The unique identifier of the user who want to get his posts.
  *         example: 1HG6Rfjg54hgk
  *     responses:
- *       201:
+ *       204:
  *         description : no posts
  *       200:
  *         description: user post
@@ -168,8 +168,6 @@
  *                   exapmle : 12
  *       422:
  *          description : user id not found
- *       401:
- *          description : unAuth
  *       404:
  *          description : user not found
  *       500:

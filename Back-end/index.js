@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import session from "express-session";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import apiDoc from "./middleware/swagger.js";
@@ -13,8 +14,21 @@ import {
   teacher,
   user,
 } from "./routes/routes.js";
+import passport from "passport";
 const app = express();
 // * config
+app.use(
+  session({
+    secret: "sddfqs",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { httpOnly: true, secure: false },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 dotenv.config();
 connectDb();
 app.use(express.json());

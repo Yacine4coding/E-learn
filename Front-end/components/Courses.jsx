@@ -80,21 +80,19 @@ const Courses = () => {
         Browse Our Top Courses
       </h1>
       <div className="flex justify-around flex-wrap gap-2">
-        {courses.map((crs, i) => {
-          console.log(crs);
-          return (
-            <CourseCard
-              key={i}
-              title={crs.title}
-              creator={crs.username}
-              picture={crs.picture}
-              price={crs.amount}
-              stars={5}
-              view={120}
-              oldPrice={crs.amount}
-            />
-          );
-        })}
+        {cours.map((course, i) => (
+          <CourseCard
+            key={i}
+            title={course.title}
+            creator={course.creator}
+            description={course.description}
+            imageUrl={course.imageUrl} // This should be correctly handled in the CourseCard component
+            price={course.price}
+            stars={course.stars} // Hardcoded value
+            view={course.view} // Hardcoded value
+            oldPrice={course.oldPrice}
+          />
+        ))}
       </div>
     </div>
   );

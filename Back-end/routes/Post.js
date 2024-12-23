@@ -14,7 +14,7 @@ const post = express.Router();
 post.post("/", verifyToken, addPost);
 post.get("/", verifyToken, getPosts);
 post.get("/posts", posts);
-post.get("/userpost/:userId", verifyToken, getUserPosts);
+post.get("/userpost/:userId", getUserPosts);
 post.put("/:postId", verifyToken, updatePost);
 post.put("/vote/up/:postId", verifyToken, voteUp);
 post.put("/vote/down/:postId", verifyToken, voteDown);
