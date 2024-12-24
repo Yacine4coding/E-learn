@@ -8,8 +8,17 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "/components/ui/avatar";
 import { isLoggin, logOut } from "@/request/auth";
 import { useDispatch, useSelector } from "react-redux";
-import { setState } from "@/redux/user";
 import Link from "next/link";
+import { setState } from "@/redux/user";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
 const Navbar = () => {
   const dispatch = useDispatch();
   const { user, isLoggin: isLoged } = useSelector((s) => s.user);
@@ -55,8 +64,17 @@ const Navbar = () => {
   // loged in handlers
 
   const handleProfileClick = () => {
-    router.push("/dashboards/User");
+    router.push("/Account");
   };
+
+  const handleWishlistClick = () => {
+    router.push(`/dashboards/User?defTab=wishlist`);
+  };
+
+  const handleMyCoursesClick = () => {
+    router.push(`/dashboards/User?defTab=all-courses`);
+  };
+  
 
   const handleLogoutClick = async () => {
     await logOut();
@@ -111,12 +129,48 @@ const Navbar = () => {
             >
               {OnNavItems[1].label}
             </button>
-            <Avatar className="cursor-pointer" onClick={handleProfileClick}>
-              <AvatarImage
-                src={user.picture || "https://github.com/nutlope.png"}
-              />
-              <AvatarFallback>YB</AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="cursor-pointer" onClick={handleProfileClick}>
+                  <AvatarImage
+                    src={user.picture || "https://github.com/nutlope.png"}
+                  />
+                  <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-white" align="end">
+                <div className="flex flex-col space-y-1 p-2">
+                  <p className="text-sm font-medium">{user.username}</p>
+                  <p className="text-xs text-muted-foreground">{user.email || "exemple@temp.com"}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                  onClick={handleProfileClick}
+                  >
+                  My Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                  onClick={handleMyCoursesClick}
+                  >
+                  My Courses
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  className="cursor-pointer hover:bg-slate-200 hoverTransition" 
+                  onClick={handleWishlistClick}
+                  >
+                  Wishlist
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
+                <DropdownMenuItem
+                  className="text-red-600 cursor-pointer hover:bg-slate-200 hoverTransition"
+                  onClick={handleLogoutClick}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </>
         ) : (
           <>

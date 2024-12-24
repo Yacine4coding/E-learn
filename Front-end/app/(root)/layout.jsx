@@ -4,6 +4,8 @@ import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
 import MainFooter from "@/components/MainFooter";
 import ReduxContainer from "@/redux/ReduxContainer";
+import NavbarSub from "@/components/NavbarSub";
+
 const Gilroy = localFont({
   src: [
     {

@@ -30,7 +30,7 @@ export default function Home() {
       <Courses/>
       <Announse 
         title="Join Edulink now to get 35% off" 
-        />
+      />
       <Trending />
       <Upcoming />
       <GetStarted />

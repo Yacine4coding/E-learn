@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import CourseCard from "@/components/CourseCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/CustomUI/tabs";
@@ -10,7 +11,6 @@ import cours1 from "@/public/couseTest/Placeholder1.png";
 import cours2 from "@/public/couseTest/Placeholder2.png";
 import cours3 from "@/public/couseTest/Placeholder3.png";
 import cours4 from "@/public/couseTest/Placeholder4.png";
-import AnnounseNd from "@/components/promos/AnnounseNd";
 import { getDashboard } from "@/request/user";
 
 const courses = [
@@ -72,8 +72,12 @@ const courses = [
 ];
 
 const UserDashboard = () => {
-  const [anounseVisibility, setAnounseVisibility] = useState(true);
   const [cours, setCourses] = useState([]);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const defTab = searchParams.get("defTab") || "all-courses";
+
   // GET DASHBOARD INFORMATION
   useEffect(() => {
     (async function () {
@@ -88,14 +92,8 @@ const UserDashboard = () => {
       }
     })();
   }, []);
-  // Handle tab change visibility
-  const handleTabChange = (tab) => {
-    if (tab === "all-courses") {
-      setAnounseVisibility(true);
-    } else {
-      setAnounseVisibility(false);
-    }
-  };
+
+  
 
   return (
     <div className="min-h-screen flex flex-col mb-6">
@@ -105,8 +103,7 @@ const UserDashboard = () => {
             <h1 className="text-3xl font-bold font-gilroy">My Course</h1>
           </div>
           <Tabs
-            defaultValue="all-courses"
-            onValueChange={(value) => handleTabChange(value)} // Listen for tab changes
+            defaultValue={defTab} // Listen for tab changes
             className="w-[90%] flex flex-col justify-center items-center"
           >
             <TabsList>
@@ -198,9 +195,6 @@ const UserDashboard = () => {
           </Tabs>
         </div>
       </main>
-      {anounseVisibility && (
-        <AnnounseNd title={"Join Edulink and get amizing discount"} />
-      )}
     </div>
   );
 };

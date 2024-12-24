@@ -4,7 +4,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Bell, ChevronDown, Search, ShoppingCart } from 'lucide-react'
 import logo from '@/public/logo.png'
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
+import { setState } from "@/redux/user"
+import { isLoggin, logOut } from "@/request/auth"
 
 import { Button } from '@/components/ui/button'
 import {
@@ -17,8 +21,43 @@ import {
 import { Input } from '@/components/ui/input'
 
 const NavbarSub = () => {
-  const [email, setEmail] = useState('bensidahmedyacine.off@gmail.com')
-  const [username, setUsername] = useState('Yacine Bensidahmed')
+  const dispatch = useDispatch();
+  const { user, isLoggin: isLoged } = useSelector((s) => s.user);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const router = useRouter()
+
+  useEffect(() => {
+    (async function () {
+      const {
+        data: { userinfo },
+        status,
+      } = await isLoggin()
+      switch (status) {
+        case 200:
+          dispatch(setState(userinfo))
+          break
+        case 10:
+          console.log(10)
+          setError("catch error")
+        case 500:
+          setError(data.message)
+          console.log(500)
+      }
+      setLoading(false)
+    })()
+  }, [])
+
+  const handleLogoutClick = async () => {
+    await logOut()
+    dispatch(setState(null))
+    router.push("/")
+  }
+
+  if (loading) {
+    return <div className="w-full text-center mt-8 bg-white">Loading...</div>
+  }
 
   return (
     <header className="border-b">
@@ -60,7 +99,7 @@ const NavbarSub = () => {
                 <Image
                   alt="Avatar"
                   className="rounded-full"
-                  src="/placeholder.svg"
+                  src={user.picture || "/placeholder.svg"}
                   width={32}
                   height={32}
                 />
@@ -68,8 +107,8 @@ const NavbarSub = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-white" align="end">
               <div className="flex flex-col space-y-1 p-2">
-                <p className="text-sm font-medium">{username}</p>
-                <p className="text-xs text-muted-foreground">{email}</p>
+                <p className="text-sm font-medium">{user.username}</p>
+                <p className="text-xs text-muted-foreground">{user.email}</p>
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="cursor-pointer hover:bg-slate-200 hoverTransition">
@@ -86,7 +125,10 @@ const NavbarSub = () => {
                 Account Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 cursor-pointer hover:bg-slate-200 hoverTransition">
+               <DropdownMenuItem
+                className="text-red-600 cursor-pointer hover:bg-slate-200 hoverTransition"
+                onClick={handleLogoutClick}
+              >
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
