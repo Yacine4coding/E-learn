@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
+import { useSelector } from "react-redux";
+
 import CourseCard from "@/components/CourseCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/CustomUI/tabs";
 
@@ -78,6 +80,8 @@ const UserDashboard = () => {
   const router = useRouter();
   const defTab = searchParams.get("defTab") || "all-courses";
 
+  const { user, isLoggin: isLoged } = useSelector((s) => s.user);
+
   // GET DASHBOARD INFORMATION
   useEffect(() => {
     (async function () {
@@ -93,9 +97,10 @@ const UserDashboard = () => {
     })();
   }, []);
 
-  const handleTabChange = (value) => {
-    router.replace(`/dashboards/User?defTab=${value}`);
-  };
+  // IF USER IS NOT LOGED IN
+  if (!isLoged) {
+    router.push("/");
+  }
 
   return (
     <div className="min-h-screen flex flex-col mb-6">
@@ -106,7 +111,6 @@ const UserDashboard = () => {
           </div>
           <Tabs
             defaultValue={defTab}
-            onValueChange={(value) => handleTabChange(value)} // Listen for tab changes
             className="w-[90%] flex flex-col justify-center items-center"
           >
             <TabsList>
