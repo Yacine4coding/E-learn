@@ -25,12 +25,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-
-
-
-
+} from "@/components/ui/dropdown-menu";
+import { setFavoriteCourse } from "@/request/courses";
 
 // Helper function to truncate the description of a course
 function truncateDescription(description, MAX_DESCRIPTION_LENGTH) {
@@ -45,7 +41,7 @@ function formatNumber(number) {
 }
 
 
-const CourseCard = ( { title, creator, imageUrl, description, price, stars, view, oldPrice, progress, totalLectures, favIcon, menuIcon, completIcon } ) => {
+const CourseCard = ( { title, creator, courseId, imageUrl, description, price, stars, view, oldPrice, progress=null, totalLectures, favIcon, menuIcon, completIcon } ) => {
 
   const PriceCond = price && oldPrice;
 
@@ -68,8 +64,12 @@ const CourseCard = ( { title, creator, imageUrl, description, price, stars, view
   }
 
   // Handle add to favorite click
-  const handleFavClick = () => {
+  const handleFavClick = async () => {
     // Remove the course
+    const { data, status } = await setFavoriteCourse(courseId);
+    if (status === 200) {
+      console.log(data.message);
+    }
     console.log("Add course to favorite clicked!");
   }
 
@@ -158,7 +158,7 @@ const CourseCard = ( { title, creator, imageUrl, description, price, stars, view
         />
       </div>
 
-      {progress && 
+      {progress!==null && 
           <CustomProgress value={progress} max={totalLectures} className="my-1" />
       }
       
@@ -173,7 +173,7 @@ const CourseCard = ( { title, creator, imageUrl, description, price, stars, view
         <span className="text-sm font-gilroy font-thin pl-1 text-gray-400">{creator}</span>
       </div>}
 
-      {progress && totalLectures &&
+      {progress!==null && totalLectures &&
       <div className="flex items-center">
         <span className="text-sm font-gilroy font-medium pl-1 text-gray-600">{progress}/{totalLectures} video completed</span>
       </div>}
