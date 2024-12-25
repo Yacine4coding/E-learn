@@ -53,14 +53,15 @@ const Login = () => {
       default:
         console.log("Somthing went wrong,please try again later");
         setError("Somthing went wrong,please try again later");
-        break;        
+        break;
     }
     setLoading(false);
-
   };
+
   const handleGoogleclick = () => {
     googleAuth();
   };
+
   return (
     <div className="max-w-lg mx-auto flex flex-col items-center justify-around bg-white rounded-lg h-[90vh] ">
       <div className="text-center">
@@ -134,9 +135,9 @@ const Login = () => {
           />
         </div>
         {error && (
-          <p className="text-red-500 text-sm font-gilroy text-center">
+          <span className="text-red-500 text-sm font-gilroy text-start font-medium">
             {error}
-          </p>
+          </span>
         )}
         <Button
           variant="secondary"

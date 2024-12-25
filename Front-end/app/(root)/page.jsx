@@ -29,9 +29,8 @@ export default function Home() {
       <Search />
       <Courses/>
       <Announse 
-        titel="Join Edulink now to get 35% off" 
-        discription="join our responsive themes and mobile and desktop apps,<br /> enjoy a seamless experience on any device so will your blog the best visitor" 
-        />
+        title="Join Edulink now to get 35% off" 
+      />
       <Trending />
       <Upcoming />
       <GetStarted />
