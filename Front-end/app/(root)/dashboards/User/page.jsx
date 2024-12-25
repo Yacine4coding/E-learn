@@ -72,7 +72,7 @@ const courses = [
 ];
 
 const UserDashboard = () => {
-  const [cours, setCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -93,7 +93,9 @@ const UserDashboard = () => {
     })();
   }, []);
 
-  
+  const handleTabChange = (value) => {
+    router.replace(`/dashboards/User?defTab=${value}`);
+  };
 
   return (
     <div className="min-h-screen flex flex-col mb-6">
@@ -103,7 +105,8 @@ const UserDashboard = () => {
             <h1 className="text-3xl font-bold font-gilroy">My Course</h1>
           </div>
           <Tabs
-            defaultValue={defTab} // Listen for tab changes
+            defaultValue={defTab}
+            onValueChange={(value) => handleTabChange(value)} // Listen for tab changes
             className="w-[90%] flex flex-col justify-center items-center"
           >
             <TabsList>
