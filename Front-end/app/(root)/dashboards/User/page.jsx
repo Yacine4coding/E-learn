@@ -13,7 +13,7 @@ import cours3 from "@/public/couseTest/Placeholder3.png";
 import cours4 from "@/public/couseTest/Placeholder4.png";
 import { getDashboard } from "@/request/user";
 
-const courses = [
+const cours = [
   {
     title: "Introduction to Web Development",
     creator: "John Doe",
@@ -139,7 +139,7 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map((course, i) => (
+                {cours.map((course, i) => (
                   <CourseCard
                     key={i}
                     creator={course.creator}
@@ -161,7 +161,7 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map((course, i) => (
+                {cours.map((course, i) => (
                   <CourseCard
                     key={i}
                     creator={course.creator}
@@ -183,7 +183,7 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map((course, i) => (
+                {cours.map((course, i) => (
                   <CourseCard
                     key={i}
                     creator={course.creator}
