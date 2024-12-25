@@ -1,7 +1,5 @@
 'use client'
 
-import avatarAccount from '@/public/avatars/avatar2.png'
-
 import { useState } from 'react'
 import Image from 'next/image'
 import { Camera } from 'lucide-react'
@@ -17,8 +15,7 @@ import {
 } from '@/components/ui/select'
 
 const ProfileForm = () => {
-
-  const [profileImage, setProfileImage] = useState(avatarAccount);
+  const [profileImage, setProfileImage] = useState('/placeholder.svg');
 
   const [formData, setFormData] = useState({
     firstName: 'Yacine',
@@ -27,6 +24,17 @@ const ProfileForm = () => {
     language: 'ar',
     link: 'https://yacine4coding.github.io/Portfolio/',
   });
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   const handleInputChange = (e) => {
     const { id, value } = e.target
@@ -55,9 +63,7 @@ const ProfileForm = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-
-            {/* Change Avatar  */}
-            {/* <Button
+            <Button
               size="icon"
               variant="secondary"
               className="absolute bottom-0 right-0 rounded-full"
@@ -71,8 +77,7 @@ const ProfileForm = () => {
               accept="image/*"
               style={{ display: 'none' }}
               onChange={handleImageChange}
-            /> */}
-
+            />
           </div>
         </div>
 
