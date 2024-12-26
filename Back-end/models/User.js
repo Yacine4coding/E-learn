@@ -11,6 +11,18 @@ const UserShcema = mongoose.Schema(
       type: String,
       require: true,
     },
+    firstName: {
+      type: String,
+      default: "",
+    },
+    lastName: {
+      type: String,
+      default: "",
+    },
+    language: {
+      type: String,
+      default: "english",
+    },
     notifications: {
       type: Array,
       default: [],
@@ -32,13 +44,13 @@ const UserShcema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    bio: {
+    link: {
       type: String,
       default: "",
     },
-    isHasPicture: {
-      type: Boolean,
-      default: false,
+    bio: {
+      type: String,
+      default: "",
     },
     picture: {
       type: String,

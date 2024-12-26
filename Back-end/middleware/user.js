@@ -16,19 +16,26 @@ export function generateUserInfo(user) {
     isteacher,
     notifications,
     bio,
+    email,
+    link,
     emailId,
-    isHasPicture,
     picture,
-    userId,
+    language,
+    firstName,
+    lastName,
   } = user;
   return {
+    email,
+    link,
+    language,
+    firstName,
+    lastName,
     username,
     emailValidate: Boolean(emailId),
     bio,
     notifications,
     isteacher,
     picture,
-    isHasPicture,
   };
 }
 export async function generateUserName(email) {
