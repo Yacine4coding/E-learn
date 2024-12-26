@@ -25,8 +25,8 @@ courses.post(
 courses.get("/", verifyToken, enableTeacher, getPersonellCourses);
 courses.get("/courseById",courseById)
 courses.get("/bestCourses/:count", bestCourses);
-courses.get("/:teacherId", verifyToken, getTeacherCourses);
 courses.put("/favorite/:courseId",verifyToken,favoriteCourses)
+courses.get("/:teacherId", verifyToken, getTeacherCourses);
 courses.put("/wishlist/:courseId",verifyToken,wishlistCourses)
 courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);
 export default courses;

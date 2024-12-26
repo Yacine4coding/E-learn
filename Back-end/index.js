@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import apiDoc from "./middleware/swagger.js";
 import connectDb from "./middleware/database.js";
+import path from "path";
 import {
   comment,
   courses,
@@ -15,6 +16,7 @@ import {
   user,
 } from "./routes/routes.js";
 import passport from "passport";
+import { fileURLToPath } from "url";
 const app = express();
 // * config
 app.use(
@@ -25,6 +27,11 @@ app.use(
     cookie: { httpOnly: true, secure: false },
   })
 );
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
 

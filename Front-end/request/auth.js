@@ -1,11 +1,13 @@
 import axios from "axios";
 import { APIURL, CREDENTIALS } from "./reqParams";
+import { getRandomAvatar } from "@/public/avatars/avatar";
 export function googleAuth() {
   console.log("open");
   window.open(`${APIURL}/google/callback`, "_self");
 }
 export async function signup(email, password) {
   try {
+    const avatar = getRandomAvatar();
     if (!email || !password) {
       console.log("error");
     }
@@ -14,11 +16,14 @@ export async function signup(email, password) {
       {
         email,
         password,
+        picture: avatar,
       },
       CREDENTIALS
     );
     return { data, status };
   } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
     const { data, status } = error.response;
     return { data, status };
   }

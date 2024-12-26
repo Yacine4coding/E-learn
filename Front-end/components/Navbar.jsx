@@ -17,7 +17,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
+import { genProfileImg } from "@/public/avatars/avatar";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const Navbar = () => {
       switch (status) {
         case 200:
           dispatch(setState(userinfo));
+          console.log("is loggin");
           break;
         case 10:
           console.log(10);
@@ -74,7 +76,6 @@ const Navbar = () => {
   const handleMyCoursesClick = () => {
     router.push(`/dashboards/User?defTab=all-courses`);
   };
-  
 
   const handleLogoutClick = async () => {
     await logOut();
@@ -98,7 +99,7 @@ const Navbar = () => {
     setIsOpen((prev) => !prev);
   };
 
-  if(loading){
+  if (loading) {
     return <div className="w-full text-center mt-8 bg-white">Loading...</div>;
   }
 
@@ -132,34 +133,34 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer" onClick={handleProfileClick}>
-                  <AvatarImage
-                    src={user.picture || "https://github.com/nutlope.png"}
-                  />
+                  <AvatarImage src={genProfileImg(user.picture)} />
                   <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white" align="end">
                 <div className="flex flex-col space-y-1 p-2">
                   <p className="text-sm font-medium">{user.username}</p>
-                  <p className="text-xs text-muted-foreground">{user.email || "exemple@temp.com"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {user.email || "exemple@temp.com"}
+                  </p>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="cursor-pointer hover:bg-slate-200 hoverTransition"
                   onClick={handleProfileClick}
-                  >
+                >
                   My Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="cursor-pointer hover:bg-slate-200 hoverTransition"
                   onClick={handleMyCoursesClick}
-                  >
+                >
                   My Courses
                 </DropdownMenuItem>
-                <DropdownMenuItem 
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition" 
+                <DropdownMenuItem
+                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
                   onClick={handleWishlistClick}
-                  >
+                >
                   Wishlist
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
@@ -203,9 +204,7 @@ const Navbar = () => {
           <>
             <button className="p-2 rounded" onClick={toggleMenu}>
               <Avatar className="cursor-pointer">
-                <AvatarImage
-                  src={user.picture || "https://github.com/nutlope.png"}
-                />
+                <AvatarImage src={genProfileImg(user.picture)} />
                 <AvatarFallback>YB</AvatarFallback>
               </Avatar>
             </button>

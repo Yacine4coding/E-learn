@@ -162,7 +162,15 @@
  *                 example: yourpassword123
  *               bio:
  *                 type: string
- *                 description: if bio not changed put the current bio or put it false
+ *                 description: bio of account
+ *                 example: yourpassword123
+ *               firsName:
+ *                 type: string
+ *                 description: last name of user
+ *                 example: yourpassword123
+ *               lastName:
+ *                 type: string
+ *                 description: last name of user
  *                 example: yourpassword123
  *               email:
  *                 type: string

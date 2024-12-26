@@ -94,7 +94,6 @@ export async function updateProgress(req, res) {
       ).toFixed(2),
     };
     await StudientCourse.updateOne({ _id: act._id }, { $set: { progress } });
-    console.log(act);
     res.status(200).send({
       course,
       progress,
@@ -143,7 +142,6 @@ export async function createNewStudient() {
 export async function getStudient(userId) {
   try {
     const studient = await Studient.findById(userId);
-    console.log(studient);
     return generateStudientInfo(studient);
   } catch (error) {
     return false;

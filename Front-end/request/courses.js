@@ -20,3 +20,22 @@ export async function bestCourses(count = 5) {
     };
   }
 }
+export async function setFavoriteCourse(courseId) {
+  if (!courseId) return { status: 10, data: "co2not be null" };
+  try {
+    const { data, status } = await axios.put(
+      `${APIURL}/course/favorite/${courseId}`,
+      {},
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log("error in request of favorite course");
+    console.log(error);
+    if (error.response) return { status: 10 };
+    return {
+      status: error.response.status,
+      data: error.response.data,
+    };
+  }
+}

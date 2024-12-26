@@ -128,6 +128,7 @@ export async function isLoggin(req, res) {
     const userDetails = userinfo.isteacher
       ? await getTeacher(userinfo.userId)
       : await getStudient(userinfo.userId);
+
     await generateToken(userinfo, res);
     res.status(200).send({
       userinfo: { ...generateUserInfo(userinfo), ...userDetails },
@@ -171,33 +172,43 @@ export async function updateUserInfo(req, res) {
     username,
     password,
     currentPassword,
-    bio = false,
+    bio = "",
     email = false,
+    firstName,
+    lastName,
+    language,
+    link,
   } = req.body;
   if (!username && !password && !bio && !currentPassword && !email)
     return res.status(204).send();
   try {
     let isUpdated = false;
+    // GET USER DATA
     let user = await User.findById(userId);
-    if (!user) return res.status(404).send({ message: "user not found" });
-    if (bio !== false && user.bio !== bio) {
+    let userinfo = user.isteacher? await getTeacher(user.userId) : await getStudient(user.userId) 
+    // UPDATE USER BIO
+    if (user.bio !== bio) {
       user.bio = bio;
       isUpdated = true;
     }
-    if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email))
-      return res.status(400).send({ message: "email format are inccorect" });
-    if (email !== false && user.email !== email) {
+    // UPDATE EMAIL
+    // CHECK IF EMAIL FORM CORRECT
+    if (email && user.email !== email) {
+      if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email))
+        return res.status(400).send({ message: "email format are inccorect" });
       if (await User.findOne({ email }))
         return res.status(403).send({ message: "username is already exist" });
       user.email = email;
       isUpdated = true;
     }
+    // UPDATE USER NAME
     if (username && username !== user.username) {
       if (await User.findOne({ username }))
         return res.status(403).send({ message: "username is already exist" });
       user.username = username;
       isUpdated = true;
     }
+    // SET PASSWORD CASES AND UPDATE IT
     if ((!password && currentPassword) || (password && !currentPassword))
       return res.status(400).send({
         message: "password or current password are empty",
@@ -215,10 +226,31 @@ export async function updateUserInfo(req, res) {
         return;
       }
     }
+    //UPDATE LANGUAGE
+    if (user.language !== language) {
+      user.language = language;
+      isUpdated = true;
+    }
+    //UPDATE LINK
+    if (user.link !== link) {
+      user.link = link;
+      isUpdated = true;
+    }
+    // UPDATE FIRST NAME
+    if (user.firstName !== firstName) {
+      user.firstName = firstName;
+      isUpdated = true;
+    }
+    // UPDATE LAST NAME
+    if (user.lastName !== lastName) {
+      user.lastName = lastName;
+      isUpdated = true;
+    }
+    // SAVE UPDATES AND SEND RES
     if (!isUpdated) return res.status(204).send();
     user = await user.save();
     res.status(200).send({
-      user: generateUserInfo(user),
+      user: {...generateUserInfo(user),...userinfo}
     });
   } catch (error) {
     console.log(error);
@@ -255,7 +287,7 @@ export async function getUserDashboard(req, res) {
       userCourses[i] = {
         isFavorite,
         isInWishList,
-        picture,
+        picture: `http://localhost:5000/${picture}`,
         description,
         teacherName,
         teacherProfileImg,

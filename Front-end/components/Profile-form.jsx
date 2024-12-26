@@ -1,62 +1,87 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { Camera } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useState } from "react";
+import { Camera } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
+import { useDispatch, useSelector } from "react-redux";
+import { genProfileImg } from "@/public/avatars/avatar";
+import { updateUser } from "@/request/user";
+import { setState } from "@/redux/user";
+import { useRouter } from "next/navigation";
 
 const ProfileForm = () => {
-  const [profileImage, setProfileImage] = useState('/placeholder.svg');
-
+  const router = useRouter();
+  const { user, isLoggin } = useSelector((s) => s.user);
+  const [profileImage, setProfileImage] = useState(genProfileImg(user.picture));
+  const dispatch = useDispatch();
+  if (!isLoggin) router.push("/");
   const [formData, setFormData] = useState({
-    firstName: 'Yacine',
-    lastName: 'Bensidahmed',
-    headline: 'Hello world!',
-    language: 'ar',
-    link: 'https://yacine4coding.github.io/Portfolio/',
+    firstName: user.firstName,
+    lastName: user.lastName,
+    bio: user.bio,
+    language: user.language,
+    link: user.link,
   });
-
   const handleImageChange = (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
-      }
-      reader.readAsDataURL(file)
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleInputChange = (e) => {
-    const { id, value } = e.target
+    const { id, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
-    }))
-  }
+    }));
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Form submitted:', formData)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { status, data } = await updateUser(formData);
+    switch (status) {
+      case 200:
+        dispatch(setState(data.user));
+        break;
+      case 401:
+        console.log("unauth");
+        break;
+      case 400:
+        console.log("data error");
+        break;
+      case 204:
+        console.log("nothing change");
+        break;
+      default:
+        console.log("500");
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="container mx-auto px-4 py-8 max-w-2xl">
+    <form
+      onSubmit={handleSubmit}
+      className="container mx-auto px-4 py-8 max-w-2xl"
+    >
       <div className="space-y-8">
         <div className="flex justify-center">
           <div className="relative">
             <div className="w-24 h-24 rounded-full bg-[#3EDAD8] overflow-hidden">
-              <Image
-                src={profileImage}
+              <img
+                src={profileImage || "/bigcard.jpg"}
                 alt="Profile"
                 width={96}
                 height={96}
@@ -67,7 +92,9 @@ const ProfileForm = () => {
               size="icon"
               variant="secondary"
               className="absolute bottom-0 right-0 rounded-full"
-              onClick={() => document.getElementById('profileImageInput').click()}
+              onClick={() =>
+                document.getElementById("profileImageInput").click()
+              }
             >
               <Camera className="h-4 w-4" />
             </Button>
@@ -75,7 +102,7 @@ const ProfileForm = () => {
               type="file"
               id="profileImageInput"
               accept="image/*"
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               onChange={handleImageChange}
             />
           </div>
@@ -85,26 +112,39 @@ const ProfileForm = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" value={formData.firstName} onChange={handleInputChange} />
+              <Input
+                id="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" value={formData.lastName} onChange={handleInputChange} />
+              <Input
+                id="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+              />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="headline">Headline</Label>
-            <Input id="headline" value={formData.headline} onChange={handleInputChange} />
+            <Label htmlFor="bio">bio</Label>
+            <Input id="bio" value={formData.bio} onChange={handleInputChange} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="language">Language</Label>
-            <Select value={formData.language} onValueChange={(value) => setFormData({ ...formData, language: value })}>
+            <Select
+              value={formData.language}
+              onValueChange={(value) =>
+                setFormData({ ...formData, language: value })
+              }
+            >
               <SelectTrigger id="language">
                 <SelectValue placeholder="Select language" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white">
                 <SelectItem value="en">English</SelectItem>
                 <SelectItem value="ar">Arabic</SelectItem>
                 <SelectItem value="es">Spanish</SelectItem>
@@ -115,17 +155,23 @@ const ProfileForm = () => {
 
           <div className="space-y-2">
             <Label htmlFor="link">Link</Label>
-            <Input id="link" value={formData.link} onChange={handleInputChange} />
+            <Input
+              id="link"
+              value={formData.link}
+              onChange={handleInputChange}
+            />
           </div>
 
-          <Button type="submit" className="w-full bg-[#3EDAD8] hover:bg-[#35c2c1] text-white">
+          <Button
+            type="submit"
+            className="w-full bg-[#3EDAD8] hover:bg-[#35c2c1] text-white"
+          >
             Save
           </Button>
         </div>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default ProfileForm
-
+export default ProfileForm;
