@@ -13,6 +13,24 @@ const coursesShcema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  discount: {
+    type: Number,
+    default: 0,
+  },
+  stars: {
+    type: Object,
+    default: {
+      usersId: [],
+      count: number,
+    },
+  },
+  review: {
+    type: Object,
+    default: {
+      usersId: [],
+      count: number,
+    },
+  },
   payCount: {
     type: Number,
     default: 0,
@@ -35,9 +53,9 @@ const coursesShcema = mongoose.Schema({
     default: [],
   },
   picture: {
-    type : String,
-    require : true,
-  }
+    type: String,
+    require: true,
+  },
 });
 const Courses = mongoose.model("course", coursesShcema);
 export default Courses;
