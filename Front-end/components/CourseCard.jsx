@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 
 // Icons Imports
@@ -25,7 +26,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
+import { Route } from 'lucide-react';
+
 import { setFavoriteCourse } from "@/request/courses";
 
 // Helper function to truncate the description of a course
@@ -45,6 +48,7 @@ const CourseCard = ( { title, creator, courseId, imageUrl, description, price, s
 
   const PriceCond = price && oldPrice;
 
+  const router = useRouter();
   
   // HANDLERS
 
@@ -54,6 +58,7 @@ const CourseCard = ( { title, creator, courseId, imageUrl, description, price, s
     console.log("Course clicked!");
     
     // Example: router.push(`/course/${course.id}`);
+    router.push("Courses/unpaid");
   }
 
   // Handle Reset progress click
@@ -94,9 +99,9 @@ const CourseCard = ( { title, creator, courseId, imageUrl, description, price, s
       <div className="relative rounded-[23] w-full overflow-hidden ">
         {PriceCond && 
           <div className='absolute flex flex-row'>
-            <Badge className={"text-white text-[8px] font-gilroy font-extrabold rounded-2xl m-2 bg-green-500 p-[2px]"}>Best Seller</Badge>
+            <Badge className="text-white text-[8px] font-gilroy font-extrabold rounded-2xl m-2 bg-green-500 p-[2px]">Best Seller</Badge>
             {/* Get Discount */}
-            <Badge className={"text-white text-[8px] font-gilroy font-extrabold rounded-2xl my-2 bg-purple-700 p-[2px]"}>{((oldPrice - price) / oldPrice * 100).toFixed(0)}% OFF</Badge>
+            <Badge className="text-white text-[8px] font-gilroy font-extrabold rounded-2xl my-2 bg-purple-700 p-[2px]">{((oldPrice - price) / oldPrice * 100).toFixed(0)}% OFF</Badge>
           </div>
         }
         

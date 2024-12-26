@@ -13,7 +13,7 @@ import cours3 from "@/public/couseTest/Placeholder3.png";
 import cours4 from "@/public/couseTest/Placeholder4.png";
 import { getDashboard } from "@/request/user";
 
-const cours = [
+const courses = [
   {
     title: "Introduction to Web Development",
     creator: "John Doe",
@@ -72,7 +72,7 @@ const cours = [
 ];
 
 const UserDashboard = () => {
-  const [courses, setCourses] = useState([]);
+  const [cours, setCourses] = useState([]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -93,9 +93,7 @@ const UserDashboard = () => {
     })();
   }, []);
 
-  const handleTabChange = (value) => {
-    router.replace(`/dashboards/User?defTab=${value}`);
-  };
+  
 
   return (
     <div className="min-h-screen flex flex-col mb-6">
@@ -105,8 +103,7 @@ const UserDashboard = () => {
             <h1 className="text-3xl font-bold font-gilroy">My Course</h1>
           </div>
           <Tabs
-            defaultValue={defTab}
-            onValueChange={(value) => handleTabChange(value)} // Listen for tab changes
+            defaultValue={defTab} // Listen for tab changes
             className="w-[90%] flex flex-col justify-center items-center"
           >
             <TabsList>
