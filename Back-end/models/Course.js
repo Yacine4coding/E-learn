@@ -21,14 +21,14 @@ const coursesShcema = mongoose.Schema({
     type: Object,
     default: {
       usersId: [],
-      count: number,
+      count: Number,
     },
   },
   review: {
     type: Object,
     default: {
       usersId: [],
-      count: number,
+      count: Number,
     },
   },
   payCount: {
