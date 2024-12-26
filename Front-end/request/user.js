@@ -10,6 +10,22 @@ export async function getDashboard() {
     return { data: data.courses, status };
   } catch (error) {
     if (!error.response) return { status: 10 };
-    return { data: error.response.data, status : error.response.status };
+    return { data: error.response.data, status: error.response.status };
+  }
+}
+
+export async function updateUser(userinfo) {
+  console.log(userinfo);
+  try {
+    const { status, data } = await axios.put(
+      `${APIURL}/user`,
+      userinfo,
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
   }
 }
