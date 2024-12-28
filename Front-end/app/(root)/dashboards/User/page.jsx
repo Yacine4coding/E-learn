@@ -4,75 +4,16 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import CourseCard from "@/components/CourseCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/CustomUI/tabs";
-
-// Course banners (temporory)
-import cours1 from "@/public/couseTest/Placeholder1.png";
-import cours2 from "@/public/couseTest/Placeholder2.png";
-import cours3 from "@/public/couseTest/Placeholder3.png";
-import cours4 from "@/public/couseTest/Placeholder4.png";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/CustomUI/tabs";
 import { getDashboard } from "@/request/user";
 
-const courses = [
-  {
-    title: "Introduction to Web Development",
-    creator: "John Doe",
-    imageUrl: cours1,
-    price: 49.99,
-    stars: 4.5,
-    view: 1200,
-    oldPrice: 79.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Mastering Python Programming",
-    creator: "Jane Smith",
-    imageUrl: cours2,
-    price: 39.99,
-    stars: 4.7,
-    view: 1500,
-    oldPrice: 59.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Data Science and Machine Learning",
-    creator: "Alice Johnson",
-    imageUrl: cours3,
-    price: 69.99,
-    stars: 4.8,
-    view: 2200,
-    oldPrice: 89.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Digital Marketing Essentials",
-    creator: "Bob Lee",
-    imageUrl: cours4,
-    price: 29.99,
-    stars: 4.2,
-    view: 800,
-    oldPrice: 49.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Digital Marketing Essentials",
-    creator: "Bob Lee",
-    imageUrl: cours4,
-    price: 29.99,
-    stars: 4.2,
-    view: 800,
-    oldPrice: 49.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-];
-
 const UserDashboard = () => {
-  const [cours, setCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -92,8 +33,6 @@ const UserDashboard = () => {
       }
     })();
   }, []);
-
-  
 
   return (
     <div className="min-h-screen flex flex-col mb-6">
@@ -159,17 +98,20 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map((course, i) => (
-                  course.isFavorite&&<CourseCard
-                  key={i}
-                  creator={course.teacherName}
-                  courseId={course.courseId}
-                  imageUrl={course.picture}
-                  progress={course.progress}
-                  totalLectures={course.chapterNumber}
-                  favIcon={true}
-                />
-                ))}
+                {courses.map(
+                  (course, i) =>
+                    course.isFavorite && (
+                      <CourseCard
+                        key={i}
+                        creator={course.teacherName}
+                        courseId={course.courseId}
+                        imageUrl={course.picture}
+                        progress={course.progress}
+                        totalLectures={course.chapterNumber}
+                        favIcon={true}
+                      />
+                    )
+                )}
               </div>
             </TabsContent>
 
