@@ -23,7 +23,7 @@ const avatars = [
 ];
 
 export function getRandomAvatar() {
-  const randomNumber = (Math.floor(Math.random() * 1000) % 10) + 1;
+  const randomNumber = (Math.floor(Math.random() * 10)  + 1);
   return `avatar${randomNumber}.png`;
 }
 
