@@ -5,6 +5,7 @@ import {
 } from "../middleware/course.js";
 import Courses from "../models/Course.js";
 import StudientCourse from "../models/StudientCourse.js";
+import User from "../models/User.js";
 import { getStudient, updateCourse } from "./studient.js";
 import { isUserExist } from "./user.js";
 
@@ -176,7 +177,7 @@ export async function bestCourses(req, res) {
       courses[i] = generateCourse(courses[i], user);
     }
     if (courses.length <= count) return res.status(200).send({ courses });
-    courses = sortCourse();
+    courses = sortCourse(courses);
     if (!courses)
       return res.status(400).send({ message: "probleme in sort function" });
     courses.length = count;
@@ -185,34 +186,6 @@ export async function bestCourses(req, res) {
     res.status(500).send({
       message: "internal server error",
     });
-  }
-}
-export async function courseById(req, res) {
-  const { courseId, userId = false } = req.body;
-  if (!courseId)
-    return res.status(422).send({ message: "course id are required" });
-  try {
-    const course = await Courses.findById(courseId);
-    if (!course) return res.status(404).send({ message: "course not found" });
-    const { isExist, user } = await isUserExist(course.teacherId);
-    if (!isExist) return res.status(400).send({ message: "unavaible" });
-    let related = "none";
-    switch (true) {
-      case userId === course.teacherId:
-        related = "owner";
-        break;
-      case Boolean(
-        await StudientCourse.findOne({ courseId, studientId: userId })
-      ):
-        related = "studient";
-        break;
-    }
-    return res.status(200).send({
-      course: generateCourse(course, user, "none" !== related),
-      related,
-    });
-  } catch (error) {
-    res.status(500).send({ message: "internal server error" });
   }
 }
 export async function wishlistCourses(req, res) {
@@ -254,6 +227,47 @@ export async function favoriteCourses(req, res) {
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function getCourse(req, res) {
+  // get data
+  const { userId } = req.body;
+  const { courseId } = req.params;
+  try {
+    const course = await getCourseById(courseId);
+    // COURSE NOT FOUND
+    if (!course) return res.status(404).send({ message: "course not found" });
+    // IF COURSE NOT PAID
+    if (!userId)
+      return res.status(200).send({
+        paid: false,
+        course,
+      });
+    let user = await User.findById(userId);
+    user = await getStudient(user.userId);
+    const isFavorite = user.favorite.includes(courseId);
+    const isPaid = await StudientCourse.findOne({
+      courseId,
+      studientId: userId,
+    });
+    if (!isPaid)
+      return res.status(200).send({
+        paid: false,
+        course: {
+          ...course,
+          isFavorite,
+        },
+      });
+    // IF COURSE PAID
+    res.status(200).send({
+      paid: true,
+      course: { ...course, progress: isPaid.progress , isFavorite },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "internal server error",
+    });
   }
 }
 // * functions

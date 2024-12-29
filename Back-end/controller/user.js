@@ -287,7 +287,7 @@ export async function getUserDashboard(req, res) {
       userCourses[i] = {
         isFavorite,
         isInWishList,
-        picture: `http://localhost:5000/${picture}`,
+        picture,
         description,
         teacherName,
         teacherProfileImg,

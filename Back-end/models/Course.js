@@ -24,7 +24,7 @@ const coursesShcema = mongoose.Schema({
       count: Number,
     },
   },
-  review: {
+  view: {
     type: Object,
     default: {
       usersId: [],
