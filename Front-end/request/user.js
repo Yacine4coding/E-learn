@@ -15,7 +15,6 @@ export async function getDashboard() {
 }
 
 export async function updateUser(userinfo) {
-  console.log(userinfo);
   try {
     const { status, data } = await axios.put(
       `${APIURL}/user`,

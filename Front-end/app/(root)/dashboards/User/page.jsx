@@ -11,10 +11,14 @@ import {
   TabsTrigger,
 } from "@/components/CustomUI/tabs";
 import { getDashboard } from "@/request/user";
+import { initScriptLoader } from "next/script";
+import { initCourses } from "@/redux/dashboard";
+import { useDispatch, useSelector } from "react-redux";
 
 const UserDashboard = () => {
-  const [courses, setCourses] = useState([]);
-
+  const {courses} = useSelector(s=>s.dashboard);
+  console.log(courses);
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
   const defTab = searchParams.get("defTab") || "all-courses";
@@ -26,7 +30,7 @@ const UserDashboard = () => {
       // HUNDLE RESPONSE
       switch (status) {
         case 200:
-          setCourses(data);
+          dispatch(initCourses(data));
           break;
         case 500:
           console.log("error");

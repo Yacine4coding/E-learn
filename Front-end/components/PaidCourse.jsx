@@ -8,13 +8,11 @@ import CustomProgress from '@/components/CustomUI/Progress'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/CustomUI/tabs"
 
-const paidCourse = () => {
+const PaidCourse = ({course}) => {
+console.log(course)
+
   const [quizAnswers, setQuizAnswers] = useState({})
   const [quizSubmitted, setQuizSubmitted] = useState(false)
-
-  const progress = 2
-  const totalLectures = 6
-
   const handleQuizChange = (quizIndex, choiceIndex) => {
     setQuizAnswers((prevAnswers) => ({
       ...prevAnswers,
@@ -32,13 +30,13 @@ const paidCourse = () => {
       {/* Header Section */}
       <div className="mb-8">
         <div className="text-sm text-muted-foreground">Development / Mobile Engineer</div>
-        <h1 className="text-3xl font-bold mt-2">Make Uber Clone App</h1>
+        <h1 className="text-3xl font-bold mt-2">{course.title}</h1>
         <div className="flex items-center gap-2 mt-2">
-          <span className="text-muted-foreground">Steven Arnatouvic</span>
+          <span className="text-muted-foreground capitalize">{course.username}</span>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            <span className="font-medium">4.8</span>
-            <span className="text-muted-foreground">(1,812 ratings)</span>
+            <span className="font-medium">{course.stars.count}</span>
+            <span className="text-muted-foreground">({course.view.count} ratings)</span>
           </div>
         </div>
       </div>
@@ -162,8 +160,7 @@ const paidCourse = () => {
             <TabsContent value="Description">
               <div className="ml-4 space-y-2">
                 <h2 className="text-md font-bold">Make Uber Clone App</h2>
-                <p className="text-gray-500 font-normal text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, quam ducimus doloribus autem cupiditate ut esse maiores dolores recusandae voluptas dolor consequatur libero facere. Non cumque nam facilis quae, recusandae error, perferendis ullam ex sequi magni quia nobis accusamus harum ab cupiditate dolores, reprehenderit sed. Impedit maiores aut nostrum placeat?
+                <p className="text-gray-500 font-normal text-sm">{course.description}
                 </p>
               </div>
             </TabsContent>
@@ -244,10 +241,10 @@ const paidCourse = () => {
           <div className="border rounded-lg p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4">Chapter 1: Preparations</h2>
             <div className="flex items-center justify-between mb-2">
-              <span>6 Lectures</span>
-              <span className="text-primary">12% completed</span>
+              <span>{course.progress.chapterNumber} Lectures</span>
+              <span className="text-primary">{course.progress.for100}% completed</span>
             </div>
-            <CustomProgress value={progress} max={totalLectures} className="my-1" />
+            <CustomProgress value={course.progress.chapterNumber} max={course.chapterNumber} className="my-1" />
             <div className="space-y-4">
               {[
                 { title: "Installing Vue JS", status: "completed" },
@@ -275,4 +272,4 @@ const paidCourse = () => {
   )
 }
 
-export default paidCourse
+export default PaidCourse
