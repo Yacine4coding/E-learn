@@ -232,7 +232,7 @@ const PaidCourse = ({course}) => {
         <div className="lg:col-span-1">
           {/* Progress Card */}
           <div className="border rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">{crc[isCurrent].title}</h2>
+            <h2 className="text-xl font-semibold mb-4">{course.chapters[isCurrent].title}</h2>
             <div className="flex items-center justify-between mb-2">
               <span>{course.progress.chapterNumber} Lectures</span>
               <span className="text-primary">{course.progress.for100}% completed</span>
