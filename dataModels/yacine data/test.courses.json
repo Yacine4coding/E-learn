@@ -1,0 +1,156 @@
+[{
+  "_id": {
+    "$oid": "676c8772026508083bac2672"
+  },
+  "title": "Data Science and Machine Learning",
+  "description": "description of Data Science and Machine Learning",
+  "amount": 69.99,
+  "payCount": 0,
+  "stars": {
+    "count": 0,
+    "usersId": []
+  },
+  "view": {
+    "count": 0,
+    "usersId": []
+  },
+  "buyCount": 0,
+  "teacherId": "676c8762026508083bac266f",
+  "chapterNumber": 3,
+  "chapters": [
+    {
+      "title": "chapter1",
+      "description": "description of chapter1",
+      "link": "https://googl.com",
+      "queezes": []
+    },
+    {
+      "title": "chapter2",
+      "description": "description of chapter2",
+      "link": "https://googl.com",
+      "queezes": []
+    },
+    {
+      "title": "chapter3",
+      "description": "description of chapter3",
+      "link": "https://googl.com",
+      "queezes": []
+    }
+  ],
+  "picture": "public/Placeholder3.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "676c8776026508083bac2675"
+  },
+  "title": "Digital Marketing Essentials",
+  "description": "description of Digital Marketing Essentials",
+  "amount": 29.99,
+  "payCount": 0,
+  "stars": {
+    "count": 0,
+    "usersId": []
+  },
+  "view": {
+    "count": 0,
+    "usersId": []
+  },
+  "buyCount": 0,
+  "teacherId": "676c8762026508083bac266f",
+  "chapterNumber": 4,
+  "chapters": [
+    {
+      "title": "chapter1",
+      "description": "description of chapter1",
+      "link": "https://googl.com",
+      "queezes": []
+    },
+    {
+      "title": "chapter2",
+      "description": "description of chapter2",
+      "link": "https://googl.com",
+      "queezes": []
+    },
+    {
+      "title": "chapter3",
+      "description": "description of chapter3",
+      "link": "https://googl.com",
+      "queezes": []
+    },
+    {
+      "title": "chapter4",
+      "description": "description of chapter4",
+      "link": "https://googl.com",
+      "queezes": []
+    }
+  ],
+  "picture": "public/Placeholder4.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "676c8792026508083bac267e"
+  },
+  "title": "Introduction to Web Development",
+  "description": "description of introduction to web development",
+  "amount": 49.99,
+  "payCount": 0,
+  "stars": {
+    "count": 0,
+    "usersId": []
+  },
+  "view": {
+    "count": 0,
+    "usersId": []
+  },
+  "buyCount": 0,
+  "teacherId": "676c8789026508083bac267b",
+  "chapterNumber": 1,
+  "chapters": [
+    {
+      "title": "chapter 01",
+      "description": "description of chapter one",
+      "link": "https://youtube.com",
+      "queezes": []
+    }
+  ],
+  "picture": "public/Placeholder1.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "676c8796026508083bac2681"
+  },
+  "title": "Mastering Python Programming",
+  "description": "description of Mastering Python Programming",
+  "amount": 39.99,
+  "payCount": 0,
+  "stars": {
+    "count": 0,
+    "usersId": []
+  },
+  "view": {
+    "count": 0,
+    "usersId": []
+  },
+  "buyCount": 0,
+  "teacherId": "676c8789026508083bac267b",
+  "chapterNumber": 2,
+  "chapters": [
+    {
+      "title": "chpater1",
+      "link": "https://google.com",
+      "description": "description of chapter1",
+      "queezes": []
+    },
+    {
+      "title": "chpater2",
+      "link": "https://google.com",
+      "description": "description of chapter2",
+      "queezes": []
+    }
+  ],
+  "picture": "public/Placeholder2.png",
+  "__v": 0
+}]
