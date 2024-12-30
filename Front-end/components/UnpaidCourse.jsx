@@ -8,6 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { setFavoriteCourse } from "@/request/courses";
+import page  from "@/public/page.svg";
+import lect  from "@/public/lecture.svg";
+import lang  from "@/public/langSound.svg";
+import screen  from "@/public/screen.svg";
 import { genProfileImg } from "@/public/avatars/avatar";
 
 const UnpaidCourse = ({ course }) => {
@@ -188,7 +192,7 @@ console.log(course.isFavorite)
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Image src={lang} alt="lang}" width="20px" height="20px" />
+                    <Image src={lang} alt="lang" width="20px" height="20px" />
                     <p className="text-sm text-muted-foreground">English</p>
                   </div>
                 </div>

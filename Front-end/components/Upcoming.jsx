@@ -45,6 +45,7 @@ const Upcoming = () => {
             stars={course.stars.count} // Hardcoded value
             view={course.view.count} // Hardcoded value
             oldPrice={course.discount}
+            courseId={course.id}
           />
         ))}
       </div>
