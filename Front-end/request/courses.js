@@ -57,3 +57,19 @@ export async function getCourse(courseId) {
     };
   }
 }
+export async function buyNewCourse(courseId) {
+  try {
+    const { status, data } = await axios.post(
+      `${APIURL}/studient/${courseId}`,
+      {},
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    if (!error.response) return { status: 10 };
+    return {
+      status: error.response.status,
+      data: error.response.data,
+    };
+  }
+}

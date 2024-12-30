@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 function page() {
   const { courseId } = useParams();
+  const [refresh , setRefresh]= useState(null)
   const [data, setData] = useState(null);
   useEffect(() => {
     (async function () {
@@ -25,14 +26,14 @@ function page() {
           console.log("dev bugs");
       }
     })();
-  }, []);
+  }, [refresh]);
   if (data === null) return <div>loading</div>;
   return (
     <div className="w-full min-h-[87vh]">
       {data.paid ? (
         <PaidCourse course={data.course} />
       ) : (
-        <UnpaidCourse course={data.course} />
+        <UnpaidCourse course={data.course} setRefresh={setRefresh}/>
       )}
     </div>
   );

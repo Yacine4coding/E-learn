@@ -1,10 +1,9 @@
-"use client"
+"use client";
 import BigCard from "./BigCard";
 import CourseCard from "./CourseCard";
 
 import { bestCourses } from "@/request/courses";
 import { useEffect, useState } from "react";
-
 
 const Trending = () => {
   const [courses, setCourses] = useState([]);
@@ -52,6 +51,7 @@ const Trending = () => {
               stars={course.stars.count} // Hardcoded value
               view={course.view.count} // Hardcoded value
               oldPrice={course.discount}
+              courseId={course.id}
             />
           ))}
         </div>
