@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import { genProfileImg } from "@/public/avatars/avatar";
 
 const Navbar = () => {
@@ -83,6 +84,11 @@ const Navbar = () => {
     router.push("/");
   };
 
+
+  const handleStoreClick = () => {
+    router.push("/Services");
+  }
+
   const OffnavItems = [
     { label: "Login", onClick: handleLoginClick },
     { label: "Sign Up", onClick: handleSignupClick },
@@ -117,19 +123,15 @@ const Navbar = () => {
         {isLoged ? (
           <>
             {!user.isteacher && (
-              <span
-                className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
-                onClick={OnNavItems[2].onClick}
-              >
-                {OnNavItems[2].label}
-              </span>
+              <>
+                <span
+                  className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
+                  onClick={OnNavItems[2].onClick}
+                >
+                  {OnNavItems[2].label}
+                </span>
+              </>
             )}
-            <button
-              className="nrmlBnt hoverTransition"
-              onClick={OnNavItems[1].onClick}
-            >
-              {OnNavItems[1].label}
-            </button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer" onClick={handleProfileClick}>
@@ -162,6 +164,13 @@ const Navbar = () => {
                   onClick={handleWishlistClick}
                 >
                   Wishlist
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
+                <DropdownMenuItem
+                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                  onClick={handleStoreClick}
+                >
+                  MarketPlace
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
                 <DropdownMenuItem
