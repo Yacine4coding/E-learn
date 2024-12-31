@@ -43,22 +43,20 @@ function formatNumber(number) {
   return number >= 1000 ? `${(number / 1000).toFixed(1)}k` : number.toString();
 }
 
-const CourseCard = ({
-  title,
-  creator,
-  courseId,
-  imageUrl,
-  description,
-  price,
-  stars,
-  view,
-  oldPrice,
-  progress = null,
-  totalLectures,
-  favIcon,
-  menuIcon,
-  completIcon,
-}) => {
+const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
+  const {
+    title,
+    username: creator,
+    id: courseId,
+    picture: imageUrl,
+    description,
+    discount: price,
+    stars : {count : stars},
+    view : {count : view},
+    amount: oldPrice,
+    progress ,
+    chapterNumber : totalLectures,
+  } = course;
   const PriceCond = Boolean(price && oldPrice);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -69,7 +67,7 @@ const CourseCard = ({
   const handleCourseClick = (e) => {
     // Navigate to the course page with the course's ID
     const role = e.target.parentElement.getAttribute("role");
-    if (role === "menuitem") return ;
+    if (role === "menuitem") return;
 
     // Example: router.push(`/course/${course.id}`);
     router.push(`/Courses/${courseId}`);
@@ -86,7 +84,7 @@ const CourseCard = ({
     // Remove the course
     const { status } = await setFavoriteCourse(courseId);
     if (status === 200) {
-      dispatch(toggleFavorite(courseId))
+      dispatch(toggleFavorite(course));
     }
     console.log("Add course to favorite clicked!");
   };
@@ -95,12 +93,6 @@ const CourseCard = ({
   const handleRemoveClick = () => {
     // Remove the course
     console.log("Remove course clicked!");
-  };
-
-  // Handle remove from liked click
-  const handleRemoveFromLikedClick = () => {
-    // Remove the course from liked list
-    console.log("Remove course from liked clicked!");
   };
 
   return (
@@ -138,7 +130,7 @@ const CourseCard = ({
               <DropdownMenuContent className="bg-white">
                 <DropdownMenuItem
                   className="cursor-pointer hover:bg-slate-200"
-                  onClick={handleRemoveFromLikedClick}
+                  onClick={handleFavClick}
                 >
                   <RemoveCircleIcon htmlColor="red" />
                   <span className="text-red-900 font-gilroy font-bold">
@@ -194,8 +186,8 @@ const CourseCard = ({
         />
       </div>
 
-      {progress !== null && (
-        <CustomProgress value={progress} max={totalLectures} className="my-1" />
+      {progress && (
+        <CustomProgress value={progress.chapterNumber} max={totalLectures} className="my-1" />
       )}
 
       {title && <h2 className="text-base font-bold">{title}</h2>}
@@ -209,10 +201,10 @@ const CourseCard = ({
         </div>
       )}
 
-      {progress !== null && totalLectures && (
+      {progress && totalLectures && (
         <div className="flex items-center">
           <span className="text-sm font-gilroy font-medium pl-1 text-gray-600">
-            {progress}/{totalLectures} video completed
+            {progress.chapterNumber}/{totalLectures} video completed
           </span>
         </div>
       )}

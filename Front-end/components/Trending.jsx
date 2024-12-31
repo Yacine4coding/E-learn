@@ -43,15 +43,7 @@ const Trending = () => {
           {courses.map((course, i) => (
             <CourseCard
               key={i}
-              title={course.title}
-              creator={course.username}
-              description={course.description}
-              imageUrl={course.picture} // This should be correctly handled in the CourseCard component
-              price={course.ammount}
-              stars={course.stars.count} // Hardcoded value
-              view={course.view.count} // Hardcoded value
-              oldPrice={course.discount}
-              courseId={course.id}
+              course={course}
             />
           ))}
         </div>
