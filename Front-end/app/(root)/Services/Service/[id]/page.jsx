@@ -109,15 +109,35 @@ const ServicePage = ({ params }) => {
                     <input type="hidden" name="serviceId" value={service.id} />
                     <div>
                         <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Your Name</label>
-                        <Input type="text" id="name" name="name" required className="text-sm sm:text-base" />
+                        <Input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            placeholder="Enter your full name"
+                            required 
+                            className="text-sm sm:text-base" 
+                        />
                     </div>
                     <div>
                         <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Your Email</label>
-                        <Input type="email" id="email" name="email" required className="text-sm sm:text-base" />
+                        <Input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="your.email@example.com"
+                            required 
+                            className="text-sm sm:text-base" 
+                        />
                     </div>
                     <div>
                         <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Message</label>
-                        <Textarea id="message" name="message" required className="text-sm sm:text-base" />
+                        <Textarea 
+                            id="message" 
+                            name="message" 
+                            placeholder="Describe why you're the best fit for this service..."
+                            required 
+                            className="text-sm sm:text-base" 
+                        />
                     </div>
                     <Button type="submit"  className="w-full bg-green-500 text-white text-sm sm:text-base">Submit Application</Button>
                 </form>

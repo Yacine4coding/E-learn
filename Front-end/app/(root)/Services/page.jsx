@@ -104,7 +104,7 @@ const Services = () => {
         transition={{ duration: 0.5, delay: 0.5 }}
       >
         {/* <Link href="/Services/postService"> */}
-          <Button size="lg" onClick={handlePostClick} className="w-full bg-green-500 text-white">Post a New Service</Button>
+          <Button size="lg" onClick={handlePostClick} className="w-full font-semibold font-gilory bg-green-500 text-white">Post a New Service</Button>
         {/* </Link> */}
       </motion.div>
     </div>
