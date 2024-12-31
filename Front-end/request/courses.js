@@ -2,7 +2,6 @@ import axios from "axios";
 import { APIURL, CREDENTIALS } from "./reqParams";
 
 export async function bestCourses(count = 5) {
-  console.log(count);
   if (count === 0)
     return {
       status: 10,
@@ -22,7 +21,6 @@ export async function bestCourses(count = 5) {
   }
 }
 export async function setFavoriteCourse(courseId) {
-  if (!courseId) return { status: 10, data: "can not be null" };
   try {
     const { data, status } = await axios.put(
       `${APIURL}/course/favorite/${courseId}`,
@@ -31,7 +29,6 @@ export async function setFavoriteCourse(courseId) {
     );
     return { status, data };
   } catch (error) {
-    console.log("error in request of favorite course");
     console.log(error);
     if (!error.response) return { status: 10 };
     return {

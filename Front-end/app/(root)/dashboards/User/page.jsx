@@ -18,13 +18,12 @@ import {
   initWishlistCourses,
 } from "@/redux/dashboard";
 import { useDispatch, useSelector } from "react-redux";
+import { errorNotifcation } from "@/components/toast";
 
 const UserDashboard = () => {
-  const { courses, favoriteCourse, wishlistCourse } = useSelector(
-    (s) => s.dashboard
-  );
-  console.log(favoriteCourse);
+  const { courses, favoriteCourse } = useSelector((s) => s.dashboard);
   const dispatch = useDispatch();
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const defTab = searchParams.get("defTab") || "all-courses";
@@ -33,7 +32,6 @@ const UserDashboard = () => {
   useEffect(() => {
     (async function () {
       const { data, status } = await getDashboard();
-      console.log(data);
       // HUNDLE RESPONSE
       switch (status) {
         case 200:
@@ -42,8 +40,15 @@ const UserDashboard = () => {
           dispatch(initFavCourses(favCourses));
           dispatch(initWishlistCourses(wishlistCourses));
           break;
-        case 500:
-          console.log("error");
+        case 401:
+          errorNotifcation(data.message);
+          router.push("/");
+          break;
+        case 10:
+          errorNotifcation("error 10 status");
+          break;
+        default:
+          errorNotifcation(data.message);
       }
     })();
   }, []);
@@ -127,7 +132,7 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {wishlistCourse.map(
+                {courses.map(
                   (course, i) =>
                     course.chapterNumber === course.progress && (
                       <CourseCard

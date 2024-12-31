@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { genProfileImg } from "@/public/avatars/avatar";
+import { errorNotifcation } from "./toast";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -38,14 +39,12 @@ const Navbar = () => {
       switch (status) {
         case 200:
           dispatch(setState(userinfo));
-          console.log("is loggin");
           break;
         case 10:
-          console.log(10);
-          setError("catch error");
+          errorNotifcation("catch error status 10");
         case 500:
+          errorNotifcation("internal server error");
           setError(data.message);
-          console.log(500);
       }
       setLoading(false);
     })();

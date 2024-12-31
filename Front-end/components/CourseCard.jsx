@@ -30,6 +30,7 @@ import { Route } from "lucide-react";
 import { setFavoriteCourse } from "@/request/courses";
 import { toggleFavorite } from "@/redux/dashboard";
 import { useDispatch } from "react-redux";
+import { errorNotifcation, successNotifcation } from "./toast";
 
 // Helper function to truncate the description of a course
 function truncateDescription(description, MAX_DESCRIPTION_LENGTH) {
@@ -82,11 +83,18 @@ const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
   // Handle add to favorite click
   const handleFavClick = async () => {
     // Remove the course
-    const { status } = await setFavoriteCourse(courseId);
-    if (status === 200) {
-      dispatch(toggleFavorite(course));
+    const { status, data } = await setFavoriteCourse(courseId);
+    switch (status) {
+      case 200:
+        successNotifcation(data.message);
+        dispatch(toggleFavorite(course));
+        break;
+      case 10:
+        errorNotifcation("error with status 10");
+        break;
+      default:
+        errorNotifcation(data.message);
     }
-    console.log("Add course to favorite clicked!");
   };
 
   // Handle Remove click

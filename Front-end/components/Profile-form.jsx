@@ -17,6 +17,7 @@ import { genProfileImg } from "@/public/avatars/avatar";
 import { updateUser } from "@/request/user";
 import { setState } from "@/redux/user";
 import { useRouter } from "next/navigation";
+import { errorNotifcation, successNotifcation } from "./toast";
 
 const ProfileForm = () => {
   const router = useRouter();
@@ -55,19 +56,21 @@ const ProfileForm = () => {
     const { status, data } = await updateUser(formData);
     switch (status) {
       case 200:
+        successNotifcation("updated successfuly");
         dispatch(setState(data.user));
         break;
       case 401:
-        console.log("unauth");
+        router.push("/");
+        errorNotifcation(data.message);
         break;
-      case 400:
-        console.log("data error");
+      case 10:
+        errorNotifcation("error with status 10");
         break;
       case 204:
         console.log("nothing change");
         break;
       default:
-        console.log("500");
+        errorNotifcation(data.message);
     }
   };
 
