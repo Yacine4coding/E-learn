@@ -61,20 +61,20 @@ export async function verifyToken(req, res, next) {
 
   if (!token) {
     addExistingToken("", res);
-    res.status(401).send({ message: "unAuth" });
+    res.status(401).send({ message: "you are not loggin , please login" });
     return;
   }
   const { userId, isCorrect } = await isTokenCorrect(token);
   if (!isCorrect) {
     addExistingToken("", res);
-    res.status(401).send({ messgae: "unAuth" });
+    res.status(401).send({ messgae: "you are not loggin , please login" });
     return;
   }
   try {
     const { isExist, user } = await isUserExist(userId);
     if (!isExist) {
       addExistingToken("", res);
-      res.status(401).send({ message: "unAuth" });
+      res.status(401).send({ message: "you are not loggin , please login" });
       return;
     }
     req.body.userId = userId.toString();

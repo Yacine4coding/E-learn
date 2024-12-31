@@ -200,14 +200,14 @@ export async function updateUserInfo(req, res) {
       if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email))
         return res.status(400).send({ message: "email format are inccorect" });
       if (await User.findOne({ email }))
-        return res.status(403).send({ message: "username is already exist" });
+        return res.status(400).send({ message: "email is already exist" });
       user.email = email;
       isUpdated = true;
     }
     // UPDATE USER NAME
     if (username && username !== user.username) {
       if (await User.findOne({ username }))
-        return res.status(403).send({ message: "username is already exist" });
+        return res.status(400).send({ message: "username is already exist" });
       user.username = username;
       isUpdated = true;
     }
@@ -216,7 +216,6 @@ export async function updateUserInfo(req, res) {
       return res.status(400).send({
         message: "password or current password are empty",
       });
-
     if (password && currentPassword) {
       if (
         !user.password ||
@@ -297,7 +296,6 @@ export async function getUserDashboard(req, res) {
       wishlistCourses,
     });
   } catch (error) {
-    console.log("dashboard error");
     console.log(error);
     res.status(500).send({
       message: "internal server error",
