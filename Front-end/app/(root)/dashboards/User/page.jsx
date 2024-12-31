@@ -12,12 +12,18 @@ import {
 } from "@/components/CustomUI/tabs";
 import { getDashboard } from "@/request/user";
 import { initScriptLoader } from "next/script";
-import { initCourses } from "@/redux/dashboard";
+import {
+  initCourses,
+  initFavCourses,
+  initWishlistCourses,
+} from "@/redux/dashboard";
 import { useDispatch, useSelector } from "react-redux";
 
 const UserDashboard = () => {
-  const {courses} = useSelector(s=>s.dashboard);
-  console.log(courses);
+  const { courses, favoriteCourse, wishlistCourse } = useSelector(
+    (s) => s.dashboard
+  );
+  console.log(favoriteCourse);
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -27,10 +33,14 @@ const UserDashboard = () => {
   useEffect(() => {
     (async function () {
       const { data, status } = await getDashboard();
+      console.log(data);
       // HUNDLE RESPONSE
       switch (status) {
         case 200:
-          dispatch(initCourses(data));
+          const { favCourses, buyCourses, wishlistCourses } = data ;
+          dispatch(initCourses(buyCourses));
+          dispatch(initFavCourses(favCourses));
+          dispatch(initWishlistCourses(wishlistCourses));
           break;
         case 500:
           console.log("error");
@@ -82,11 +92,7 @@ const UserDashboard = () => {
                 {courses.map((course, i) => (
                   <CourseCard
                     key={i}
-                    creator={course.teacherName}
-                    courseId={course.courseId}
-                    imageUrl={course.picture}
-                    progress={course.progress}
-                    totalLectures={course.chapterNumber}
+                    course = {course}
                     menuIcon={true}
                   />
                 ))}
@@ -102,20 +108,13 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map(
-                  (course, i) =>
-                    course.isFavorite && (
-                      <CourseCard
-                        key={i}
-                        creator={course.teacherName}
-                        courseId={course.courseId}
-                        imageUrl={course.picture}
-                        progress={course.progress}
-                        totalLectures={course.chapterNumber}
-                        favIcon={true}
-                      />
-                    )
-                )}
+                {favoriteCourse.map((course, i) => (
+                  <CourseCard
+                    key={i}
+                    course = {course}
+                    favIcon={true}
+                  />
+                ))}
               </div>
             </TabsContent>
 
@@ -128,16 +127,12 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map(
+                {wishlistCourse.map(
                   (course, i) =>
                     course.chapterNumber === course.progress && (
                       <CourseCard
                         key={i}
-                        creator={course.teacherName}
-                        courseId={course.courseId}
-                        imageUrl={course.picture}
-                        progress={course.progress}
-                        totalLectures={course.chapterNumber}
+                        course={course}
                         completIcon={true}
                       />
                     )

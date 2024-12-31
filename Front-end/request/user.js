@@ -7,7 +7,7 @@ export async function getDashboard() {
       `${APIURL}/user/dashboard`,
       CREDENTIALS
     );
-    return { data: data.courses, status };
+    return { data, status };
   } catch (error) {
     if (!error.response) return { status: 10 };
     return { data: error.response.data, status: error.response.status };

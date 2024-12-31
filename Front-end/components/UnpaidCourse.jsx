@@ -7,22 +7,27 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { setFavoriteCourse } from "@/request/courses";
+import { buyNewCourse, setFavoriteCourse } from "@/request/courses";
 import page  from "@/public/page.svg";
 import lect  from "@/public/lecture.svg";
 import lang  from "@/public/langSound.svg";
 import screen  from "@/public/screen.svg";
 import { genProfileImg } from "@/public/avatars/avatar";
+import { useRouter } from "next/navigation";
 
-const UnpaidCourse = ({ course }) => {
+const UnpaidCourse = ({ course,setRefresh }) => {
+  const router = useRouter();
   const [favorite, setFavorite] = useState(course.isFavorite);
-console.log(course.isFavorite)
   const handleFavorite = async () => {
     const { status } = await setFavoriteCourse(course.id);
     if (status === 200) setFavorite((prev) => !prev);
   };
 
-  const handleBuyClick = () => {
+  const handleBuyClick = async () => {
+    const {status , data } = await buyNewCourse(course.id);
+    console.log(status);
+    if (status === 200) setRefresh(true);
+    if (status !== 200) console.log(data);
     console.log("Buy Clicked");
   };
 
@@ -172,7 +177,7 @@ console.log(course.isFavorite)
                 <div className="grid grid-row-2 md:grid-row-4 gap-2 mt-4">
                   <div className="flex items-center gap-2">
                     <Image src={page} alt="page" width="20px" height="20px" />
-                    <p className="text-md text-muted-foreground">22 Section</p>
+                    <p className="text-md text-muted-foreground">{course.chapterNumber} Section</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Image src={lect} alt="lect" width="20px" height="20px" />

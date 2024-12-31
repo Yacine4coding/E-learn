@@ -9,6 +9,7 @@ import {
   generateUserInfo,
   generateUserName,
 } from "../middleware/user.js";
+import Studient from "../models/Studient.js";
 import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
 import { deleteUserComment } from "./comment.js";
@@ -185,7 +186,9 @@ export async function updateUserInfo(req, res) {
     let isUpdated = false;
     // GET USER DATA
     let user = await User.findById(userId);
-    let userinfo = user.isteacher? await getTeacher(user.userId) : await getStudient(user.userId) 
+    let userinfo = user.isteacher
+      ? await getTeacher(user.userId)
+      : await getStudient(user.userId);
     // UPDATE USER BIO
     if (user.bio !== bio) {
       user.bio = bio;
@@ -250,7 +253,7 @@ export async function updateUserInfo(req, res) {
     if (!isUpdated) return res.status(204).send();
     user = await user.save();
     res.status(200).send({
-      user: {...generateUserInfo(user),...userinfo}
+      user: { ...generateUserInfo(user), ...userinfo },
     });
   } catch (error) {
     console.log(error);
@@ -259,48 +262,46 @@ export async function updateUserInfo(req, res) {
 }
 export async function getUserDashboard(req, res) {
   const { userId, isteacher } = req.body;
+  if (isteacher) return res.status(400).send({ message: "feature is coming" });
   try {
-    if (isteacher)
-      return res.status(500).send({ message: "feature is comming" });
-    // GET STUDIENT OBJECT
-    const { userId: secondId } = await User.findById(userId);
-    // STUDIENT DASHBOARD
-    const userInfo = await getStudient(secondId);
-    let userCourses = await StudientCourse.find({ studientId: userId }); // return array of courses or null
-
-    if (!userCourses) res.status(204).send();
-    // FORMAT COURSES
-    for (let i = 0; i < userCourses.length; i++) {
-      const {
-        courseId,
-        progress: { chapterNumber: progress },
-      } = userCourses[i];
-      const {
-        username: teacherName,
-        picture,
-        description,
-        teacherProfileImg,
-        chapterNumber,
-      } = await getCourseById(courseId);
-      const isFavorite = userInfo.favorite.includes(courseId);
-      const isInWishList = userInfo.wishlist.includes(courseId);
-      userCourses[i] = {
-        isFavorite,
-        isInWishList,
-        picture,
-        description,
-        teacherName,
-        teacherProfileImg,
-        chapterNumber,
-        progress,
-        courseId,
-      };
+    const { userId: secondId } = await User.findById(userId); // GET SECOND USER ID
+    const informations = await Studient.findById(secondId); // get information of userID
+    // * GET FAVORITE COURSE
+    const favCourses = [];
+    for (let i = 0; i < informations.favorite.length; i++) {
+      const fav = informations.favorite[i];
+      favCourses.push(await getCourseById(fav));
+    }
+    const buyCoursesId = await StudientCourse.find({ studientId: userId });
+    // *  GET BUY COURSES
+    const buyCourses = [];
+    for (let i = 0; i < buyCoursesId.length; i++) {
+      const ele = buyCoursesId[i];
+      const course = await getCourseById(ele.courseId);
+      buyCourses.push({
+        ...course,
+        progress: ele.progress,
+      });
     }
 
-    res.status(200).send({ courses: userCourses });
+    // * GET WISHLIST COURSE
+    const wishlistCourses = [];
+    for (let i = 0; i < informations.wishlist.length; i++) {
+      const wishlist = informations.wishlist[i];
+      wishlistCourses.push(await getCourseById(wishlist));
+    }
+    // HUNDLE RES
+    res.status(200).send({
+      favCourses,
+      buyCourses,
+      wishlistCourses,
+    });
   } catch (error) {
+    console.log("dashboard error");
     console.log(error);
-    res.status(505).send({ message: "internal server error" });
+    res.status(500).send({
+      message: "internal server error",
+    });
   }
 }
 // * google auth
