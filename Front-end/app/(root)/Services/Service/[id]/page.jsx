@@ -64,35 +64,36 @@ const ServicePage = ({ params }) => {
     }
 
     async function applyForService(formData) {
-        // Here you would typically save the application to a database
+        // if is loged ==> add proposal to service
+        // if is not loged ==> redirect to Sign up page
         console.log('Application received:', Object.fromEntries(formData));
     }
 
     return (
-        <div className="min-w-[600px] mx-auto font-gilroy my-8">
+        <div className="w-full max-w-[700px] px-4 sm:px-6 mx-auto font-gilroy my-4 sm:my-8">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <h1 className="text-3xl font-bold mb-4">{service.title}</h1>
-                <p className="text-gray-600 mb-6">{service.description}</p>
-                <div className="bg-gray-100 p-4 rounded-lg mb-6">
-                    <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">{service.title}</h1>
+                <p className="text-gray-600 mb-4 sm:mb-6">{service.description}</p>
+                <div className="bg-gray-100 p-3 sm:p-4 rounded-lg mb-4 sm:mb-6">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-4">
                         <div className="flex items-center gap-2">
                             <Badge className='bg-green-500 text-white font-gilroy font-semibold capitalize'>{service.difficulty}</Badge>
                             <span className="text-sm font-medium text-green-600">{service.budget}</span>
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-xs sm:text-sm text-gray-500">
                             <span>{service.location}</span> • <span>{service.createdAt}</span>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
                         {service.tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-green-500 capitalize font-gilroy">{tag}</Badge>
+                            <Badge key={tag} variant="outline" className="text-green-500 capitalize font-gilroy text-xs sm:text-sm">{tag}</Badge>
                         ))}
                     </div>
-                    <div className="text-sm text-gray-600 font-gilroy">
+                    <div className="text-xs sm:text-sm text-gray-600 font-gilroy">
                         <span className="font-semibold">{service.proposals}</span> proposal{service.proposals !== 1 ? 's' : ''} received
                     </div>
                 </div>
@@ -103,22 +104,22 @@ const ServicePage = ({ params }) => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
             >
-                <h2 className="text-2xl font-semibold mb-4 font-gilroy">Apply for this Service</h2>
-                <form action={applyForService} className="space-y-4 font-gilroy">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 font-gilroy">Apply for this Service</h2>
+                <form action={applyForService} className="space-y-3 sm:space-y-4 font-gilroy">
                     <input type="hidden" name="serviceId" value={service.id} />
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
-                        <Input type="text" id="name" name="name" required />
+                        <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                        <Input type="text" id="name" name="name" required className="text-sm sm:text-base" />
                     </div>
                     <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
-                        <Input type="email" id="email" name="email" required />
+                        <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Your Email</label>
+                        <Input type="email" id="email" name="email" required className="text-sm sm:text-base" />
                     </div>
                     <div>
-                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                        <Textarea id="message" name="message" required />
+                        <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <Textarea id="message" name="message" required className="text-sm sm:text-base" />
                     </div>
-                    <Button type="submit" className="w-full bg-green-500 text-white">Submit Application</Button>
+                    <Button type="submit"  className="w-full bg-green-500 text-white text-sm sm:text-base">Submit Application</Button>
                 </form>
             </motion.div>
         </div>

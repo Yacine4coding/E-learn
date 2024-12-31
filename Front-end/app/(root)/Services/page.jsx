@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
+
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { useRouter } from 'next/navigation'
 
 const srvs = [
   { 
@@ -42,6 +44,16 @@ const srvs = [
 ]
 
 const Services = () => {
+
+  const router = useRouter();
+
+  const handlePostClick = () => {
+    // Add functionality to redirect to a new page for service proposal
+    // if the user is logged in, otherwise redirect to the Proposal page
+    router.push("/Services/postService");
+    // if the user is not logged in, show a signup prompt
+  }
+
   return (
     <div className="grow container mx-auto p-4 font-gilroy my-8">
       <motion.h1 
@@ -91,9 +103,9 @@ const Services = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
       >
-        <Link href="/Services/postService">
-          <Button size="lg" className="w-full bg-green-500 text-white">Post a New Service</Button>
-        </Link>
+        {/* <Link href="/Services/postService"> */}
+          <Button size="lg" onClick={handlePostClick} className="w-full bg-green-500 text-white">Post a New Service</Button>
+        {/* </Link> */}
       </motion.div>
     </div>
   )
