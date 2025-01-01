@@ -9,6 +9,7 @@ import {
   comment,
   courses,
   google,
+  marketPlace,
   post,
   studient,
   teacher,
@@ -55,6 +56,7 @@ app.use("/comment", comment);
 app.use("/studient", studient);
 app.use("/course", courses);
 app.use("/teacher", teacher);
+app.use("/marketPlace",marketPlace);
 app.use((req, res) => {
   res.status(505).send("rout not found");
 });
