@@ -134,7 +134,7 @@ const UserDashboard = () => {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {courses.map(
                   (course, i) =>
-                    course.chapterNumber === course.progress && (
+                    course.chapterNumber === course.progress.chapterNumber && (
                       <CourseCard
                         key={i}
                         course={course}

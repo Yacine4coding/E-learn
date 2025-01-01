@@ -7,46 +7,29 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from 'next/navigation'
 
-const srvs = [
-  { 
-    id: 1, 
-    title: "Web Development", 
-    description: "Create a responsive website", 
-    difficulty: "expert",
-    budget: "$5000",
-    createdAt: "2023-06-01",
-    location: "Remote",
-    tags: ["web", "frontend", "backend"],
-    proposals: 12
-  },
-  { 
-    id: 2, 
-    title: "Logo Design", 
-    description: "Design a unique logo for your brand", 
-    difficulty: "intermediate",
-    budget: "$500",
-    createdAt: "2023-06-02",
-    location: "New York, NY",
-    tags: ["design", "branding"],
-    proposals: 8
-  },
-  { 
-    id: 3, 
-    title: "Content Writing", 
-    description: "Write engaging content for your blog", 
-    difficulty: "entry-level",
-    budget: "$100",
-    createdAt: "2023-06-03",
-    location: "London, UK",
-    tags: ["writing", "blogging"],
-    proposals: 5
-  },
-]
 
 const Services = () => {
 
   const router = useRouter();
-
+  const [services, setServices] = useState([]);
+  useEffect(() => {
+    (async function () {
+      const { status, data } = await getServices();
+      switch (status) {
+        case 200:
+          setServices(data.services);
+          break;
+        case 204:
+          setServices(null);
+          break;
+        case 500:
+          errorNotifcation(data.message);
+          break;
+        default:
+          errorNotifcation("error with code 10");
+      }
+    })();
+  }, []);
   const handlePostClick = () => {
     // Add functionality to redirect to a new page for service proposal
     // if the user is logged in, otherwise redirect to the Proposal page
@@ -65,9 +48,9 @@ const Services = () => {
         Available Services
       </motion.h1>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {srvs.map((srv, index) => (
-          <motion.div 
-            key={srv.id} 
+        {services.map((srv, index) => (
+          <motion.div
+            key={srv.id}
             className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -82,14 +65,23 @@ const Services = () => {
                   <span className="text-sm font-medium text-green-600">{srv.budget}</span>
                 </div>
                 <div className="text-sm text-gray-500">
-                  <span>{srv.location}</span> • <span>{srv.createdAt}</span>
+                  {srv.location && (
+                    <>
+                      <span>{srv.location}</span> •
+                    </>
+                  )}
+                  <span>{srv.createdAt}</span>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {srv.tags.map((tag) => (
-                  <Badge key={tag} variant="outline" className='font-gilroy' >{tag}</Badge>
-                ))}
-              </div>
+              {srv.tags.length && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {srv.tags.map((tag) => (
+                    <Badge key={tag} variant="outline" className="font-gilroy">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
               <Link href={`/Services/Service/${srv.id}`}>
                 <Button className="w-full bg-green-500 text-white">View Details</Button>
               </Link>
