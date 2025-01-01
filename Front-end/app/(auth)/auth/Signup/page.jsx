@@ -10,6 +10,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { googleAuth, signup } from "@/request/auth";
+import { errorNotifcation, successNotifcation } from "@/components/toast";
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,26 +28,17 @@ const Signup = () => {
     const { data, status } = await signup(email, password);
     switch (status) {
       case 201:
+        successNotifcation("user creat successfuly");
         route.push("/auth/UserChoice");
         break;
-      case 400:
-        console.log(400);
-        console.log(data.message);
-        setError(data.message);
-        break;
-      case 409:
-        console.log(409);
-        console.log(data.message);
-        setError(data.message);
-        break;
-      case 422:
-        console.log(422);
-        console.log(data.message);
-        setError(data.message);
-        break;
       case 500:
-        console.log(500);
-        console.log(data.message);
+        errorNotifcation("internal server erroe");
+        break;
+      case 10:
+        errorNotifcation("code error");
+        break;
+      default:
+        setError(data.message);
         break;
     }
     setLoading(false);

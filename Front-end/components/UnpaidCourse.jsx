@@ -14,21 +14,42 @@ import lang  from "@/public/langSound.svg";
 import screen  from "@/public/screen.svg";
 import { genProfileImg } from "@/public/avatars/avatar";
 import { useRouter } from "next/navigation";
+import { errorNotifcation, successNotifcation } from "./toast";
 
 const UnpaidCourse = ({ course,setRefresh }) => {
   const router = useRouter();
   const [favorite, setFavorite] = useState(course.isFavorite);
   const handleFavorite = async () => {
-    const { status } = await setFavoriteCourse(course.id);
-    if (status === 200) setFavorite((prev) => !prev);
+    const { status, data } = await setFavoriteCourse(course.id);
+    switch (status) {
+      case 200:
+        successNotifcation(data.message);
+        setFavorite((prev) => !prev);
+        break;
+      case 500:
+        break;
+      case 10:
+        break;
+      default:
+        errorNotifcation(data.message);
+    }
+    if (status === 200) {
+    }
   };
 
   const handleBuyClick = async () => {
-    const {status , data } = await buyNewCourse(course.id);
-    console.log(status);
-    if (status === 200) setRefresh(true);
-    if (status !== 200) console.log(data);
-    console.log("Buy Clicked");
+    const { status, data } = await buyNewCourse(course.id);
+    switch (status) {
+      case 200:
+        successNotifcation(data.message);
+        setRefresh(true);
+        break;
+      case 10:
+        errorNotifcation("error with status 500");
+        break;
+      default:
+        errorNotifcation(data.message);
+    }
   };
 
   return (

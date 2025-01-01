@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import session from "express-session";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import apiDoc from "./middleware/swagger.js";
 import connectDb from "./middleware/database.js";
 import path from "path";
 import {
@@ -51,14 +50,11 @@ app.use(cookieParser());
 // routers
 app.use("/google", google);
 app.use("/user", user);
-
-
 app.use("/post", post);
 app.use("/comment", comment);
 app.use("/studient", studient);
 app.use("/course", courses);
 app.use("/teacher", teacher);
-app.use("/api-doc", apiDoc);
 app.use((req, res) => {
   res.status(505).send("rout not found");
 });
