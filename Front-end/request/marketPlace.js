@@ -18,6 +18,25 @@ export async function getServices() {
     };
   }
 }
+
+export async function addService(formdata) {
+  try {
+    const { status, data } = await axios.post(
+      `${APIURL}/marketplace`,
+      formdata,
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return {
+      status: error.response.status,
+      data: error.response.data,
+    };
+  }
+}
+
 export async function getServiceById(id) {
   try {
     const { status, data } = await axios.get(
