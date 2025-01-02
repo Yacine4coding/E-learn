@@ -9,9 +9,9 @@ export async function addService(req, res) {
     budget,
     level,
     location = "",
-    tags = [],
+    tags,
   } = req.body;
-  if (!title || !description || !budget || !level)
+  if (!title || !description || !budget || !level || !location || !tags)
     return res
       .status(422)
       .send({ message: "except location and tags, all inputs are required " });
@@ -60,7 +60,7 @@ export async function getServices(req, res) {
       let srvFormat = await formatService(srv);
       services.push(srvFormat);
     }
-    res.status(200).send({services});
+    res.status(200).send({ services });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "internal server error" });
