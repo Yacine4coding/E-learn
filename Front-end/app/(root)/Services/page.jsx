@@ -26,7 +26,6 @@ const Services = () => {
           setServices(data.services);
           break;
         case 204:
-          setServices([]);
           break;
         case 500:
           errorNotifcation(data.message);
