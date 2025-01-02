@@ -44,7 +44,7 @@ const Services = () => {
   }
 
   return (
-    <div className="grow container mx-auto p-4 font-gilroy my-8">
+    <div className="flex grow container mx-auto p-4 font-gilroy my-8">
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
         initial={{ opacity: 0, y: -50 }}
