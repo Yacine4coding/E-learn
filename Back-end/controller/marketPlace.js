@@ -2,7 +2,7 @@ import { formatService } from "../middleware/marketPlace.js";
 import MarketPlace from "../models/marketPlace.js";
 
 export async function addService(req, res) {
-  const {
+  let {
     userId,
     title,
     description,
@@ -15,8 +15,10 @@ export async function addService(req, res) {
     return res
       .status(422)
       .send({ message: "except location and tags, all inputs are required " });
-  try {
-    // create new service
+      try {
+        // create new service
+        tags = tags.split(",").map(ele=>ele.trim());
+        console.log(tags)
     const newService = await new MarketPlace({
       title,
       description,
@@ -28,10 +30,8 @@ export async function addService(req, res) {
     }).save();
     if (!newService)
       return res.status(400).send({ message: "service creation faild" });
-    const service = await formatService(newService);
     res.status(201).send({
       message: "service created successfuly",
-      service,
     });
   } catch (error) {
     console.log(error);

@@ -94,7 +94,7 @@ const ServicePage = () => {
                   <span>{service.location}</span> •
                 </>
               )}
-              <span>{service.createdAt}</span>
+              <span>{` ${service.createdAt}`}</span>
             </div>
           </div>
           <div className="flex flex-wrap gap-2 mb-4">
