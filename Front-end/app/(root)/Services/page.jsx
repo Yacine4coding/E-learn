@@ -17,6 +17,7 @@ const Services = () => {
 
   const router = useRouter();
   const [services, setServices] = useState([]);
+  console.log(services)
   useEffect(() => {
     (async function () {
       const { status, data } = await getServices();
@@ -67,7 +68,7 @@ const Services = () => {
               <p className="text-gray-600 mb-4">{srv.description}</p>
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
-                  <Badge className='bg-green-500 text-white font-gilroy font-semibold capitalize'>{srv.difficulty}</Badge>
+                  <Badge className='bg-green-500 text-white font-gilroy font-semibold capitalize'>{srv.level}</Badge>
                   <span className="text-sm font-medium text-green-600">{srv.budget}</span>
                 </div>
                 <div className="text-sm text-gray-500">
