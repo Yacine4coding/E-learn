@@ -93,7 +93,7 @@ const PostService = () => {
             required 
           />
         </div>
-        <Button type="submit" className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-300hoverTransition text-white">Post Service</Button>
+        <Button type="submit" className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-400 hoverTransition text-white">Post Service</Button>
       </motion.form>
     </div>
   )
