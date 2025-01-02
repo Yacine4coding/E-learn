@@ -61,7 +61,7 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={Gilroy.variable}>
-      <body className="flex flex-col min-h-screen">
+      <body className="min-h-screen">
         <ReduxContainer>
           <Toaster />
           <Navbar />

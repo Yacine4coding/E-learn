@@ -7,13 +7,15 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 
+import { useParams } from 'next/navigation'
+
 // This would typically come from a database
 const services = [
   { 
     id: 1, 
     title: "Web Development", 
     description: "Create a responsive website", 
-    difficulty: "expert",
+    level: "expert",
     budget: "$5000",
     createdAt: "2023-06-01",
     location: "Remote",
@@ -27,7 +29,7 @@ const services = [
     id: 2, 
     title: "Logo Design", 
     description: "Design a unique logo for your brand", 
-    difficulty: "intermediate",
+    level: "intermediate",
     budget: "$500",
     createdAt: "2023-06-02",
     location: "New York, NY",
@@ -38,9 +40,11 @@ const services = [
   },
 ]
 
-const ServiceDetail = ({ params }) => {
-  const service = services.find(s => s.id === parseInt(params.id))
-  const [approvedProposal, setApprovedProposal] = useState(null)
+const ServiceDetail = () => {
+
+  const { id } = useParams();
+  const service = services.find(s => s.id === parseInt(id));
+  const [approvedProposal, setApprovedProposal] = useState(null);
 
   if (!service) {
     notFound()
@@ -53,9 +57,9 @@ const ServiceDetail = ({ params }) => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container font-gilroy mx-auto px-4 py-8">
       <motion.h1 
-        className="text-4xl font-bold mb-8"
+        className="text-4xl font-bold mb-4"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -68,12 +72,24 @@ const ServiceDetail = ({ params }) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <p className="text-xl mb-4">{service.description}</p>
+        <p className="text-md mb-4">{service.description}</p>
         <div className="flex flex-wrap gap-4 mb-4">
-          <Badge variant="secondary">{service.difficulty}</Badge>
-          <span className="text-green-600 font-semibold">{service.budget}</span>
-          <span>{service.location}</span>
-          <span>{service.createdAt}</span>
+          <div className="flex items-center gap-2">
+            <Badge className="bg-green-500 text-white font-gilroy font-semibold capitalize">
+              {service.level}
+            </Badge>
+            <span className="text-sm font-medium text-green-600">
+              {service.budget}
+            </span>
+          </div>
+          <div className="text-xs sm:text-sm text-gray-500">
+            {service.location && (
+              <>
+                <span>{service.location}</span> •
+              </>
+            )}
+            <span>{service.createdAt}</span>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {service.tags.map((tag) => (
@@ -86,7 +102,7 @@ const ServiceDetail = ({ params }) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <h2 className="text-2xl font-semibold mb-4">Proposals ({service.proposals.length})</h2>
+        <h2 className="text-xl font-semibold mb-4">Proposals ({service.proposals.length})</h2>
         <div className="space-y-4">
           {service.proposals.map((proposal, index) => (
             <motion.div
@@ -101,11 +117,12 @@ const ServiceDetail = ({ params }) => {
                   <p className="text-gray-600 mb-2">{proposal.email}</p>
                   <p className="mb-4">{proposal.message}</p>
                   {approvedProposal === proposal.id ? (
-                    <Badge variant="success">Approved</Badge>
+                    <Button disabled={true} className="bg-green-500 text-white text-bold" >Approved</Button>
                   ) : (
-                    <Button 
+                    <Button
                       onClick={() => handleApprove(proposal.id)}
                       disabled={approvedProposal !== null}
+                      className="hover:bg-green-500 hover:text-white hover:bg-green-400 hoverTransition" 
                     >
                       Approve
                     </Button>

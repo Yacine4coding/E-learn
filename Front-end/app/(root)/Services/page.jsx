@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from 'next/navigation'
 
+import { getServices } from "@/request/marketPlace";
+
+import { errorNotifcation } from "@/components/toast.js";
+
 
 const Services = () => {
 
@@ -21,7 +25,7 @@ const Services = () => {
           setServices(data.services);
           break;
         case 204:
-          setServices(null);
+          setServices([]);
           break;
         case 500:
           errorNotifcation(data.message);
@@ -31,6 +35,7 @@ const Services = () => {
       }
     })();
   }, []);
+  
   const handlePostClick = () => {
     // Add functionality to redirect to a new page for service proposal
     // if the user is logged in, otherwise redirect to the Proposal page
