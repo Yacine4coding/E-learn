@@ -55,10 +55,10 @@ const PostService = () => {
               <SelectTrigger>
                 <SelectValue placeholder="Select difficulty" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="entry-level">Entry-level</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="expert">Expert</SelectItem>
+              <SelectContent className="bg-white ">
+                <SelectItem value="entry-level" className="hover:bg-gray-200 hoverTransition cursor-pointer" >Entry-level</SelectItem>
+                <SelectItem value="intermediate" className="hover:bg-gray-200 hoverTransition cursor-pointer" >Intermediate</SelectItem>
+                <SelectItem value="expert" className="hover:bg-gray-200 hoverTransition cursor-pointer" >Expert</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -93,7 +93,7 @@ const PostService = () => {
             required 
           />
         </div>
-        <Button type="submit" className="w-full">Post Service</Button>
+        <Button type="submit" className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-400 hoverTransition text-white">Post Service</Button>
       </motion.form>
     </div>
   )

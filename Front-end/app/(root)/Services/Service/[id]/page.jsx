@@ -43,12 +43,16 @@ const ServicePage = () => {
   if (!service) return <Loading />;
 
   async function applyForService(formData) {
+
+    // if is not loged ==> redirect to Sign up page
     if (!isLoggin) {
-      
       router.push("/auth/Login");
       return ;
     }
-    const {status, data} = await addOffer(Object.fromEntries(formData))
+    
+    // if is loged ==> add proposal to service
+    const {status, data} = await addOffer(Object.fromEntries(formData));
+
     switch (status) {
       case 200 : 
         successNotifcation(data.message);
@@ -60,8 +64,7 @@ const ServicePage = () => {
       default : 
         errorNotifcation(data.message);
     }
-    // if is loged ==> add proposal to service
-    // if is not loged ==> redirect to Sign up page
+    
   }
 
   return (

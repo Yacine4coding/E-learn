@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
@@ -96,7 +97,7 @@ const Services = () => {
         transition={{ duration: 0.5, delay: 0.5 }}
       >
         {/* <Link href="/Services/postService"> */}
-          <Button size="lg" onClick={handlePostClick} className="w-full font-semibold font-gilory bg-green-500 text-white">Post a New Service</Button>
+          <Button size="lg" onClick={handlePostClick} className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-400 hoverTransition text-white">Post a New Service</Button>
         {/* </Link> */}
       </motion.div>
     </div>

@@ -46,7 +46,7 @@ function formatNumber(number) {
 
 const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
   const {
-    title,
+    title,  
     username: creator,
     id: courseId,
     picture: imageUrl,
