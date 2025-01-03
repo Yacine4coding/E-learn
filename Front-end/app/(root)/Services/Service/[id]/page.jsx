@@ -177,7 +177,7 @@ const ServicePage = () => {
           </div>
           <Button
             type="submit"
-            className="w-full bg-green-500 text-white text-sm sm:text-base"
+            className="w-full font-semibold font-gilory hover:bg-green-400 hoverTransition bg-green-500 text-white text-sm sm:text-base"
           >
             Submit Application
           </Button>

@@ -7,7 +7,10 @@ import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from 'next/navigation'
-import { getServices } from '../../../request/marketPlace'
+
+import { getServices } from "@/request/marketPlace";
+
+import { errorNotifcation } from "@/components/toast.js";
 
 
 const Services = () => {
@@ -32,6 +35,7 @@ const Services = () => {
       }
     })();
   }, []);
+  
   const handlePostClick = () => {
     // Add functionality to redirect to a new page for service proposal
     // if the user is logged in, otherwise redirect to the Proposal page
@@ -40,7 +44,7 @@ const Services = () => {
   }
 
   return (
-    <div className="grow container mx-auto p-4 font-gilroy my-8">
+    <div className="flex grow container mx-auto p-4 font-gilroy my-8">
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
         initial={{ opacity: 0, y: -50 }}
