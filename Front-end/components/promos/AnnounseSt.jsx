@@ -16,7 +16,7 @@ const Announse = ({ title }) => {
   };
 
   return (
-    <div className="bg-[#1B283F] relative flex flex-col  h-[300px] mx-auto rounded-xl overflow-hidden mx-8 p-8">
+    <div className="bg-[#1B283F] relative flex flex-col w-[95%] h-[300px] mx-auto rounded-xl overflow-hidden mx-8 p-8">
       <div className="font-gilroy flex justify-center flex-col items-start h-full w-full">
         <h1 className="text-white text-4xl font-medium mb-2 mt-5">{title}</h1>
         <h2 className="text-gray-400 font-thin text-2xl leading-10">
