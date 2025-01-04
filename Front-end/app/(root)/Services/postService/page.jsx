@@ -33,7 +33,7 @@ const PostService = () => {
   }
 
   return (
-    <div className="min-w-[600px] mx-auto my-8">
+    <div className="min-w-[600px] mx-4 my-8">
       <motion.h1
         className="text-3xl font-bold mb-6 text-center"
         initial={{ opacity: 0, y: -20 }}

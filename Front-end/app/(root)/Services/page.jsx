@@ -44,7 +44,7 @@ const Services = () => {
   }
 
   return (
-    <div className="flex grow container mx-auto p-4 font-gilroy my-8">
+    <div className="flex flex-col grow container mx-auto p-4 font-gilroy my-8">
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
         initial={{ opacity: 0, y: -50 }}
@@ -62,10 +62,10 @@ const Services = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <div className="p-6">
+            <div className="p-6 flex flex-col w-full h-full">
               <h3 className="text-xl font-semibold mb-2">{srv.title}</h3>
               <p className="text-gray-600 mb-4">{srv.description}</p>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mb-4 mt-auto">
                 <div className="flex items-center gap-2">
                   <Badge className='bg-green-500 text-white font-gilroy font-semibold capitalize'>{srv.level}</Badge>
                   <span className="text-sm font-medium text-green-600">{srv.budget}</span>

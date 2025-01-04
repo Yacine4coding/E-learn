@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { notFound } from 'next/navigation'
 import { Button } from "@/components/ui/button"
@@ -13,35 +13,7 @@ import Loading from '@/app/(root)/Courses/[courseId]/Loading'
 import { getServiceById } from '@/request/marketPlace'
 
 // This would typically come from a database
-const services = [
-  { 
-    id: 1, 
-    title: "Web Development", 
-    description: "Create a responsive website", 
-    level: "expert",
-    budget: "$5000",
-    createdAt: "2023-06-01",
-    location: "Remote",
-    tags: ["web", "frontend", "backend"],
-    proposals: [
-      { id: 1, name: "John Doe", email: "john@example.com", message: "I have 5 years of experience in web development." },
-      { id: 2, name: "Jane Smith", email: "jane@example.com", message: "I specialize in responsive design and can deliver in 2 weeks." },
-    ]
-  },
-  { 
-    id: 2, 
-    title: "Logo Design", 
-    description: "Design a unique logo for your brand", 
-    level: "intermediate",
-    budget: "$500",
-    createdAt: "2023-06-02",
-    location: "New York, NY",
-    tags: ["design", "branding"],
-    proposals: [
-      { id: 3, name: "Alex Johnson", email: "alex@example.com", message: "I've designed logos for several startups and can provide samples." },
-    ]
-  },
-]
+
 
 const ServiceDetail = () => {
 
@@ -56,7 +28,6 @@ const ServiceDetail = () => {
         break; 
       case 404 : 
         notFound()
-        break; 
       default :
       errorNotifcation(data.message);
     }

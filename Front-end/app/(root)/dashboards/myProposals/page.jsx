@@ -1,12 +1,14 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { myProposal } from "@/request/marketPlace";
+import { useEffect, useState } from "react";
+import { errorNotifcation } from "@/components/toast";
 
 // This would typically come from a database
 // This would typically come from a database
-
 
 const MyProposals = () => {
   const [proposals, setProposals] = useState([]);
@@ -22,7 +24,7 @@ const MyProposals = () => {
   }, []);
   return (
     <div className="container font-gilroy mx-auto px-4 py-8">
-      <motion.h1 
+      <motion.h1
         className="text-4xl font-bold mb-8 text-center"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -101,8 +103,7 @@ const MyProposals = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MyProposals
-
+export default MyProposals;
