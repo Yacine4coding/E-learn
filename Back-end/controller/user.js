@@ -317,6 +317,7 @@ export async function isUserExist(userId) {
       isExist: true,
       user: {
         username: isUserExist.username,
+        email: isUserExist.email,
         picture: isUserExist.picture,
         isteacher: isUserExist.isteacher,
         secondId: isUserExist.userId,

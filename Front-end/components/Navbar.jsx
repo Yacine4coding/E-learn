@@ -72,7 +72,7 @@ const Navbar = () => {
   };
 
   const handleFavClick = () => {
-    router.push(`/dashboards/User?defTab=wishlist`);
+    router.push(`/dashboards/User?defTab=Favorite`);
   };
 
   const handleMyCoursesClick = () => {

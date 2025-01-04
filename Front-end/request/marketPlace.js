@@ -54,6 +54,7 @@ export async function getServiceById(id) {
     };
   }
 }
+
 export async function addOffer(formdata) {
   try {
     const { status, data } = await axios.post(
@@ -69,5 +70,33 @@ export async function addOffer(formdata) {
       status: error.response.status,
       data: error.response.data,
     };
+  }
+}
+
+export async function myServices() {
+  try {
+    const { status, data } = await axios.get(
+      `${APIURL}/marketplace/mine`,
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return {
+      status: error.response.status,
+      data: error.response.data,
+    };
+  }
+}
+
+export async function myProposal() {
+  try {
+    const {status , data} = await axios.get(`${APIURL}/marketplace/offers`,CREDENTIALS)
+    return {status , data}
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
   }
 }
