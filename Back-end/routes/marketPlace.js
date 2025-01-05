@@ -3,6 +3,7 @@ import { verifyToken } from "../middleware/jwt.js";
 import {
   addOffer,
   addService,
+  approveOffer,
   getOffers,
   getPersonalServices,
   getService,
@@ -17,5 +18,5 @@ marketPlace.get("/", getServices);
 marketPlace.get("/mine", verifyToken, getPersonalServices);
 marketPlace.get("/offers", verifyToken, getOffers);
 marketPlace.get("/:serviceId", getService);
-
+marketPlace.put("/aprroved",verifyToken,approveOffer);
 export default marketPlace;

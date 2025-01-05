@@ -131,3 +131,34 @@ export async function getOffers(req, res) {
     });
   }
 }
+export async function approveOffer(req, res) {
+  const { serviceId, offerId, userId } = req.body;
+  console.log(req.body)
+  if (!serviceId || !offerId)
+    return res
+      .status(422)
+      .send({ message: "service and offer id are required" });
+  try {
+    const service = await MarketPlace.findById(serviceId);
+    if (!service) return res.status(404).send({ message: "service not found" });
+    if (service.userId !== userId)
+      return res
+        .status(403)
+        .send({ message: "you are not the owner of this service" });
+    const offer = await Offer.findById(offerId);
+    if (!offer) return res.status(404).send({ message: "offer not found" });
+    offer.progressing = {
+      progress: "approved",
+      date: formatDate(),
+    };
+    await offer.save();
+    await Offer.updateMany(
+      { _id: { $ne: offerId } , serviceId },
+      { progressing: { progress: "rejected", date: formatDate() } }
+    );
+    res.status(200).send({ message: "aproved successfuly" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}

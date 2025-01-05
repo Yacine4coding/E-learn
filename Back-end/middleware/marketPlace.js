@@ -42,10 +42,11 @@ async function getOffers(serviceId) {
   try {
     let offs = await Offer.find({ serviceId });
     const offers = []; 
-    for (let { message, userId, serviceId, progressing, createdAt } of offs) {
+    for (let { message, _id:id,userId, serviceId, progressing, createdAt } of offs) {
       const {user} = await isUserExist(userId)
       offers.push({
         message,
+        id,
         userId,
         user,
         serviceId,
