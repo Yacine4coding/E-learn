@@ -17,6 +17,7 @@ const MyProposals = () => {
       const { status, data } = await myProposal();
       if (status === 200) {
         setProposals(data.offers);
+        console.log(data)
       } else {
         errorNotifcation(data.message);
       }
@@ -64,9 +65,9 @@ const MyProposals = () => {
                           : "secondary"
                       }
                       className={`capitalize font-gilroy font-semibold text-xs ${
-                        proposal.status === "approved"
+                        proposal.progressing.progress === "approved"
                           ? "bg-green-500 text-white"
-                          : proposal.status === "rejected"
+                          : proposal.progressing.progress === "rejected"
                           ? "bg-red-500 text-white"
                           : "bg-gray-500 text-gray-100"
                       }`}
@@ -86,9 +87,6 @@ const MyProposals = () => {
                   >
                     <p className="text-green-800 font-semibold mb-2">
                       Approved on {proposal.progressing.date}
-                    </p>
-                    <p className="text-green-700 mb-2">
-                      {proposal.progressing.message}
                     </p>
                     <p className="text-green-700">
                       You will be contacted via email shortly to complete the

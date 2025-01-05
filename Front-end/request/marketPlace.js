@@ -55,6 +55,26 @@ export async function getServiceById(id) {
   }
 }
 
+
+export async function approvedOffer(serviceId , offerId) {
+  try {
+    const { status, data } = await axios.put(
+      `${APIURL}/marketplace/aprroved`,
+      {serviceId , offerId},
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return {
+      status: error.response.status,
+      data: error.response.data,
+    };
+  }
+}
+
+
 export async function addOffer(formdata) {
   try {
     const { status, data } = await axios.post(
