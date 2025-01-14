@@ -75,11 +75,12 @@ export async function approvedOffer(serviceId , offerId) {
 }
 
 
-export async function addOffer(formdata) {
+export async function addOffer({serviceId,message}) {
+  console.log(serviceId)
   try {
     const { status, data } = await axios.post(
       `${APIURL}/marketplace/addOffer`,
-      formdata,
+      {serviceId,message},
       CREDENTIALS
     );
     return { status, data };

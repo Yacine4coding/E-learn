@@ -131,7 +131,7 @@ const ServiceDetail = () => {
                   ) : (
                     <Button
                       onClick={() => handleApprove(proposal.id)}
-                      disabled={approvedProposal !== null}
+                      disabled={approvedProposal !== null || proposal.progressing.progress === "rejected" }
                       className="hover:bg-green-500 hover:text-white hoverTransition"
                     >
                       Approve

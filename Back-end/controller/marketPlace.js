@@ -71,13 +71,16 @@ export async function getServices(req, res) {
 }
 export async function addOffer(req, res) {
   const { userId, message, serviceId } = req.body;
-  if (!message)
-    return res.status(422).send({ message: "message are required" });
+  if (!message || !serviceId)
+    return res
+      .status(422)
+      .send({ message: "message and serviceId are required" });
   try {
     const service = await MarketPlace.findById(serviceId);
     if (!service) return res.status(404).send({ message: "service not found" });
     const offer = await Offer({
       userId,
+      serviceId,
       message,
     }).save();
     res.status(200).send({ message: "offer created successfuly" });
@@ -133,7 +136,6 @@ export async function getOffers(req, res) {
 }
 export async function approveOffer(req, res) {
   const { serviceId, offerId, userId } = req.body;
-  console.log(req.body)
   if (!serviceId || !offerId)
     return res
       .status(422)
