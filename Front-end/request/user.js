@@ -28,3 +28,22 @@ export async function updateUser(userinfo) {
     return { status: error.response.status, data: error.response.data };
   }
 }
+export async function updateProfileImage(img) {
+  try {
+    const { status, data } = await axios.put(
+      `${APIURL}/user/profileImage`,
+      img,
+      {
+        withCredentials: true,
+      }
+    );
+    return {status , data}
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return {status : 10}
+    return {
+      status : error.response.status,
+      data : error.response.data
+    }
+  }
+}

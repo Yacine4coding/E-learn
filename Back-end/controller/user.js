@@ -3,6 +3,9 @@ import {
   generateToken,
   isTokenCorrect,
 } from "../middleware/jwt.js";
+import {__dirname} from "../middleware/multer.js";
+import path from 'path';
+import fs from 'fs';
 import {
   comparePassword,
   hashingPassword,
@@ -180,7 +183,7 @@ export async function updateUserInfo(req, res) {
     language,
     link,
   } = req.body;
-  if (!username && !password && !bio && !currentPassword && !email)
+  if (!username && !password && !bio && !currentPassword && !email && !firstName && !lastName)
     return res.status(204).send();
   try {
     let isUpdated = false;
@@ -211,7 +214,7 @@ export async function updateUserInfo(req, res) {
       user.username = username;
       isUpdated = true;
     }
-    // SET PASSWORD CASES AND UPDATE IT
+    // check PASSWORD CASES AND UPDATE IT
     if ((!password && currentPassword) || (password && !currentPassword))
       return res.status(400).send({
         message: "password or current password are empty",
@@ -302,6 +305,32 @@ export async function getUserDashboard(req, res) {
     });
   }
 }
+export async function updateProfileImage(req,res) {
+  try {
+    const {userId} = req;
+    const imgPath = req.file.path ;
+    const user = await User.findById(userId) ; 
+
+    if (!user) return res.status(404).send({message: "user not found"})
+    // delete the current path
+    const isHasPicture = /^public/.test(user.picture);
+    if (user.picture&&isHasPicture) {
+      const currentFilePath = path.join(__dirname, '/', user.picture);
+      console.log(currentFilePath)
+      if (fs.existsSync(currentFilePath)) {
+        fs.unlinkSync(currentFilePath);
+      }
+    }
+    // update picture 
+    user.picture = imgPath;
+    const newUser = await user.save();
+    res.status(200).send({userinfo : generateUserInfo(newUser)});
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({message : "internal server error"})
+  }
+}
+
 // * google auth
 export function googleFaild(req, res) {
   res.status(401).send({

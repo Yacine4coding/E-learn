@@ -11,7 +11,7 @@ export async function comparePassword(pass, hashPass) {
   return isCorrectPassword;
 }
 export function generateUserInfo(user) {
-  const {
+  let {
     username,
     isteacher,
     notifications,
@@ -24,6 +24,7 @@ export function generateUserInfo(user) {
     firstName,
     lastName,
   } = user;
+  if (/^public/.test(picture)) picture = `http://localhost:5000/${picture}`;
   return {
     email,
     link,

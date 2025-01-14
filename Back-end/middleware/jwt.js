@@ -77,7 +77,9 @@ export async function verifyToken(req, res, next) {
       res.status(401).send({ message: "you are not loggin , please login" });
       return;
     }
+
     req.body.userId = userId.toString();
+    req.userId = userId.toString();
     req.body.user = user;
     req.body.isteacher = user.isteacher;
     req.body.secondId = user.secondId;
