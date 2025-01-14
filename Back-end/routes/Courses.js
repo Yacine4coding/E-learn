@@ -8,7 +8,7 @@ import {
   getPersonellCourses,
   getTeacherCourses,
   updateCourses,
-  wishlistCourses,
+  wishlistCourses,searchCourses
 } from "../controller/courses.js";
 import { enableTeacher } from "../middleware/teacher.js";
 import upload from "../middleware/multer.js";
@@ -25,6 +25,7 @@ courses.get("/", verifyToken, enableTeacher, getPersonellCourses);
 courses.get("/bestCourses/:count", bestCourses);
 courses.get("teacherCourse/:teacherId", verifyToken, getTeacherCourses);
 courses.get("/:courseId",getUserFromToken ,getCourse)
+courses.get("/search/:value",searchCourses);
 courses.put("/favorite/:courseId", verifyToken, favoriteCourses);
 courses.put("/wishlist/:courseId", verifyToken, wishlistCourses);
 courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);

@@ -270,6 +270,30 @@ export async function getCourse(req, res) {
     });
   }
 }
+export async function searchCourses(req, res) {
+  const { value } = req.params;
+  console.log(value)
+  try {
+    const courses = await Courses.find({
+      title: { $regex: value, $options: "i" },
+      description: { $regex: value, $options: "i" },
+    });
+    if (!courses) return res.status(404).send();
+    const handleCourses = [];
+    for (let course of courses) {
+      const { user, isExist } = await isUserExist(course.teacherId);
+      if (!isExist) continue;
+      const c = generateCourse(course, user);
+      handleCourses.push(c);
+    }
+    console.log(handleCourses)
+    res.status(200).send({courses : handleCourses});
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+
 // * functions
 export async function getCoursesById(id, user) {
   try {

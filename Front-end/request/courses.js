@@ -70,3 +70,16 @@ export async function buyNewCourse(courseId) {
     };
   }
 }
+export async function search(value) {
+  try {
+    const { status, data } = await axios.get(
+      `${APIURL}/course/search/${value}`
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (error.response)
+      return { status: error.response.status, data: error.response.data };
+    return { status: 10 };
+  }
+}
