@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { useDispatch, useSelector } from "react-redux";
 import { genProfileImg } from "@/public/avatars/avatar";
-import { updateUser } from "@/request/user";
+import { updateProfileImage, updateUser } from "@/request/user";
 import { setState } from "@/redux/user";
 import { useRouter } from "next/navigation";
 import { errorNotifcation, successNotifcation } from "./toast";
@@ -32,7 +32,7 @@ const ProfileForm = () => {
     language: user.language,
     link: user.link,
   });
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -40,6 +40,17 @@ const ProfileForm = () => {
         setProfileImage(reader.result);
       };
       reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append('profileImage', file);
+      const {status , data} = await updateProfileImage(formData);
+      if (status === 200) {
+        successNotifcation("profile picture update succesfuly")
+        dispatch(setState(data.userinfo))
+      }else if(status === 10) {
+        errorNotifcation("error with code 10")
+      }else {
+        errorNotifcation(data);
+      }
     }
   };
 
