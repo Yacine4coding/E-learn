@@ -190,6 +190,7 @@ const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
           alt={title || "banner"}
           width={0}
           height={0}
+          sizes="100%"
           className="w-full h-full object-cover"
         />
       </div>
