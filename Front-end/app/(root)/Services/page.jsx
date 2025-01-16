@@ -53,7 +53,6 @@ const Services = () => {
     
   }
 
-  // why is this loading not applaying to my app in this service page
 
   return (
     
@@ -145,7 +144,7 @@ const Services = () => {
         transition={{ duration: 0.5, delay: 0.5 }}
       >
         {/* <Link href="/Services/postService"> */}
-          <Button size="lg" onClick={handlePostClick} className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-400 hoverTransition text-white">Post a New Service</Button>
+          <Button size="lg" onClick={handlePostClick} className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-700 hoverTransition text-white">Post a New Service</Button>
         {/* </Link> */}
       </motion.div>
     </div>
