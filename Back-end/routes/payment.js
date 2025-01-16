@@ -1,8 +1,8 @@
 import express from 'express';
-import {verifyToken} from "../middleware/jwt"
-import { createPaypal, createStripe, executePaypal } from '../controller/payment';
+import {verifyToken} from "../middleware/jwt.js"
+import { createPaypal, createStripe, executePaypal } from '../controller/payment.js';
 
-const payment = express.payment();
+const payment = express.Router();
 
 payment.post('/create-stripe-payment',verifyToken,createStripe);
 
