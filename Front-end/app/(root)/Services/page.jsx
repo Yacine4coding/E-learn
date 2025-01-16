@@ -12,8 +12,13 @@ import { getServices } from "@/request/marketPlace";
 
 import { errorNotifcation } from "@/components/toast.js";
 
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 const Services = () => {
+
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
   const [services, setServices] = useState([]);
@@ -33,6 +38,7 @@ const Services = () => {
         default:
           errorNotifcation("error with code 10");
       }
+      setLoading(false);
     })();
   }, []);
   
@@ -43,7 +49,14 @@ const Services = () => {
     // if the user is not logged in, show a signup prompt
   }
 
+  if (loading) {
+    
+  }
+
+  // why is this loading not applaying to my app in this service page
+
   return (
+    
     <div className="flex flex-col grow container mx-auto p-4 font-gilroy my-8">
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
@@ -54,7 +67,37 @@ const Services = () => {
         Available Services
       </motion.h1>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {services.map((srv, index) => (
+        
+        {loading ?
+        Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i} className="w-full ">
+              <CardHeader className="space-y-2">
+                <Skeleton className="bg-gray-200 h-8 w-3/4" />
+                <Skeleton className="bg-gray-200 h-4 w-full" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="bg-gray-200 h-6 w-24 rounded-full" />
+                  <Skeleton className="bg-gray-200 h-6 w-16" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Skeleton className="bg-gray-200 h-4 w-32" />
+                  <Skeleton className="bg-gray-200 h-4 w-24" />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Skeleton className="bg-gray-200 h-6 w-24 rounded-full" />
+                  <Skeleton className="bg-gray-200 h-6 w-20 rounded-full" />
+                  <Skeleton className="bg-gray-200 h-6 w-16 rounded-full" />
+                  <Skeleton className="bg-gray-200 h-6 w-20 rounded-full" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Skeleton className="bg-gray-200 h-10 w-full" />
+              </CardFooter>
+            </Card>
+          )
+        )
+        : services.map((srv, index) => (
           <motion.div
             key={srv.id}
             className="border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
