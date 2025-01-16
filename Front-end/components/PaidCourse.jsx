@@ -17,16 +17,19 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/CustomUI/tabs";
+import { errorNotifcation } from "./toast";
 
 const PaidCourse = ({ course }) => {
-
-
   // set current chapter accordion to open in sidbar
   const [isCurrent, setIsCurrent] = useState(course.progress.chapterNumber);
   const progress = course.progress.chapterNumber;
-
+  const [currentChapter, setCurrentChapter] = useState(
+    course.chapters[progress]
+  );
+  const [quizes, setQuizes] = useState(currentChapter.queezes);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [quizResult, setQuizeResult] = useState(false);
   const handleQuizChange = (quizIndex, choiceIndex) => {
     setQuizAnswers((prevAnswers) => ({
       ...prevAnswers,
@@ -36,9 +39,35 @@ const PaidCourse = ({ course }) => {
 
   const handleQuizSubmit = () => {
     setQuizSubmitted(true);
-    console.log("Quiz answers submitted:", quizAnswers);
+    const answerResult = quizes.reduce((prev, queez, index) => {
+      if (quizAnswers[index] === undefined) {
+        errorNotifcation("answer all questions pleas");
+        return false;
+      }
+      const isCorrectAnswer = queez.answerNumber === quizAnswers[index];
+      return prev + (isCorrectAnswer ? 1 : 0);
+    }, 0);
+    if (answerResult !== false) {
+      setQuizeResult(answerResult);
+    }
   };
-
+  const handleContinueClick = (Continue = true) => {
+    if (!Continue) {
+      setQuizResult(false);
+      return ;
+    }
+    // handle req 
+    // when course end
+    // when course not end
+  }
+  if (quizResult !== false) {
+    return <div className="w-secreen mt-40 flex flex-col items-center justify-center">
+      <h1 className="my-5 font-bold text-3xl text-center capitalize">you result is : {`${quizResult}/${quizes.length}`}</h1>
+      <div>
+        <button className="px-5 py-2 rounded-md border capitalize border-green-500 font-semibold hover:bg-green-500 hover:text-white duration-200" onClick={()=>handleContinueClick()}>next chapter</button>
+      </div>
+    </div>;
+  }
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header Section */}
@@ -83,7 +112,7 @@ const PaidCourse = ({ course }) => {
                   Chapter Quizzes
                 </h2>
                 <div className="space-y-2">
-                  {course.chapters[progress].queezes.map((quiz, index) => (
+                  {quizes.map((quiz, index) => (
                     <div key={index} className="border rounded-sm p-4">
                       <h3 className="text-md font-semibold mb-4">
                         Quiz {index + 1}: {quiz.question}
@@ -95,7 +124,7 @@ const PaidCourse = ({ course }) => {
                             className={`flex items-center space-x-2 p-3 rounded-lg border hover:bg-accent cursor-pointer ${
                               quizSubmitted &&
                               quizAnswers[index] === choiceIndex
-                                ? quiz.correct === choiceIndex
+                                ? quiz.answerNumber === choiceIndex
                                   ? "bg-green-100"
                                   : "bg-red-100"
                                 : ""
