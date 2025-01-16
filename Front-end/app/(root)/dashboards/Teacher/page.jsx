@@ -48,7 +48,7 @@ const TeacherDashboard = () => {
             <CardDescription>View and manage your courses</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => router.push('/Instructor/editCourse')} className="w-full font-semibold font-gilory bg-green-600 hover:bg-green-700 hoverTransition text-white">
+            <Button onClick={() => router.push('/Instructor/myCourses')} className="w-full font-semibold font-gilory bg-green-600 hover:bg-green-700 hoverTransition text-white">
               <BarChart className="mr-2 h-4 w-4" /> View Courses
             </Button>
           </CardContent>
