@@ -100,6 +100,10 @@ const Navbar = () => {
     router.push(`/dashboards/myProposals`);
   }
 
+  const handleMyDashboardClick = () => {
+    router.push(`/dashboards/Teacher`);
+  }
+
 
 
   const OffnavItems = [
@@ -172,44 +176,62 @@ const Navbar = () => {
                 >
                   My Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                  onClick={handleMyCoursesClick}
-                >
-                  My Courses
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                  onClick={handleFavClick}
-                >
-                  Favourite
-                </DropdownMenuItem>
+
+                {user.isteacher? (
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyDashboardClick}
+                    >
+                      My Dashboard
+                    </DropdownMenuItem>
+                ):( 
+                  <>
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyCoursesClick}
+                    >
+                      My Courses
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleFavClick}
+                    >
+                      Favourite
+                    </DropdownMenuItem>
+                  </>
+                )}
 
                 <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
 
                 {/* if services > 0 */}
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                  onClick={handleMyServicesClick}
-                >
-                  My Services
-                </DropdownMenuItem>
+                {!user.isteacher && (
+                  <>
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyServicesClick}
+                    >
+                      My Services
+                    </DropdownMenuItem>
 
-                {/* if Proposal > 0 */}
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                  onClick={handleMyProposalsClick}
-                >
-                  My Porposals
-                </DropdownMenuItem>
+                    {/* if Proposal > 0 */}
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyProposalsClick}
+                    >
+                      My Porposals
+                    </DropdownMenuItem>
 
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                  onClick={handleStoreClick}
-                >
-                  MarketPlace
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleStoreClick}
+                    >
+                      MarketPlace
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
+                  </>
+                )}
+
+
                 <DropdownMenuItem
                   className="text-red-600 cursor-pointer hover:bg-slate-200 hoverTransition"
                   onClick={handleLogoutClick}

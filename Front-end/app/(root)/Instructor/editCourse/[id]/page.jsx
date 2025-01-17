@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -28,14 +29,14 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { CheckCircle, Plus, Minus, Upload } from 'lucide-react'
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
-const ACCEPTED_VIDEO_TYPES = ['video/mp4'];
+const MAX_FILE_SIZE = 100 * 1024 * 1024
+const ACCEPTED_VIDEO_TYPES = ['video/mp4']
 
 const videoFileSchema = z.object({
   name: z.string(),
   size: z.number().max(MAX_FILE_SIZE, 'File size must be less than 100MB'),
   type: z.enum(ACCEPTED_VIDEO_TYPES, 'Only MP4 files are accepted'),
-});
+})
 
 const chapterSchema = z.object({
   title: z.string().min(1, 'Chapter title is required'),
@@ -59,9 +60,12 @@ const formSchema = z.object({
   chapters: z.array(chapterSchema).min(1, 'At least one chapter is required'),
 })
 
-const PostCourse = () => {
+const EditCourse = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const params = useParams()
+  const router = useRouter()
+  const courseId = params.id
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -93,31 +97,68 @@ const PostCourse = () => {
     name: "chapters",
   })
 
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      const mockCourseData = {
+        title: 'Introduction to React',
+        description: 'Learn the basics of React and build your first app',
+        category: 'programming',
+        level: 'beginner',
+        price: '49.99',
+        duration: '10',
+        isPublished: true,
+        introduction: {
+          title: 'Welcome to React',
+          description: 'An overview of what you\'ll learn in this course',
+          videoFile: undefined,
+        },
+        chapters: [
+          {
+            title: 'React Fundamentals',
+            description: 'Understanding the core concepts of React',
+            videoFile: undefined,
+          },
+          {
+            title: 'Building Your First Component',
+            description: 'Step-by-step guide to creating React components',
+            videoFile: undefined,
+          },
+        ],
+      }
+
+      form.reset(mockCourseData)
+    }
+
+    fetchCourseData()
+  }, [courseId, form])
+
   const onSubmit = (values) => {
     setIsSubmitting(true)
-    // Here you would typically send the form data to your backend
     console.log(values)
-    // Simulating file upload
     setTimeout(() => {
       setIsSubmitting(false)
       setIsSuccess(true)
-      // Reset form after successful submission
       setTimeout(() => {
         setIsSuccess(false)
-        form.reset()
-      }, 3000)
+        router.push('/teacher/my-courses')
+      }, 2000)
     }, 2000)
   }
 
   return (
-    <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 font-gilroy">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto py-10 px-4 sm:px-6 lg:px-8"
+    >
       <motion.h1 
         className="text-4xl font-bold mb-8 text-center"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ y: -50 }}
+        animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        Create a New Course
+        Edit Course
       </motion.h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -132,14 +173,14 @@ const PostCourse = () => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Course Title</FormLabel>
+                  <FormLabel>Course Title</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter course title" {...field} />
                   </FormControl>
-                  <FormDescription className="text-gray-500">
+                  <FormDescription>
                     Choose a catchy title that describes your course.
                   </FormDescription>
-                  <FormMessage className="text-red-600" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -148,7 +189,7 @@ const PostCourse = () => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Course Description</FormLabel>
+                  <FormLabel>Course Description</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Enter course description"
@@ -156,17 +197,17 @@ const PostCourse = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription className="text-gray-500">
+                  <FormDescription>
                     Provide a detailed description of what students will learn.
                   </FormDescription>
-                  <FormMessage className="text-red-600" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
           </motion.div>
 
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -176,24 +217,24 @@ const PostCourse = () => {
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Category</FormLabel>
+                  <FormLabel>Category</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-white">
+                    <SelectContent>
                       <SelectItem value="programming">Programming</SelectItem>
                       <SelectItem value="design">Design</SelectItem>
                       <SelectItem value="business">Business</SelectItem>
                       <SelectItem value="marketing">Marketing</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription className="text-gray-500">
+                  <FormDescription>
                     Choose the most relevant category for your course.
                   </FormDescription>
-                  <FormMessage className="text-red-600" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -202,23 +243,23 @@ const PostCourse = () => {
               name="level"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Course Level</FormLabel>
+                  <FormLabel>Course Level</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a level" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent className="bg-white">
+                    <SelectContent>
                       <SelectItem value="beginner">Beginner</SelectItem>
                       <SelectItem value="intermediate">Intermediate</SelectItem>
                       <SelectItem value="advanced">Advanced</SelectItem>
                     </SelectContent>
                   </Select>
-                  <FormDescription className="text-gray-500">
+                  <FormDescription>
                     Indicate the difficulty level of your course.
                   </FormDescription>
-                  <FormMessage className="text-red-600" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -227,63 +268,63 @@ const PostCourse = () => {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Price ($)</FormLabel>
+                  <FormLabel>Price ($)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="Enter course price" {...field} />
                   </FormControl>
-                  <FormDescription className="text-gray-500">
+                  <FormDescription>
                     Set a fair price for your course content.
                   </FormDescription>
-                  <FormMessage className="text-red-600" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name="duration"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Duration (hours)</FormLabel>
+                  <FormLabel>Duration (hours)</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="Enter course duration" {...field} />
                   </FormControl>
-                  <FormDescription className="text-gray-500">
+                  <FormDescription>
                     Estimate the total duration of your course in hours.
                   </FormDescription>
-                  <FormMessage className="text-red-600" />
+                  <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
           </motion.div>
 
-            {/* <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              <FormField
-                control={form.control}
-                name="isPublished"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="font-semibold">
-                        Publish immediately
-                      </FormLabel>
-                      <FormDescription className="text-gray-500">
-                        If unchecked, your course will be saved as a draft.
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </motion.div> */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <FormField
+              control={form.control}
+              name="isPublished"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Publish immediately
+                    </FormLabel>
+                    <FormDescription>
+                      If unchecked, your course will be saved as a draft.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </motion.div>
           
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -300,11 +341,11 @@ const PostCourse = () => {
                   name="introduction.title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">Title</FormLabel>
+                      <FormLabel>Title</FormLabel>
                       <FormControl>
                         <Input placeholder="Enter introduction title" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-600" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -313,11 +354,11 @@ const PostCourse = () => {
                   name="introduction.description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">Description</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea placeholder="Enter introduction description" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-600" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -326,7 +367,7 @@ const PostCourse = () => {
                   name="introduction.videoFile"
                   render={({ field: { onChange, value, ...rest } }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">Video File <span className='font-normal'>(MP4 only, max 100MB)</span></FormLabel>
+                      <FormLabel>Video File (MP4 only, max 100MB)</FormLabel>
                       <FormControl>
                         <div className="flex items-center space-x-2">
                           <Input
@@ -345,7 +386,7 @@ const PostCourse = () => {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              const fileInput = document.querySelector('input[type="file"]')
+                              const fileInput = document.querySelector('input[name="introduction.videoFile"]')
                               fileInput?.click()
                             }}
                           >
@@ -353,8 +394,8 @@ const PostCourse = () => {
                           </Button>
                         </div>
                       </FormControl>
-                      {value && <FormDescription className="text-gray-500">{value.name}</FormDescription>}
-                      <FormMessage className="text-red-600" />
+                      {value && <FormDescription>{value.name}</FormDescription>}
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -391,11 +432,11 @@ const PostCourse = () => {
                       name={`chapters.${index}.title`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-semibold">Title</FormLabel>
+                          <FormLabel>Title</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter chapter title" {...field} />
                           </FormControl>
-                          <FormMessage className="text-red-600" />
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -404,11 +445,11 @@ const PostCourse = () => {
                       name={`chapters.${index}.description`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-semibold">Description</FormLabel>
+                          <FormLabel>Description</FormLabel>
                           <FormControl>
                             <Textarea placeholder="Enter chapter description" {...field} />
                           </FormControl>
-                          <FormMessage className="text-red-600" />
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -417,7 +458,7 @@ const PostCourse = () => {
                       name={`chapters.${index}.videoFile`}
                       render={({ field: { onChange, value, ...rest } }) => (
                         <FormItem>
-                          <FormLabel className="font-semibold">Video File <span className='font-normal'>(MP4 only, max 100MB)</span></FormLabel>
+                          <FormLabel>Video File (MP4 only, max 100MB)</FormLabel>
                           <FormControl>
                             <div className="flex items-center space-x-2">
                               <Input
@@ -444,8 +485,8 @@ const PostCourse = () => {
                               </Button>
                             </div>
                           </FormControl>
-                          {value && <FormDescription className="text-gray-500">{value.name}</FormDescription>}
-                          <FormMessage className="text-red-600" />
+                          {value && <FormDescription>{value.name}</FormDescription>}
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -464,7 +505,7 @@ const PostCourse = () => {
               type="button"
               variant="outline"
               size="lg"
-              className="w-full font-semibold font-gilory border-green-700 hover:border-green-500 hoverTransition text-green-700 hover:text-green-500"
+              className="w-full"
               onClick={() => append({ title: '', description: '', videoFile: undefined })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add Chapter
@@ -476,8 +517,8 @@ const PostCourse = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.2 }}
           >
-            <Button type="submit" size="lg" className="w-full font-semibold font-gilory bg-green-600 hover:bg-green-700 hoverTransition text-white" disabled={isSubmitting}>
-              {isSubmitting ? 'Posting Course...' : 'Post Course'}
+            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Updating Course...' : 'Update Course'}
             </Button>
           </motion.div>
         </form>
@@ -491,13 +532,13 @@ const PostCourse = () => {
             className="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-md flex items-center shadow-lg"
           >
             <CheckCircle className="mr-2" />
-            Course posted successfully!
+            Course updated successfully!
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
 
-export default PostCourse
+export default EditCourse
 

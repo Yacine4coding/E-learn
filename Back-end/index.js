@@ -58,7 +58,7 @@ app.use("/studient", studient);
 app.use("/course", courses);
 app.use("/teacher", teacher);
 app.use("/marketPlace",marketPlace);
-app.use("/payment",payment)
+// app.use("/payment",payment)
 app.use((req, res) => {
   res.status(505).send("rout not found");
 });
