@@ -110,7 +110,7 @@ const ProfileForm = () => {
                 document.getElementById("profileImageInput").click()
               }
             >
-              <Camera className="h-4 w-4" />
+              <Camera className="h-4 w-4" color="white" />
             </Button>
             <input
               type="file"
