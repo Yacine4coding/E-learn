@@ -39,11 +39,11 @@ const ServiceDetail = () => {
   }
 
   const handleApprove = async (proposalId) => {
-    setApprovedProposal(proposalId);
     const { status, data } = await approvedOffer(id, proposalId);
     switch (status) {
       case 200:
         successNotifcation(data.message);
+        setApprovedProposal(proposalId);
         break;
       case 10:
         errorNotifcation("error with code 10");
@@ -53,6 +53,7 @@ const ServiceDetail = () => {
     }
     // Here you would typically update the database
     console.log(`Approved proposal ${proposalId} for service ${service.id}`);
+    // You would also update the state to reflect the change in the UI
   };
 
   return (
@@ -121,7 +122,7 @@ const ServiceDetail = () => {
                   </h3>
                   <p className="text-gray-600 mb-2">{proposal.user.email}</p>
                   <p className="mb-4">{proposal.message}</p>
-                  {proposal.progressing.progress === "approved" ? (
+                  {approvedProposal === proposal.id ? (
                     <Button
                       disabled={true}
                       className="bg-green-500 text-white text-bold"
