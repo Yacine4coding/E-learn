@@ -31,10 +31,6 @@ const coursesShcema = mongoose.Schema({
       count: Number,
     },
   },
-  payCount: {
-    type: Number,
-    default: 0,
-  },
   buyCount: {
     type: Number,
     default: 0,

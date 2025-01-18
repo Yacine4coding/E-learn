@@ -234,21 +234,24 @@ export async function getCourse(req, res) {
   const { userId } = req.body;
   const { courseId } = req.params;
   try {
+    // GET COURSE DATA
     const course = await getCourseById(courseId);
-    // COURSE NOT FOUND
     if (!course) return res.status(404).send({ message: "course not found" });
-    // IF COURSE NOT PAID
+    // CHECK IF COURSE PAID
+    // USER NOT LOGGIN
     if (!userId)
       return res.status(200).send({
         paid: false,
         course,
       });
+    // USER LOGIN
     let user = await User.findById(userId);
     user = await getStudient(user.userId);
+    // GET FAVORITE STATUS
     const isFavorite = user.favorite.includes(courseId);
     const isPaid = await StudientCourse.findOne({
       courseId,
-      studientId: userId,
+      studentId: userId,
     });
     if (!isPaid)
       return res.status(200).send({
@@ -261,7 +264,7 @@ export async function getCourse(req, res) {
     // IF COURSE PAID
     res.status(200).send({
       paid: true,
-      course: { ...course, progress: isPaid.progress , isFavorite },
+      course: { ...course, progress: isPaid, isFavorite },
     });
   } catch (error) {
     console.log(error);
@@ -272,7 +275,6 @@ export async function getCourse(req, res) {
 }
 export async function searchCourses(req, res) {
   const { value } = req.params;
-  console.log(value)
   try {
     const courses = await Courses.find({
       title: { $regex: value, $options: "i" },
@@ -286,14 +288,48 @@ export async function searchCourses(req, res) {
       const c = generateCourse(course, user);
       handleCourses.push(c);
     }
-    console.log(handleCourses)
-    res.status(200).send({courses : handleCourses});
+    res.status(200).send({ courses: handleCourses });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "internal server error" });
   }
 }
-
+export async function submitQuize(req, res) {
+  const { userId, courseId, chapterNumber } = req.body;
+  if (!courseId || chapterNumber < -1)
+    return res.status(422).send({ messge: "all body properties are required" });
+  try {
+    // GET COURSE INFORMATION
+    const course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    // CHECK IF STUDENT BUY THIS COURSE AND GET HIS PROGRESS
+    let progress = await StudientCourse.findOne({
+      studentId: userId,
+      courseId,
+    });
+    if (!progress)
+      return res
+        .status(403)
+        .send({ message: "you need to buy this course first" });
+    // INCREMENT PROGRESS
+    if (progress.chapterNumber < course.chapterNumber) {
+      progress.chapterNumber = progress.chapterNumber + 1;
+      progress.for100 = ((progress.chapterNumber / course.chapterNumber) * 100).toFixed(2);
+    }
+    progress = await progress.save();
+    // SEND COURSE AND NEW PROGRESS
+    const { user } = await isUserExist(course.teacherId);
+    res.status(200).send({
+      course: {
+        ...generateCourse(course, user, true),
+        progress: progress,
+      },
+    });
+  } catch (error) {
+    console.log("error in submit quize inside controller/courses.js\n", error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
 // * functions
 export async function getCoursesById(id, user) {
   try {
