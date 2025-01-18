@@ -18,6 +18,7 @@ import {
 import passport from "passport";
 import { fileURLToPath } from "url";
 import payment from "./routes/payment.js";
+import review from "./routes/reviews.js";
 const app = express();
 // * config
 app.use(
@@ -59,6 +60,7 @@ app.use("/course", courses);
 app.use("/teacher", teacher);
 app.use("/marketPlace",marketPlace);
 // app.use("/payment",payment)
+app.use("/review", review);
 app.use((req, res) => {
   res.status(505).send("rout not found");
 });

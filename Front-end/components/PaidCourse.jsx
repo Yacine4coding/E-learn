@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,27 +17,31 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/CustomUI/tabs";
-import { errorNotifcation } from "./toast";
+import { errorNotifcation, successNotifcation } from "./toast";
+import { submitQueez } from "@/request/courses";
+import { useRouter } from "next/navigation";
+import { genProfileImg } from "@/public/avatars/avatar";
 
-const PaidCourse = ({ course }) => {
-  // set current chapter accordion to open in sidbar
-  const [isCurrent, setIsCurrent] = useState(course.progress.chapterNumber);
-  const progress = course.progress.chapterNumber;
-  const [currentChapter, setCurrentChapter] = useState(
-    course.chapters[progress]
-  );
-  const [quizes, setQuizes] = useState(currentChapter.queezes);
+const PaidCourse = ({ course, finalPage, review }) => {
+  const route = useRouter();
+  // SET DATA INSIDE STAT
+  const [Course, setCourse] = useState(course);
+  // GET PRORESS
+  const [isCurrent, setIsCurrent] = useState(Course.progress.chapterNumber);
+  const [progress, setProgress] = useState(Course.progress.chapterNumber);
+  // GET QUIZ
+  const [quizes, setQuizes] = useState(Course.chapters[progress].queezes);
+  // QUIZE STATS
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [quizResult, setQuizeResult] = useState(false);
+  // EVENTS
   const handleQuizChange = (quizIndex, choiceIndex) => {
     setQuizAnswers((prevAnswers) => ({
       ...prevAnswers,
       [quizIndex]: choiceIndex,
     }));
   };
-
-  const handleQuizSubmit = () => {
+  const handleQuizSubmit = async () => {
     setQuizSubmitted(true);
     const answerResult = quizes.reduce((prev, queez, index) => {
       if (quizAnswers[index] === undefined) {
@@ -47,41 +51,39 @@ const PaidCourse = ({ course }) => {
       const isCorrectAnswer = queez.answerNumber === quizAnswers[index];
       return prev + (isCorrectAnswer ? 1 : 0);
     }, 0);
-    if (answerResult !== false) {
-      setQuizeResult(answerResult);
+    const { status, data } = await submitQueez(
+      quizAnswers,
+      course.id,
+      progress
+    );
+    if (status === 10) {
+      errorNotifcation("error with code 10");
+    } else if (status !== 200) errorNotifcation(data.message);
+    else if (data.course.progress.for100 === 100) finalPage();
+    else {
+      setCourse(data.course);
+      setIsCurrent(data.course.progress.chapterNumber);
+      setProgress(data.course.progress.chapterNumber);
+      setQuizes(data.course.chapters[progress].queezes);
+      setQuizAnswers({});
+      setQuizSubmitted(false);
+      successNotifcation("submit successfuly");
     }
   };
-  const handleContinueClick = (Continue = true) => {
-    if (!Continue) {
-      setQuizResult(false);
-      return ;
-    }
-    // handle req 
-    // when course end
-    // when course not end
-  }
-  if (quizResult !== false) {
-    return <div className="w-secreen mt-40 flex flex-col items-center justify-center">
-      <h1 className="my-5 font-bold text-3xl text-center capitalize">you result is : {`${quizResult}/${quizes.length}`}</h1>
-      <div>
-        <button className="px-5 py-2 rounded-md border capitalize border-green-500 font-semibold hover:bg-green-500 hover:text-white duration-200" onClick={()=>handleContinueClick()}>next chapter</button>
-      </div>
-    </div>;
-  }
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header Section */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mt-2">{course.title}</h1>
+        <h1 className="text-3xl font-bold mt-2">{Course.title}</h1>
         <div className="flex items-center gap-2 mt-2">
           <span className="text-muted-foreground capitalize">
-            {course.username}
+            {Course.username}
           </span>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            <span className="font-medium">{course.stars.count}</span>
+            <span className="font-medium">{Course.stars.count}</span>
             <span className="text-muted-foreground">
-              ({course.view.count} ratings)
+              ({Course.view.count} ratings)
             </span>
           </div>
         </div>
@@ -93,7 +95,7 @@ const PaidCourse = ({ course }) => {
           {/* Video Player */}
           <div className="relative aspect-video bg-black mb-6 rounded-3xl overflow-hidden">
             <video className="w-full h-full" poster="/placeholder.svg" controls>
-              <source src={course.chapters[progress].link} type="video/mp4" />
+              <source src={Course.chapters[progress].link} type="video/mp4" />
             </video>
           </div>
 
@@ -164,7 +166,7 @@ const PaidCourse = ({ course }) => {
               <div className="ml-4 space-y-2">
                 <h2 className="text-md font-bold">Make Uber Clone App</h2>
                 <p className="text-gray-500 font-normal text-sm">
-                  {course.description}
+                  {Course.description}
                 </p>
               </div>
             </TabsContent>
@@ -174,37 +176,21 @@ const PaidCourse = ({ course }) => {
               <div className="mb-8">
                 <h2 className="text-md font-bold mb-1">Review</h2>
                 <div className="space-y-6">
-                  {[
-                    {
-                      name: "Leonardo Da Vinci",
-                      comment:
-                        "Loved the course, I've learned some very subtle tecniques, expecially on leaves.",
-                    },
-                    {
-                      name: "Titania S",
-                      comment:
-                        "I loved the course, it had been a long time since I had experimented with watercolors and now I will do it more often thanks to Yacine Bensidahmed",
-                    },
-                    {
-                      name: "Zhirkov",
-                      comment:
-                        "Yes..I just emphasize that the use of Photoshop, for non-users, becomes difficult to follow. What requires a course to master it. Safe and very didactic teacher.",
-                    },
-                  ].map((review, index) => (
+                  {review.map((rv, index) => (
                     <div key={index} className="flex gap-4">
                       <Avatar>
                         <AvatarImage
-                          src={`@/public/avatars/avatar${index}.png`}
-                          alt={review.name}
+                          src={genProfileImg(rv.user.picture)}
+                          alt={rv.user.username}
                         />
-                        <AvatarFallback>{review.name[0]}</AvatarFallback>
+                        <AvatarFallback>{rv.user.username[0]}</AvatarFallback>
                       </Avatar>
                       <div>
                         <h3 className="font-medium text-sm text-[#3DCBB1]">
-                          {review.name}
+                          {rv.user.username}
                         </h3>
                         <p className="text-sm text-gray-500 font-normal">
-                          {review.comment}
+                          {rv.message}
                         </p>
                       </div>
                     </div>

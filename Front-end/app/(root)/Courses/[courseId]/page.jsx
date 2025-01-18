@@ -2,24 +2,30 @@
 import PaidCourse from "@/components/PaidCourse";
 import { errorNotifcation } from "@/components/toast";
 import UnpaidCourse from "@/components/UnpaidCourse";
-import { getCourse } from "@/request/courses";
-import { useParams } from "next/navigation";
+import { getCourse, getReview } from "@/request/courses";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "./Loading";
 
 function page() {
   const { courseId } = useParams();
-  const [refresh , setRefresh]= useState(null)
+  const [refresh, setRefresh] = useState(null);
   const [data, setData] = useState(null);
+  const [review, setReview] = useState([]);
+  const route = useRouter();
   useEffect(() => {
     (async function () {
       const { status, data } = await getCourse(courseId);
       switch (status) {
         case 200:
+          if (data.paid && data.course.progress?.for100 === 100) {
+            route.push(`/Courses/final/${courseId}`);
+            return;
+          }
           setData(data);
           break;
         case 404:
-          errorNotifcation(data.message)
+          errorNotifcation(data.message);
           console.log(data.message);
           break;
         case 500:
@@ -30,13 +36,42 @@ function page() {
       }
     })();
   }, [refresh]);
-  if (data === null) return <Loading/>;
+  useEffect(() => {
+    (async function () {
+      const { status, data } = await getReview(courseId);
+      console.log(data)
+      switch (status) {
+        case 200:
+          setReview(data.reviews);
+          break;
+        case 204:
+          setReview([]);
+          break;
+        case 10:
+          console.log("dev bugs");
+        default:
+          console.log(data.message);
+      }
+    })();
+  }, [refresh]);
+  function finalPage() {
+    route.push(`/Courses/final/${courseId}`);
+  }
+  if (data === null) return <Loading />;
   return (
     <div className="w-full min-h-[87vh]">
       {data.paid ? (
-        <PaidCourse course={data.course} />
+        <PaidCourse
+          course={data.course}
+          finalPage={finalPage}
+          review={review}
+        />
       ) : (
-        <UnpaidCourse course={data.course} setRefresh={setRefresh}/>
+        <UnpaidCourse
+          course={data.course}
+          setRefresh={setRefresh}
+          review={review}
+        />
       )}
     </div>
   );

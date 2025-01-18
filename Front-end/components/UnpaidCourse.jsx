@@ -13,11 +13,10 @@ import lect  from "@/public/lecture.svg";
 import lang  from "@/public/langSound.svg";
 import screen  from "@/public/screen.svg";
 import { genProfileImg } from "@/public/avatars/avatar";
-import { useRouter } from "next/navigation";
 import { errorNotifcation, successNotifcation } from "./toast";
 
-const UnpaidCourse = ({ course,setRefresh }) => {
-  const router = useRouter();
+const UnpaidCourse = ({ course,setRefresh , review }) => {
+
   const [favorite, setFavorite] = useState(course.isFavorite);
   const handleFavorite = async () => {
     const { status, data } = await setFavoriteCourse(course.id);
@@ -103,45 +102,29 @@ const UnpaidCourse = ({ course,setRefresh }) => {
 
           {/* Reviews */}
           <div className="mb-8">
-            <h2 className="text-md font-bold mb-1">Review</h2>
-            <div className="space-y-6">
-              {[
-                {
-                  name: "Leonardo Da Vinci",
-                  comment:
-                    "Loved the course, I've learned some very subtle tecniques, expecially on leaves.",
-                },
-                {
-                  name: "Titania S",
-                  comment:
-                    "I loved the course, it had been a long time since I had experimented with watercolors and now I will do it more often thanks to Yacine Bensidahmed",
-                },
-                {
-                  name: "Zhirkov",
-                  comment:
-                    "Yes..I just emphasize that the use of Photoshop, for non-users, becomes difficult to follow. What requires a course to master it. Safe and very didactic teacher.",
-                },
-              ].map((review, index) => (
-                <div key={index} className="flex gap-4">
-                  <Avatar>
-                    <AvatarImage
-                      src={`@/public/avatars/avatar${index}.png`}
-                      alt={review.name}
-                    />
-                    <AvatarFallback>{review.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-medium text-sm text-[#3DCBB1]">
-                      {review.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 font-normal">
-                      {review.comment}
-                    </p>
-                  </div>
+                <h2 className="text-md font-bold mb-1">Review</h2>
+                <div className="space-y-6">
+                  {review.map((rv, index) => (
+                    <div key={index} className="flex gap-4">
+                      <Avatar>
+                        <AvatarImage
+                          src={genProfileImg(rv.user.picture)}
+                          alt={rv.user.username}
+                        />
+                        <AvatarFallback>{rv.user.username[0]}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="font-medium text-sm text-[#3DCBB1]">
+                          {rv.user.username}
+                        </h3>
+                        <p className="text-sm text-gray-500 font-normal">
+                          {rv.message}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
         </div>
 
         {/* Sidebar */}
