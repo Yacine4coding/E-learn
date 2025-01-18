@@ -7,6 +7,12 @@ import * as z from 'zod'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
   Form,
   FormControl,
   FormDescription,
@@ -83,6 +89,9 @@ const PostCourse = () => {
           title: '',
           description: '',
           videoFile: undefined,
+          quizzes: Array(5).fill({
+            questions: [{ question: '', options: ['', '', ''], correctAnswer: 0 }],
+          }),
         },
       ],
     },
@@ -238,53 +247,9 @@ const PostCourse = () => {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold">Duration (hours)</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Enter course duration" {...field} />
-                  </FormControl>
-                  <FormDescription className="text-gray-500">
-                    Estimate the total duration of your course in hours.
-                  </FormDescription>
-                  <FormMessage className="text-red-600" />
-                </FormItem>
-              )}
-            /> */}
           </motion.div>
 
-            {/* <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              <FormField
-                control={form.control}
-                name="isPublished"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="font-semibold">
-                        Publish immediately
-                      </FormLabel>
-                      <FormDescription className="text-gray-500">
-                        If unchecked, your course will be saved as a draft.
-                      </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </motion.div> */}
-          
+          {/* introduction */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -361,7 +326,7 @@ const PostCourse = () => {
               </CardContent>
             </Card>
           </motion.div>
-
+          {/* Chapters */}
           <AnimatePresence>
             {fields.map((field, index) => (
               <motion.div
@@ -391,11 +356,11 @@ const PostCourse = () => {
                       name={`chapters.${index}.title`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-semibold">Title</FormLabel>
+                          <FormLabel>Title</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter chapter title" {...field} />
                           </FormControl>
-                          <FormMessage className="text-red-600" />
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -404,11 +369,11 @@ const PostCourse = () => {
                       name={`chapters.${index}.description`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-semibold">Description</FormLabel>
+                          <FormLabel>Description</FormLabel>
                           <FormControl>
                             <Textarea placeholder="Enter chapter description" {...field} />
                           </FormControl>
-                          <FormMessage className="text-red-600" />
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -417,7 +382,7 @@ const PostCourse = () => {
                       name={`chapters.${index}.videoFile`}
                       render={({ field: { onChange, value, ...rest } }) => (
                         <FormItem>
-                          <FormLabel className="font-semibold">Video File <span className='font-normal'>(MP4 only, max 100MB)</span></FormLabel>
+                          <FormLabel>Video File (MP4 only, max 100MB)</FormLabel>
                           <FormControl>
                             <div className="flex items-center space-x-2">
                               <Input
@@ -444,11 +409,75 @@ const PostCourse = () => {
                               </Button>
                             </div>
                           </FormControl>
-                          {value && <FormDescription className="text-gray-500">{value.name}</FormDescription>}
-                          <FormMessage className="text-red-600" />
+                          {value && <FormDescription>{value.name}</FormDescription>}
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
+                    {/* Quizzes Section */}
+                    <div className="mt-6">
+                      <FormLabel className="text-base font-semibold">Quizzes</FormLabel>
+                      <div className="space-y-4">
+                        {[0, 1, 2, 3, 4].map((quizIndex) => (
+                          <Accordion key={quizIndex} type="single" collapsible className="w-full">
+                            <AccordionItem value={`quiz-${quizIndex}`}>
+                              <AccordionTrigger>Quiz {quizIndex + 1}</AccordionTrigger>
+                              <AccordionContent>
+                                <div className="mt-4">
+                                  <FormLabel>Question</FormLabel>
+                                  <FormField
+                                    control={form.control}
+                                    name={`chapters.${index}.quizzes.${quizIndex}.questions.0.question`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input placeholder="Enter question" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <div className="mt-2 space-y-2">
+                                    {[0, 1, 2, 3].map((optionIndex) => (
+                                      <FormField
+                                        key={optionIndex}
+                                        control={form.control}
+                                        name={`chapters.${index}.quizzes.${quizIndex}.questions.0.options.${optionIndex}`}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <div className="flex items-center space-x-2">
+                                                <Input placeholder={`Option ${optionIndex + 1}`} {...field} />
+                                                <FormField
+                                                  control={form.control}
+                                                  name={`chapters.${index}.quizzes.${quizIndex}.questions.0.correctAnswer`}
+                                                  render={({ field: checkboxField }) => (
+                                                    <FormItem>
+                                                      <FormControl>
+                                                        <Checkbox
+                                                          checked={checkboxField.value === optionIndex}
+                                                          onCheckedChange={() => {
+                                                            checkboxField.onChange(optionIndex);
+                                                          }}
+                                                        />
+                                                      </FormControl>
+                                                    </FormItem>
+                                                  )}
+                                                />
+                                              </div>
+                                            </FormControl>
+                                          </FormItem>
+                                        )}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
+                        ))}
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -464,8 +493,15 @@ const PostCourse = () => {
               type="button"
               variant="outline"
               size="lg"
-              className="w-full font-semibold font-gilory border-green-700 hover:border-green-500 hoverTransition text-green-700 hover:text-green-500"
-              onClick={() => append({ title: '', description: '', videoFile: undefined })}
+              className="w-full text-green-700 font-semibold border-green-700 hover:border-green-500 hover:text-green-500 hoverTransition"
+              onClick={() => append({
+                title: '',
+                description: '',
+                videoFile: undefined,
+                quizzes: Array(5).fill({
+                  questions: [{ question: '', options: ['', '', ''], correctAnswer: 0 }],
+                }),
+              })}
             >
               <Plus className="mr-2 h-4 w-4" /> Add Chapter
             </Button>
@@ -476,7 +512,7 @@ const PostCourse = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.2 }}
           >
-            <Button type="submit" size="lg" className="w-full font-semibold font-gilory bg-green-600 hover:bg-green-700 hoverTransition text-white" disabled={isSubmitting}>
+            <Button type="submit" size="lg" className="w-full  bg-green-700 font-semibold text-white hover:border-green-500 hover:bg-green-500 hoverTransition" disabled={isSubmitting}>
               {isSubmitting ? 'Posting Course...' : 'Post Course'}
             </Button>
           </motion.div>
