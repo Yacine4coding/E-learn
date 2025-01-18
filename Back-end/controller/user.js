@@ -274,7 +274,7 @@ export async function getUserDashboard(req, res) {
       const fav = informations.favorite[i];
       favCourses.push(await getCourseById(fav));
     }
-    const buyCoursesId = await StudientCourse.find({ studientId: userId });
+    const buyCoursesId = await StudientCourse.find({ studentId: userId });
     // *  GET BUY COURSES
     const buyCourses = [];
     for (let i = 0; i < buyCoursesId.length; i++) {
@@ -282,7 +282,7 @@ export async function getUserDashboard(req, res) {
       const course = await getCourseById(ele.courseId);
       buyCourses.push({
         ...course,
-        progress: ele.progress,
+        progress: ele,
       });
     }
 

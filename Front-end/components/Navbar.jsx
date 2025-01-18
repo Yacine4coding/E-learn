@@ -36,12 +36,12 @@ const Navbar = () => {
   useEffect(() => {
     (async function () {
       const {
-        data: { userinfo },
+        data,
         status,
       } = await isLoggin();
       switch (status) {
         case 200:
-          dispatch(setState(userinfo));
+          dispatch(setState(data.userinfo));
           break;
         case 10:
           errorNotifcation("catch error status 10");
