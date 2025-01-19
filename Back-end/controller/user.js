@@ -18,6 +18,8 @@ import User from "../models/User.js";
 import { getCourseById } from "./courses.js";
 import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
 import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
+import Courses from "../models/Course.js";
+import { generateCourse } from "../middleware/course.js";
 
 export async function singup(req, res) {
   let { email, password, isteacher = false, picture = "" } = req.body;
@@ -252,11 +254,13 @@ export async function updateUserInfo(req, res) {
     res.status(500).send({ message: "internal server error" });
   }
 }
-export async function getUserDashboard(req, res) {
-  const { userId, isteacher } = req.body;
-  if (isteacher) return res.status(400).send({ message: "feature is coming" });
+export async function getUserDashboard(req, res, next) {
+  const { userId, isteacher, secondId } = req.body;
+  if (isteacher) {
+    next(); 
+    return;
+  }
   try {
-    const { userId: secondId } = await User.findById(userId); // GET SECOND USER ID
     const informations = await Studient.findById(secondId); // get information of userID
     // * GET FAVORITE COURSE
     const favCourses = [];
@@ -320,7 +324,19 @@ export async function updateProfileImage(req,res) {
     res.status(500).send({message : "internal server error"})
   }
 }
-
+export async function getTeacherDashboard (req,res) {
+  const {userId , secondId , user} = req.body ;
+  try {
+    const teacher = await getTeacher(secondId);
+    if (!teacher) return res.status(404).send({message : "teacher not found"});
+    const courses = await Courses.find({teacherId : userId});
+    const handleCourses = courses.map(ele=>generateCourse(ele,user))
+    res.status(200).send({courses: handleCourses});
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({message : "internal server error"})
+  }
+}
 // * google auth
 export function googleFaild(req, res) {
   res.status(401).send({

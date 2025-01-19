@@ -6,26 +6,19 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { BarChart, Users, BookOpen } from 'lucide-react'
 import Loading from '@/app/(root)/Courses/[courseId]/Loading'
+import { useSelector } from "react-redux";
 
 const TeacherDashboard = () => {
-  const router = useRouter()
-  const [isTeacher, setIsTeacher] = useState(false);
-
+  const router = useRouter();
+  const {
+    user: { isteacher },
+  } = useSelector((s) => s.user);
   useEffect(() => {
-    // Simulating a check to see if the user is a teacher
-    // In a real app, this would be an API call or check against an auth provider
-    const checkIfTeacher = () => {
-      // Simulating an async operation
-      setTimeout(() => {
-        setIsTeacher(true)
-      }, 1000)
+    if (!isteacher) {
+      router.push("/");
+      return;
     }
-
-    checkIfTeacher()
-  }, [])
-
-
-  if (!isTeacher) return <Loading />;
+  }, []);
 
   return (
     <div className="container mx-auto py-10 font-gilroy">

@@ -20,13 +20,10 @@ const dashboard = createSlice({
     toggleFavorite: (state, { payload }) => {
       try {
         const { favoriteCourse } = state;
-        console.log("favoriteCourse")
-        console.log(state.favoriteCourse)
         let removed = false;
         const result = favoriteCourse.filter((ele) => {
           if (ele.id === payload.id) {
             removed = true;
-            console.log("enter")
           }
           return ele.id !== payload.id;
         });
@@ -34,18 +31,24 @@ const dashboard = createSlice({
           state.favoriteCourse = result;
         } else {
           state.favoriteCourse = [...favoriteCourse, payload];
-          console.log("state.favoriteCourse");
-          console.log(state.favoriteCourse);
         }
       } catch (error) {
         console.log(error);
       }
     },
+    deleteCourse: (state, { payload }) => {
+      try {
+        const { courses } = state;
+        state.courses = courses.filter((ele) => ele.id !== payload);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
 });
 export const {
   toggleFavorite,
-  initCourses,
+  initCourses,deleteCourse,
   initFavCourses,
   initWishlistCourses,
 } = dashboard.actions;
