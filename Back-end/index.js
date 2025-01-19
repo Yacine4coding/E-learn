@@ -6,18 +6,15 @@ import cookieParser from "cookie-parser";
 import connectDb from "./middleware/database.js";
 import path from "path";
 import {
-  comment,
   courses,
   google,
   marketPlace,
-  post,
   studient,
   teacher,
   user,
 } from "./routes/routes.js";
 import passport from "passport";
 import { fileURLToPath } from "url";
-import payment from "./routes/payment.js";
 import review from "./routes/reviews.js";
 const app = express();
 // * config
@@ -53,15 +50,13 @@ app.use(cookieParser());
 // routers
 app.use("/google", google);
 app.use("/user", user);
-app.use("/post", post);
-app.use("/comment", comment);
 app.use("/studient", studient);
 app.use("/course", courses);
 app.use("/teacher", teacher);
 app.use("/marketPlace",marketPlace);
-// app.use("/payment",payment)
 app.use("/review", review);
-app.use((req, res) => {
+
+app.use((_, res) => {
   res.status(505).send("rout not found");
 });
 app.listen(process.env.PORT || 3001, () => {

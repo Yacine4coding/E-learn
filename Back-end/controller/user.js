@@ -15,9 +15,7 @@ import {
 import Studient from "../models/Studient.js";
 import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
-import { deleteUserComment } from "./comment.js";
 import { getCourseById } from "./courses.js";
-import { deleteUserPosts } from "./post.js";
 import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
 import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
 
@@ -146,14 +144,6 @@ export async function deleteAccount(req, res) {
   const { userId } = req.body;
   try {
     const user = await User.findById(userId);
-    if (!(await deleteUserPosts(userId))) {
-      res.status(500).send("post delete error");
-      return;
-    }
-    if (!(await deleteUserComment(userId))) {
-      res.status(500).send("comments delete error");
-      return;
-    }
     const countInfoDeleted = user.isteacher
       ? await deleteTeacher(user.userId, userId)
       : await deleteStudient(user.userId);
