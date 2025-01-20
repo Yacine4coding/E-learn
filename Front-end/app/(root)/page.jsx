@@ -27,7 +27,7 @@ export default function Home() {
         <Search />
         <Courses />
         <Announse title="Join Edulink now to get 35% off" />
-        <Trending />
+        {/* <Trending /> */}
         <Upcoming />
         <GetStarted />
       </div>
