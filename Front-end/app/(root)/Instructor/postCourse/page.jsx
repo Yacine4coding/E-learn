@@ -238,7 +238,11 @@ const PostCourse = () => {
                 <FormItem>
                   <FormLabel className="font-semibold">Price ($)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Enter course price" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Enter course price"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription className="text-gray-500">
                     Set a fair price for your course content.
