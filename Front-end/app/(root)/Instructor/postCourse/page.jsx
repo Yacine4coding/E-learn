@@ -33,6 +33,9 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { CheckCircle, Plus, Minus, Upload } from 'lucide-react'
+import { createCourse } from '@/request/courses'
+import { errorNotifcation } from '@/components/toast'
+import { useRouter } from 'next/navigation'
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 const ACCEPTED_VIDEO_TYPES = ['video/mp4'];
@@ -67,8 +70,12 @@ const formSchema = z.object({
 
 const PostCourse = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-
+  const route = useRouter();
+  const [uploadsFiles, setUploadsFiles] = useState({
+    introduction: null,
+    chapters: [],
+    picture : null,
+  })
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -89,9 +96,7 @@ const PostCourse = () => {
           title: '',
           description: '',
           videoFile: undefined,
-          quizzes: Array(5).fill({
-            questions: [{ question: '', options: ['', '', ''], correctAnswer: 0 }],
-          }),
+          quizzes: Array(5).fill({ question: '', options: ['', '', '' ,''], correctAnswer: 0 }),
         },
       ],
     },
@@ -101,21 +106,35 @@ const PostCourse = () => {
     control: form.control,
     name: "chapters",
   })
-
-  const onSubmit = (values) => {
-    setIsSubmitting(true)
+  const onSubmit = async (values) => {
     // Here you would typically send the form data to your backend
-    console.log(values)
-    // Simulating file upload
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setIsSuccess(true)
-      // Reset form after successful submission
-      setTimeout(() => {
-        setIsSuccess(false)
-        form.reset()
-      }, 3000)
-    }, 2000)
+    isSubmitting(true);
+    const course = form.getValues();
+    delete course.introduction.videoFile;
+    course.chapters = course.chapters.map((chapter) => {delete chapter.videoFile; return chapter;});
+    if (!(uploadsFiles.introduction && uploadsFiles.picture && uploadsFiles.chapters.length === course.chapters.length)) {
+      errorNotifcation("Please upload all required files");
+      return 
+    }
+    const handlefileUploading = [uploadsFiles.picture,uploadsFiles.introduction,...uploadsFiles.chapters];
+    const formData = new FormData();
+    formData.append('course', JSON.stringify(course));
+    handlefileUploading.forEach((file) => {
+      formData.append(`uploadsFile`, file); // Each file gets a unique key
+    });
+
+    const {status , data} = await createCourse(formData);
+    if (status === 201) {
+      successNotifcation("Course created successfully");
+      route.push("/instructor/MyCourses");
+    }
+    else if (status !== 10) {
+      errorNotifcation(data.message);
+    }
+    else {
+      errorNotifcation("Something went wrong, please try again later");
+    }
+    isSubmitting(false);
   }
 
   return (
@@ -251,6 +270,44 @@ const PostCourse = () => {
                 </FormItem>
               )}
             />
+            <FormField
+                  control={form.control}
+                  name="introduction.picture"
+                  render={({ field: { onChange, value, ...rest } }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">course picture <span className='font-normal'>(only images exe)</span></FormLabel>
+                      <FormControl>
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            id="picture"
+                            onChange={(e) => {
+                              const vedioFile = e.target.files[0];
+                              if (vedioFile) {
+                                setUploadsFiles(curr => {return {...curr, picture: vedioFile}});
+                              }
+                            }}
+                            {...rest}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              const fileInput = document.querySelector('#picture')
+                              fileInput?.click()
+                            }}
+                          >
+                            <Upload className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </FormControl>
+                      {value && <FormDescription className="text-gray-500">{value.name}</FormDescription>}
+                      <FormMessage className="text-red-600" />
+                    </FormItem>
+                  )}
+                />
           </motion.div>
 
           {/* introduction */}
@@ -301,10 +358,15 @@ const PostCourse = () => {
                           <Input
                             type="file"
                             accept="video/mp4"
+                            id="introductionVedio"
                             onChange={(e) => {
                               const file = e.target.files?.[0]
                               if (file) {
                                 onChange(file)
+                              }
+                              const vedioFile = e.target.files[0];
+                              if (vedioFile) {
+                                setUploadsFiles(curr => {return {...curr, introduction: vedioFile}});
                               }
                             }}
                             {...rest}
@@ -314,7 +376,7 @@ const PostCourse = () => {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              const fileInput = document.querySelector('input[type="file"]')
+                              const fileInput = document.querySelector('#introductionVedio')
                               fileInput?.click()
                             }}
                           >
@@ -391,11 +453,18 @@ const PostCourse = () => {
                             <div className="flex items-center space-x-2">
                               <Input
                                 type="file"
+                                id={`chapters${index}videoFile`}
                                 accept="video/mp4"
                                 onChange={(e) => {
                                   const file = e.target.files?.[0]
                                   if (file) {
                                     onChange(file)
+                                  }
+                                  const vedioFile = e.target.files[0];
+                                  const chapters = uploadsFiles.chapters;
+                                  chapters[index] = vedioFile;
+                                  if (vedioFile) {
+                                    setUploadsFiles(curr => {return {...curr, chapters}});
                                   }
                                 }}
                                 {...rest}
@@ -405,7 +474,7 @@ const PostCourse = () => {
                                 variant="outline"
                                 size="icon"
                                 onClick={() => {
-                                  const fileInput = document.querySelector(`input[name="chapters.${index}.videoFile"]`)
+                                  const fileInput = document.querySelector(`#chapters${index}videoFile`)
                                   fileInput?.click()
                                 }}
                               >
@@ -431,7 +500,7 @@ const PostCourse = () => {
                                   <FormLabel>Question</FormLabel>
                                   <FormField
                                     control={form.control}
-                                    name={`chapters.${index}.quizzes.${quizIndex}.questions.0.question`}
+                                    name={`chapters.${index}.quizzes.${quizIndex}.question`}
                                     render={({ field }) => (
                                       <FormItem>
                                         <FormControl>
@@ -446,7 +515,7 @@ const PostCourse = () => {
                                       <FormField
                                         key={optionIndex}
                                         control={form.control}
-                                        name={`chapters.${index}.quizzes.${quizIndex}.questions.0.options.${optionIndex}`}
+                                        name={`chapters.${index}.quizzes.${quizIndex}.options.${optionIndex}`}
                                         render={({ field }) => (
                                           <FormItem>
                                             <FormControl>
@@ -454,7 +523,7 @@ const PostCourse = () => {
                                                 <Input placeholder={`Option ${optionIndex + 1}`} {...field} />
                                                 <FormField
                                                   control={form.control}
-                                                  name={`chapters.${index}.quizzes.${quizIndex}.questions.0.correctAnswer`}
+                                                  name={`chapters.${index}.quizzes.${quizIndex}.correctAnswer`}
                                                   render={({ field: checkboxField }) => (
                                                     <FormItem>
                                                       <FormControl>
@@ -522,19 +591,6 @@ const PostCourse = () => {
           </motion.div>
         </form>
       </Form>
-      <AnimatePresence>
-        {isSuccess && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-md flex items-center shadow-lg"
-          >
-            <CheckCircle className="mr-2" />
-            Course posted successfully!
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }

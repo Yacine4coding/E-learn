@@ -30,7 +30,7 @@ const PaidCourse = ({ course, finalPage, review }) => {
   const [isCurrent, setIsCurrent] = useState(Course.progress.chapterNumber);
   const [progress, setProgress] = useState(Course.progress.chapterNumber);
   // GET QUIZ
-  const [quizes, setQuizes] = useState(Course.chapters[progress].queezes);
+  const [quizes, setQuizes] = useState(Course.chapters[progress].quizzes);
   // QUIZE STATS
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -48,7 +48,7 @@ const PaidCourse = ({ course, finalPage, review }) => {
         errorNotifcation("answer all questions pleas");
         return false;
       }
-      const isCorrectAnswer = queez.answerNumber === quizAnswers[index];
+      const isCorrectAnswer = queez.correctAnswer === quizAnswers[index];
       return prev + (isCorrectAnswer ? 1 : 0);
     }, 0);
     const { status, data } = await submitQueez(
@@ -83,7 +83,7 @@ const PaidCourse = ({ course, finalPage, review }) => {
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             <span className="font-medium">{Course.stars.count}</span>
             <span className="text-muted-foreground">
-              ({Course.view.count} ratings)
+              ({Course.view?.count} ratings)
             </span>
           </div>
         </div>
@@ -94,7 +94,7 @@ const PaidCourse = ({ course, finalPage, review }) => {
         <div className="lg:col-span-2">
           {/* Video Player */}
           <div className="relative aspect-video bg-black mb-6 rounded-3xl overflow-hidden">
-            <video className="w-full h-full" poster="/placeholder.svg" controls>
+            <video className="w-full h-full" poster={course.picture} controls>
               <source src={Course.chapters[progress].link} type="video/mp4" />
             </video>
           </div>
@@ -120,7 +120,7 @@ const PaidCourse = ({ course, finalPage, review }) => {
                         Quiz {index + 1}: {quiz.question}
                       </h3>
                       <div className="space-y-2">
-                        {quiz.choices.map((choice, choiceIndex) => (
+                        {quiz.options.map((choice, choiceIndex) => (
                           <div
                             key={choiceIndex}
                             className={`flex items-center space-x-2 p-3 rounded-lg border hover:bg-accent cursor-pointer ${

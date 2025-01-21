@@ -60,7 +60,7 @@ const UnpaidCourse = ({ course,setRefresh , review }) => {
           <div className="relative aspect-video bg-black mb-6 rounded-3xl overflow-hidden">
             <video className="w-full h-full" poster={course.picture} controls>
               <source
-                src="https://youtube.com/U8F5G5wR1mk?list=RDU8F5G5wR1mk"
+                src={course.introduction.link}
                 type="video/mp4"
               />
             </video>
@@ -78,15 +78,15 @@ const UnpaidCourse = ({ course,setRefresh , review }) => {
                     src={genProfileImg(course.userPicture)}
                     alt={course.username}
                   />
-                  <AvatarFallback>YB</AvatarFallback>
+                  <AvatarFallback>course.username.subString(0,2)</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col items-start">
                   <span className="text-sm font-medium text-[#3DCBB1]">
                     {course.username}
                   </span>
-                  {/* <span className="text-xs text-muted-foreground">
-                    Design Studio
-                  </span> */}
+                  <span className="text-xs text-muted-foreground">
+                    {course.category}
+                  </span>
                 </div>
               </div>
             </div>
@@ -186,7 +186,7 @@ const UnpaidCourse = ({ course,setRefresh , review }) => {
                   <div className="flex items-center gap-2">
                     <Image src={lect} alt="lect" width="20px" height="20px" />
                     <p className="text-sm text-muted-foreground">
-                      152 Lectures
+                      {course.chapterNumber} Lectures
                     </p>
                   </div>
                   <div className="flex items-center gap-2">

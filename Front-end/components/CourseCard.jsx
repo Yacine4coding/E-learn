@@ -53,11 +53,10 @@ const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
     description,
     discount: price,
     stars : {count : stars},
-    view : {count : view},
-    amount: oldPrice,
+    price: oldPrice,
     progress ,
-    chapterNumber : totalLectures,
   } = course;
+  const totalLectures = course.chapters.length;
   const PriceCond = Boolean(price && oldPrice);
   const dispatch = useDispatch();
   const router = useRouter();
