@@ -134,3 +134,20 @@ export async function getReview(courseId) {
     };
   }
 }
+export async function createCourse (formdata) {
+  try {
+    const {status , data} = await axios.post(`${APIURL}/course`,formdata , 
+      {
+        withCredentials: true,
+      });
+    console.log(status , data);
+    return {status , data}
+  } catch (error) {
+    console.log(error)
+    if (!error.response) return {status : 10}
+    return {
+      status : error.response.status , 
+      data : error.response.data
+    }
+  }
+}

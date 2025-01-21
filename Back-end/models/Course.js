@@ -9,7 +9,15 @@ const coursesShcema = mongoose.Schema({
     type: String,
     default: "",
   },
-  amount: {
+  level : {
+    type : String , 
+    require : true ,
+  },
+  category : {
+    type : String , 
+    require : true ,
+  },
+  price: {
     type: Number,
     default: 0,
   },
@@ -24,17 +32,6 @@ const coursesShcema = mongoose.Schema({
       count: Number,
     },
   },
-  view: {
-    type: Object,
-    default: {
-      usersId: [],
-      count: Number,
-    },
-  },
-  buyCount: {
-    type: Number,
-    default: 0,
-  },
   teacherId: {
     type: String,
     require: true,
@@ -44,9 +41,13 @@ const coursesShcema = mongoose.Schema({
     min: 1,
     require: true,
   },
+  introduction : {
+    type: Object,
+    require : true ,
+  },
   chapters: {
     type: Array,
-    default: [],
+    require: true,
   },
   picture: {
     type: String,

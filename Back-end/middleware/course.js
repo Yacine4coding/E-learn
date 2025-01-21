@@ -1,48 +1,37 @@
 export function generateCourse(course, user, allData = false) {
-  const {
+  let {
     _id: id,
     title,
     stars,
     view,
     discount,
     description,
-    amount,
-    chapters,
-    payCount,
-    chapterNumber,
-    buyCount,
-    picture,
+    chapters,chapterNumber,
+    picture,level , category,price , introduction
   } = course;
+  introduction.link = `http://localhost:5000/${introduction.link}`
+  chapters = chapters.map(chapter => {
+    chapter.link = `http://localhost:5000/${chapter.link}`
+    return chapter;
+  })
   const { username, picture: userPicture } = user;
-  const result = allData
-    ? {
+  const result =  {
         id,
         title,
-        stars,
+        stars,chapterNumber,
         view,
         discount,
         description,
-        amount,
-        chapterNumber,
+        price,
         chapters,
-        payCount,
         username,
         picture: `http://localhost:5000/${picture}`,
         userPicture,
-        buyCount,
+        introduction , 
+        level , 
+        category, 
+
       }
-    : {
-        id,
-        title,
-        stars,
-        view,
-        discount,
-        description,
-        amount,
-        username,
-        picture: `http://localhost:5000/${picture}`,
-        userPicture,
-      };
   return result;
 }
 export function testChpater(chapter) {

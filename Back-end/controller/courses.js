@@ -10,56 +10,88 @@ import { getStudient, updateCourse } from "./studient.js";
 import { isUserExist } from "./user.js";
 
 export async function addCourse(req, res) {
-  const {
-    title,
-    description,
-    userId,
-    user,
-    chapters = [],
-    amount,
-    picture,
-  } = req.body;
-  // const picture = req.file;
-  if (
-    !(picture && title && description && chapters.length !== 0 && amount >= 0)
-  ) {
-    res.status(422).send({
-      message:
-        "one of course properties are empty (title description chapters amount)",
-    });
-    return;
-  }
   try {
-    // * verify chapter
-    let result = { isTrue: true };
-    chapters.forEach((ele) => {
-      if (!(ele.queezes instanceof Array)) ele.queezes = [];
-      const verification = testChpater(ele);
-      if (!verification.isTrue) {
-        result = verification;
-        return;
-      }
-    });
-    if (!result.isTrue) {
-      res.status(400).send({ message: result.message });
-      return;
-    }
-    const course = await new Courses({
+    const { userId: teacherId } = req;
+    const {
       title,
       description,
-      teacherId: userId,
+      introduction,
+      price,
+      level,
+      category,
       chapters,
-      amount,
+    } = JSON.parse(req.body.course);
+    const { files: file } = req;
+    // CHECK COURSE PICTURE
+    if (!file || file.length === 0)
+      return res.status(400).send("picture file and vedios not upload");
+    // CHECK INITIAL INFORMATION
+    if (!title || !description || !price || !level || !category)
+      return res.status(422).send({ message: "all inputs are required" });
+    // CHECK INTRODUCTION INFORMATION AND IF CHAPTERS EXIST
+    if (!(chapters instanceof Array) || chapters.length < 1)
+      return res.status(422).send({ message: "you need to add chapters" });
+    if (!(introduction.title && introduction.description))
+      return res
+        .status(422)
+        .send({ message: "all introduction info are required" });
+    // CHECK EACH CHAPTER INFORMATINO
+    for (let index = 0; index < chapters.length; index++) {
+      const chapter = chapters[index];
+      if (!(chapter.title && chapter.description))
+        return res.status(422).send({
+          message: `information of chapter number ${index + 1} are not empty`,
+        });
+      // CHECK CHAPTERS SIZE
+      if (chapter.quizzes.length !== 5)
+        return res.status(422).send({ message: "quize number must be 5" });
+
+      // CHECK EACH CHAPTER INFORMATION
+      for (let index2 = 0; index2 < chapter.quizzes.length; index2++) {
+        const quize = chapter.quizzes[index2];
+        if (!quize.question)
+          return res.status(422).send({
+            message: `question of quize number ${index2 + 1} is empty`,
+          });
+
+        for (let index3 = 0; index3 < quize.options.length; index3++) {
+          const choice = quize.options[index3];
+          if (!choice)
+            return res
+              .status(422)
+              .send({ message: `choice number ${index3} are empty` });
+        }
+      }
+    }
+    // HANDLE VEDIOS AND PICTURE
+    introduction.link = file[1].path;
+    const picture = file[0].path;
+    const Handlechapters = chapters.map(
+      ({ title, description, quizzes }, index) => {
+        return { title, description, quizzes, link: file[index + 2].path };
+      }
+    );
+    const chapterNumber = Handlechapters.length;
+    // SAVE TO MONGO
+    const savedCourse = await new Courses({
+      chapters: Handlechapters,
+      chapterNumber,
+      title,
+      description,
+      price,
       picture,
-      chapterNumber: chapters.length,
+      level,
+      category,
+      teacherId,
+      introduction,
     }).save();
-    res.status(201).send({
-      course: generateCourse(course, user, true),
-    });
+    res.status(200).send(savedCourse);
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    console.log("error in add  course inside controllers/courses.js", error);
+    res.status(500).send({ message: "internal server error" });
   }
 }
+
 export async function getPersonellCourses(req, res) {
   const { userId, user } = req.body;
   try {
@@ -172,8 +204,10 @@ export async function bestCourses(req, res) {
   try {
     let courses = await Courses.find();
     if (courses.length === 0) return res.status(204).send();
+    console.log(courses);
     for (let i = 0; i < courses.length; i++) {
       const { user } = await isUserExist(courses[i].teacherId);
+
       courses[i] = generateCourse(courses[i], user);
     }
     if (courses.length <= count) return res.status(200).send({ courses });
@@ -183,6 +217,7 @@ export async function bestCourses(req, res) {
     courses.length = count;
     res.status(200).send({ courses });
   } catch (error) {
+    console.log(error);
     res.status(500).send({
       message: "internal server error",
     });
@@ -314,7 +349,10 @@ export async function submitQuize(req, res) {
     // INCREMENT PROGRESS
     if (progress.chapterNumber < course.chapterNumber) {
       progress.chapterNumber = progress.chapterNumber + 1;
-      progress.for100 = ((progress.chapterNumber / course.chapterNumber) * 100).toFixed(2);
+      progress.for100 = (
+        (progress.chapterNumber / course.chapterNumber) *
+        100
+      ).toFixed(2);
     }
     progress = await progress.save();
     // SEND COURSE AND NEW PROGRESS

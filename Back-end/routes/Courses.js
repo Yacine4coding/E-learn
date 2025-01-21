@@ -19,12 +19,10 @@ courses.post(
   "/",
   verifyToken,
   enableTeacher,
-  upload.single("picture"),
+  upload.array("uploadsFile",10),
   addCourse
 );
-courses.get("/", verifyToken, enableTeacher, getPersonellCourses);
 courses.get("/bestCourses/:count", bestCourses);
-courses.get("teacherCourse/:teacherId", verifyToken, getTeacherCourses);
 courses.get("/:courseId",getUserFromToken ,getCourse)
 courses.get("/search/:value",searchCourses);
 courses.put("/favorite/:courseId", verifyToken, favoriteCourses);
