@@ -14,19 +14,19 @@ export async function addReview(req, res) {
     // GET COURSE INFO
     const course = getCourseById(courseId);
     if (!course) return res.status(404).send({ message: "course not found" });
-    const isReviewExist = await Review.findOne({courseId , studentId})
+    const isReviewExist = await Review.findOne({ courseId, studentId });
     if (isReviewExist) {
-      isReviewExist.star = star 
-      isReviewExist.message = message ;
+      isReviewExist.star = star;
+      isReviewExist.message = message;
       await isReviewExist.save();
-      return res.status(200).send({message : "review submitted"});
+      return res.status(200).send({ message: "review submitted" });
     }
     // CREATE NEW REVIEW
     const review = await new Review({
       studentId,
       star,
       message,
-      courseId
+      courseId,
     }).save();
     // CALC THE STARS OF COURSE IF HE ADD ONE
     if (star) {
@@ -101,6 +101,24 @@ export async function getMyReview(req, res) {
   }
 }
 
+export async function getMyCourseReview(req, res) {
+  const { userId: studentId } = req;
+  const { courseId } = req.params;
+  try {
+    // GET REVIEWS BY student ID
+    const reviewsData = await Review.findOne({ studentId, courseId });
+    if (!reviewsData) return res.status(204).send();
+    // HANDLE REVIEWS (GET STUDENT INFORMATION)
+    const review = await handleReview(reviewsData);
+    // SEND RES
+    res.status(200).send({ review });
+  } catch (error) {
+    console.log(
+      "error in get my review function inside controller/review \n",
+      error
+    );
+  }
+}
 export async function updateReview(req, res) {}
 
 export async function deleteReview(req, res) {

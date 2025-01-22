@@ -86,7 +86,7 @@ export async function submitQueez(quizAnswer, courseId, chapterNumber) {
   try {
     const { status, data } = await axios.put(
       `${APIURL}/course/submitquize`,
-      { quizAnswer, courseId, chapterNumber },
+      { quizeResult : quizAnswer, courseId, chapterNumber },
       CREDENTIALS
     );
     return { status, data };
@@ -149,5 +149,25 @@ export async function createCourse (formdata) {
       status : error.response.status , 
       data : error.response.data
     }
+  }
+}
+export async function getMyCourseReview(courseId) {
+  try {
+    const {status , data} = await axios.get(`${APIURL}/review/mine/${courseId}`,CREDENTIALS);
+    return {status , data}
+  } catch (error) {
+    console.log(error)
+    if (!error.response) return {status : 10}
+    return {status : error.response.status , data : error.response.data}
+  }
+}
+export async function getMyCourseProgress(courseId) {
+  try {
+    const {status , data} = await axios.get(`${APIURL}/course/progress/${courseId}`,CREDENTIALS);
+    return {status , data}  
+  } catch (error) {
+    console.log(error)
+    if (!error.response) return {status : 10}
+    return {status : error.response.status , data : error.response.data}
   }
 }

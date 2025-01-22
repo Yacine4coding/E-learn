@@ -330,8 +330,8 @@ export async function searchCourses(req, res) {
   }
 }
 export async function submitQuize(req, res) {
-  const { userId, courseId, chapterNumber } = req.body;
-  if (!courseId || chapterNumber < -1)
+  const { userId, courseId, chapterNumber , quizeResult } = req.body;
+  if (!courseId || chapterNumber < -1 || quizeResult === undefined)
     return res.status(422).send({ messge: "all body properties are required" });
   try {
     // GET COURSE INFORMATION
@@ -354,6 +354,8 @@ export async function submitQuize(req, res) {
         100
       ).toFixed(2);
     }
+    // SAVE QUIZE RESULT
+    progress.quiz[chapterNumber] = quizeResult;
     progress = await progress.save();
     // SEND COURSE AND NEW PROGRESS
     const { user } = await isUserExist(course.teacherId);
@@ -367,6 +369,18 @@ export async function submitQuize(req, res) {
     console.log("error in submit quize inside controller/courses.js\n", error);
     res.status(500).send({ message: "internal server error" });
   }
+}
+export async function getCourseProgress(req, res) {
+ try {
+  const { userId } = req.body;
+  const {courseId} = req.params;
+  const progress = await StudientCourse.findOne({studentId:userId,courseId});
+  if (!progress) return res.status(403).send({message:"you don't have the access for this progress"});
+  res.status(200).send(progress);
+ } catch (error) {
+  console.log(error);
+  res.status(500).send({ message: "internal server error" });
+ }
 }
 // * functions
 export async function getCoursesById(id, user) {

@@ -9,7 +9,8 @@ import {
   getTeacherCourses,
   updateCourses,
   wishlistCourses,searchCourses,
-  submitQuize
+  submitQuize,
+  getCourseProgress
 } from "../controller/courses.js";
 import { enableTeacher } from "../middleware/teacher.js";
 import upload from "../middleware/multer.js";
@@ -25,7 +26,8 @@ courses.post(
 courses.get("/bestCourses/:count", bestCourses);
 courses.get("/:courseId",getUserFromToken ,getCourse)
 courses.get("/search/:value",searchCourses);
-courses.put("/favorite/:courseId", verifyToken, favoriteCourses);
+courses.get("/progress/:courseId", verifyToken, getCourseProgress);
+courses.put("/favorite/:courseId",verifyToken , favoriteCourses);
 courses.put("/submitquize",verifyToken , submitQuize)
 courses.put("/wishlist/:courseId", verifyToken, wishlistCourses);
 courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);

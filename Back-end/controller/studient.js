@@ -52,7 +52,6 @@ export async function buyCourse(req, res) {
         return;
     }
     await new StudientCourse({ courseId, studentId }).save();
-    await incrementCourseBuy();
     res.status(200).send({
       message: "buy succesfully",
     });
