@@ -1,167 +1,82 @@
-[
-  {
-    "_id": {
-      "$oid": "676c8772026508083bac2672"
-    },
-    "title": "Data Science and Machine Learning",
-    "description": "description of Data Science and Machine Learning",
-    "amount": 69.99,
-    "payCount": 0,
-    "stars": {
-      "count": 0,
-      "usersId": []
-    },
-    "view": {
-      "count": 0,
-      "usersId": []
-    },
-    "buyCount": 0,
-    "teacherId": "676c8762026508083bac266f",
-    "chapterNumber": 3,
-    "chapters": [
-      {
-        "title": "chapter1",
-        "description": "description of chapter1",
-        "link": "https://googl.com",
-        "queezes": []
-      },
-      {
-        "title": "chapter2",
-        "description": "description of chapter2",
-        "link": "https://googl.com",
-        "queezes": []
-      },
-      {
-        "title": "chapter3",
-        "description": "description of chapter3",
-        "link": "https://googl.com",
-        "queezes": [
-          {
-            "question": "this first question",
-            "choices": [
-              "answer number 1 of first question",
-              "answer number 2 of first question"
-            ],
-            "answerNumber": 1
-          }
-        ]
-      }
-    ],
-    "picture": "public/Placeholder3.png",
-    "__v": 0
+[{
+  "_id": {
+    "$oid": "6790b8908617c4fa488102f5"
   },
-  {
-    "_id": {
-      "$oid": "676c8776026508083bac2675"
-    },
-    "title": "Digital Marketing Essentials",
-    "description": "description of Digital Marketing Essentials",
-    "amount": 29.99,
-    "payCount": 0,
-    "stars": {
-      "count": 0,
-      "usersId": []
-    },
-    "view": {
-      "count": 0,
-      "usersId": []
-    },
-    "buyCount": 0,
-    "teacherId": "676c8762026508083bac266f",
-    "chapterNumber": 4,
-    "chapters": [
-      {
-        "title": "chapter1",
-        "description": "description of chapter1",
-        "link": "https://googl.com",
-        "queezes": []
-      },
-      {
-        "title": "chapter2",
-        "description": "description of chapter2",
-        "link": "https://googl.com",
-        "queezes": []
-      },
-      {
-        "title": "chapter3",
-        "description": "description of chapter3",
-        "link": "https://googl.com",
-        "queezes": []
-      },
-      {
-        "title": "chapter4",
-        "description": "description of chapter4",
-        "link": "https://googl.com",
-        "queezes": []
-      }
-    ],
-    "picture": "public/Placeholder4.png",
-    "__v": 0
+  "title": "dhklmsdfqhkfdhlkm",
+  "description": "dsqmhkldsqfkdlhdskhldkhdfsqklfdqlkmdfkhlqshlkqkhldfshkldsfqhlkm",
+  "level": "beginner",
+  "category": "programming",
+  "price": 123,
+  "discount": 0,
+  "stars": {
+    "usersId": []
   },
-  {
-    "_id": {
-      "$oid": "676c8792026508083bac267e"
-    },
-    "title": "Introduction to Web Development",
-    "description": "description of introduction to web development",
-    "amount": 49.99,
-    "payCount": 0,
-    "stars": {
-      "count": 0,
-      "usersId": []
-    },
-    "view": {
-      "count": 0,
-      "usersId": []
-    },
-    "buyCount": 0,
-    "teacherId": "676c8789026508083bac267b",
-    "chapterNumber": 1,
-    "chapters": [
-      {
-        "title": "chapter 01",
-        "description": "description of chapter one",
-        "link": "https://youtube.com",
-        "queezes": []
-      }
-    ],
-    "picture": "public/Placeholder1.png",
-    "__v": 0
+  "teacherId": "676c8762026508083bac266f",
+  "chapterNumber": 1,
+  "introduction": {
+    "title": "fdjkhdjhkdsqkhjfdsjhk",
+    "description": "jkdsqfhjkdfhkjdfqshkjqdfskhj",
+    "link": "public\\1737537680247-page.jsx - E-learn - Visual Studio Code 2025-01-20 14-07-37.mp4"
   },
-  {
-    "_id": {
-      "$oid": "676c8796026508083bac2681"
-    },
-    "title": "Mastering Python Programming",
-    "description": "description of Mastering Python Programming",
-    "amount": 39.99,
-    "payCount": 0,
-    "stars": {
-      "count": 0,
-      "usersId": []
-    },
-    "view": {
-      "count": 0,
-      "usersId": []
-    },
-    "buyCount": 0,
-    "teacherId": "676c8789026508083bac267b",
-    "chapterNumber": 2,
-    "chapters": [
-      {
-        "title": "chpater1",
-        "link": "https://google.com",
-        "description": "description of chapter1",
-        "queezes": []
-      },
-      {
-        "title": "chpater2",
-        "link": "https://google.com",
-        "description": "description of chapter2",
-        "queezes": []
-      }
-    ],
-    "picture": "public/Placeholder2.png",
-    "__v": 0
-  }
-]
+  "chapters": [
+    {
+      "title": "fdkhldsqhdsqfkhjl",
+      "description": "kqhsfdhjkqdsfhkjdhfjsqjkhdsl",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ],
+      "link": "public\\1737537680571-page.jsx - E-learn - Visual Studio Code 2025-01-20 14-07-37.mp4"
+    }
+  ],
+  "picture": "public\\1737537680235-Yacine4coding_E-learn at samir - Google Chrome 02_01_2025 18_39_03.png",
+  "__v": 0
+}]
