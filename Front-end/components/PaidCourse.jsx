@@ -52,7 +52,7 @@ const PaidCourse = ({ course, finalPage, review }) => {
       return prev + (isCorrectAnswer ? 1 : 0);
     }, 0);
     const { status, data } = await submitQueez(
-      quizAnswers,
+      answerResult,
       course.id,
       progress
     );

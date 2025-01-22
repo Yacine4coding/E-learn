@@ -14,7 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import {
+  getMyCourseReview,
+  getMyCourseProgress,
+} from "../../../../../request/courses.js";
 // Mock quiz results (replace with actual data fetching in a real app)
 const mockQuizResults = [
   { quizName: "Introduction Quiz", score: 8, totalQuestions: 10 },
@@ -30,6 +33,7 @@ import Box from "@mui/material/Box";
 import StarIcon from "@mui/icons-material/Star";
 import { handleReview } from "@/request/courses";
 import { successNotifcation } from "@/components/toast";
+import { useEffect } from "react";
 
 const labels = {
   0.5: "Useless",
@@ -56,18 +60,40 @@ const CourseFinalPage = () => {
   const [showResults, setShowResults] = useState(false);
   const [hover, setHover] = React.useState(-1);
   const { courseId } = useParams();
+  const [result, setResult] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const res1 = await getMyCourseReview(courseId);
+      console.log(res1);
+      if (res1.status === 200) {
+        setRating(res1.data.review.star);
+        setReview(res1.data.review.message);
+      }
+      const res2 = await getMyCourseProgress(courseId);
+
+      if (res2.status === 200) {
+        const handleResult = [];
+        for (const quiz in res2.data.quiz) {
+          handleResult.push({
+            name: `chapter number : ${parseInt(quiz) + 1}`,
+            score: res2.data.quiz[quiz],
+          });
+        }
+        setResult(handleResult);
+      }
+    })();
+  }, []);
   const handleRating = (value) => {
     setRating(value);
   };
-
   const handleReviewChange = (event) => {
     setReview(event.target.value);
   };
 
   const handleSubmit = async () => {
     const { status, data } = await handleReview(review, rating, courseId);
-    if(status === 200) {
-      successNotifcation(data.message)
+    if (status === 200) {
+      successNotifcation(data.message);
       handleSkip();
     }
     //handle review
@@ -205,23 +231,21 @@ const CourseFinalPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {mockQuizResults.map((quiz, index) => (
+                  {result.map((quiz, index) => (
                     <div
                       key={index}
                       className="flex justify-between items-center"
                     >
-                      <span>{quiz.quizName}</span>
-                      <span className="font-medium">
-                        {quiz.score}/{quiz.totalQuestions}
-                      </span>
+                      <span>{quiz.name}</span>
+                      <span className="font-medium">{quiz.score}/5</span>
                     </div>
                   ))}
-                  <div className="border-t pt-4 mt-4">
+                  {/* <div className="border-t pt-4 mt-4">
                     <div className="flex justify-between items-center font-bold">
                       <span>Overall Score</span>
                       <span>{overallPercentage}%</span>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </CardContent>
               <CardFooter>

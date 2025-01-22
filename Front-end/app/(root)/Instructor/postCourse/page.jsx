@@ -61,8 +61,8 @@ const formSchema = z.object({
   duration: z.string().refine((val) => !isNaN(Number(val)), { message: 'Duration must be a number' }),
   isPublished: z.boolean().default(false),
   introduction: z.object({
-    title: z.string().min(1, 'Introduction title is required'),
-    description: z.string().min(1, 'Introduction description is required'),
+    title: z.string().min(1, "Introduction title is required"),
+    description: z.string().min(1, "Introduction description is required"),
     videoFile: videoFileSchema.optional(),
   }),
   chapters: z.array(chapterSchema).min(1, 'At least one chapter is required'),
@@ -108,7 +108,7 @@ const PostCourse = () => {
   })
   const onSubmit = async (values) => {
     // Here you would typically send the form data to your backend
-    isSubmitting(true);
+    setIsSubmitting(true);
     const course = form.getValues();
     delete course.introduction.videoFile;
     course.chapters = course.chapters.map((chapter) => {delete chapter.videoFile; return chapter;});
@@ -134,12 +134,12 @@ const PostCourse = () => {
     else {
       errorNotifcation("Something went wrong, please try again later");
     }
-    isSubmitting(false);
+    setIsSubmitting(false);
   }
 
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8 font-gilroy">
-      <motion.h1 
+      <motion.h1
         className="text-4xl font-bold mb-8 text-center"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -193,7 +193,7 @@ const PostCourse = () => {
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -271,43 +271,52 @@ const PostCourse = () => {
               )}
             />
             <FormField
-                  control={form.control}
-                  name="introduction.picture"
-                  render={({ field: { onChange, value, ...rest } }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">course picture <span className='font-normal'>(only images exe)</span></FormLabel>
-                      <FormControl>
-                        <div className="flex items-center space-x-2">
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            id="picture"
-                            onChange={(e) => {
-                              const vedioFile = e.target.files[0];
-                              if (vedioFile) {
-                                setUploadsFiles(curr => {return {...curr, picture: vedioFile}});
-                              }
-                            }}
-                            {...rest}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            onClick={() => {
-                              const fileInput = document.querySelector('#picture')
-                              fileInput?.click()
-                            }}
-                          >
-                            <Upload className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </FormControl>
-                      {value && <FormDescription className="text-gray-500">{value.name}</FormDescription>}
-                      <FormMessage className="text-red-600" />
-                    </FormItem>
+              control={form.control}
+              name="introduction.picture"
+              render={({ field: { onChange, value, ...rest } }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">
+                    course picture{" "}
+                    <span className="font-normal">(only images exe)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        id="picture"
+                        onChange={(e) => {
+                          const vedioFile = e.target.files[0];
+                          if (vedioFile) {
+                            setUploadsFiles((curr) => {
+                              return { ...curr, picture: vedioFile };
+                            });
+                          }
+                        }}
+                        {...rest}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => {
+                          const fileInput = document.querySelector("#picture");
+                          fileInput?.click();
+                        }}
+                      >
+                        <Upload className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </FormControl>
+                  {value && (
+                    <FormDescription className="text-gray-500">
+                      {value.name}
+                    </FormDescription>
                   )}
-                />
+                  <FormMessage className="text-red-600" />
+                </FormItem>
+              )}
+            />
           </motion.div>
 
           {/* introduction */}
@@ -328,7 +337,10 @@ const PostCourse = () => {
                     <FormItem>
                       <FormLabel className="font-semibold">Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter introduction title" {...field} />
+                        <Input
+                          placeholder="Enter introduction title"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
@@ -339,9 +351,14 @@ const PostCourse = () => {
                   name="introduction.description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">Description</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Description
+                      </FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Enter introduction description" {...field} />
+                        <Textarea
+                          placeholder="Enter introduction description"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage className="text-red-600" />
                     </FormItem>
@@ -352,7 +369,12 @@ const PostCourse = () => {
                   name="introduction.videoFile"
                   render={({ field: { onChange, value, ...rest } }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold">Video File <span className='font-normal'>(MP4 only, max 100MB)</span></FormLabel>
+                      <FormLabel className="font-semibold">
+                        Video File{" "}
+                        <span className="font-normal">
+                          (MP4 only, max 100MB)
+                        </span>
+                      </FormLabel>
                       <FormControl>
                         <div className="flex items-center space-x-2">
                           <Input
@@ -360,13 +382,15 @@ const PostCourse = () => {
                             accept="video/mp4"
                             id="introductionVedio"
                             onChange={(e) => {
-                              const file = e.target.files?.[0]
+                              const file = e.target.files?.[0];
                               if (file) {
-                                onChange(file)
+                                onChange(file);
                               }
                               const vedioFile = e.target.files[0];
                               if (vedioFile) {
-                                setUploadsFiles(curr => {return {...curr, introduction: vedioFile}});
+                                setUploadsFiles((curr) => {
+                                  return { ...curr, introduction: vedioFile };
+                                });
                               }
                             }}
                             {...rest}
@@ -376,15 +400,20 @@ const PostCourse = () => {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              const fileInput = document.querySelector('#introductionVedio')
-                              fileInput?.click()
+                              const fileInput =
+                                document.querySelector("#introductionVedio");
+                              fileInput?.click();
                             }}
                           >
                             <Upload className="h-4 w-4" />
                           </Button>
                         </div>
                       </FormControl>
-                      {value && <FormDescription className="text-gray-500">{value.name}</FormDescription>}
+                      {value && (
+                        <FormDescription className="text-gray-500">
+                          {value.name}
+                        </FormDescription>
+                      )}
                       <FormMessage className="text-red-600" />
                     </FormItem>
                   )}
@@ -424,7 +453,10 @@ const PostCourse = () => {
                         <FormItem>
                           <FormLabel>Title</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter chapter title" {...field} />
+                            <Input
+                              placeholder="Enter chapter title"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -437,7 +469,10 @@ const PostCourse = () => {
                         <FormItem>
                           <FormLabel>Description</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="Enter chapter description" {...field} />
+                            <Textarea
+                              placeholder="Enter chapter description"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -448,7 +483,9 @@ const PostCourse = () => {
                       name={`chapters.${index}.videoFile`}
                       render={({ field: { onChange, value, ...rest } }) => (
                         <FormItem>
-                          <FormLabel>Video File (MP4 only, max 100MB)</FormLabel>
+                          <FormLabel>
+                            Video File (MP4 only, max 100MB)
+                          </FormLabel>
                           <FormControl>
                             <div className="flex items-center space-x-2">
                               <Input
@@ -456,15 +493,17 @@ const PostCourse = () => {
                                 id={`chapters${index}videoFile`}
                                 accept="video/mp4"
                                 onChange={(e) => {
-                                  const file = e.target.files?.[0]
+                                  const file = e.target.files?.[0];
                                   if (file) {
-                                    onChange(file)
+                                    onChange(file);
                                   }
                                   const vedioFile = e.target.files[0];
                                   const chapters = uploadsFiles.chapters;
                                   chapters[index] = vedioFile;
                                   if (vedioFile) {
-                                    setUploadsFiles(curr => {return {...curr, chapters}});
+                                    setUploadsFiles((curr) => {
+                                      return { ...curr, chapters };
+                                    });
                                   }
                                 }}
                                 {...rest}
@@ -474,27 +513,40 @@ const PostCourse = () => {
                                 variant="outline"
                                 size="icon"
                                 onClick={() => {
-                                  const fileInput = document.querySelector(`#chapters${index}videoFile`)
-                                  fileInput?.click()
+                                  const fileInput = document.querySelector(
+                                    `#chapters${index}videoFile`
+                                  );
+                                  fileInput?.click();
                                 }}
                               >
                                 <Upload className="h-4 w-4" />
                               </Button>
                             </div>
                           </FormControl>
-                          {value && <FormDescription>{value.name}</FormDescription>}
+                          {value && (
+                            <FormDescription>{value.name}</FormDescription>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     {/* Quizzes Section */}
                     <div className="mt-6">
-                      <FormLabel className="text-base font-semibold">Quizzes</FormLabel>
+                      <FormLabel className="text-base font-semibold">
+                        Quizzes
+                      </FormLabel>
                       <div className="space-y-4">
                         {[0, 1, 2, 3, 4].map((quizIndex) => (
-                          <Accordion key={quizIndex} type="single" collapsible className="w-full">
+                          <Accordion
+                            key={quizIndex}
+                            type="single"
+                            collapsible
+                            className="w-full"
+                          >
                             <AccordionItem value={`quiz-${quizIndex}`}>
-                              <AccordionTrigger>Quiz {quizIndex + 1}</AccordionTrigger>
+                              <AccordionTrigger>
+                                Quiz {quizIndex + 1}
+                              </AccordionTrigger>
                               <AccordionContent>
                                 <div className="mt-4">
                                   <FormLabel>Question</FormLabel>
@@ -504,7 +556,10 @@ const PostCourse = () => {
                                     render={({ field }) => (
                                       <FormItem>
                                         <FormControl>
-                                          <Input placeholder="Enter question" {...field} />
+                                          <Input
+                                            placeholder="Enter question"
+                                            {...field}
+                                          />
                                         </FormControl>
                                         <FormMessage />
                                       </FormItem>
@@ -520,17 +575,29 @@ const PostCourse = () => {
                                           <FormItem>
                                             <FormControl>
                                               <div className="flex items-center space-x-2">
-                                                <Input placeholder={`Option ${optionIndex + 1}`} {...field} />
+                                                <Input
+                                                  placeholder={`Option ${
+                                                    optionIndex + 1
+                                                  }`}
+                                                  {...field}
+                                                />
                                                 <FormField
                                                   control={form.control}
                                                   name={`chapters.${index}.quizzes.${quizIndex}.correctAnswer`}
-                                                  render={({ field: checkboxField }) => (
+                                                  render={({
+                                                    field: checkboxField,
+                                                  }) => (
                                                     <FormItem>
                                                       <FormControl>
                                                         <Checkbox
-                                                          checked={checkboxField.value === optionIndex}
+                                                          checked={
+                                                            checkboxField.value ===
+                                                            optionIndex
+                                                          }
                                                           onCheckedChange={() => {
-                                                            checkboxField.onChange(optionIndex);
+                                                            checkboxField.onChange(
+                                                              optionIndex
+                                                            );
                                                           }}
                                                         />
                                                       </FormControl>
@@ -567,14 +634,18 @@ const PostCourse = () => {
               variant="outline"
               size="lg"
               className="w-full text-green-700 font-semibold border-green-700 hover:border-green-500 hover:text-green-500 hoverTransition"
-              onClick={() => append({
-                title: '',
-                description: '',
-                videoFile: undefined,
-                quizzes: Array(5).fill({
-                  questions: [{ question: '', options: ['', '', ''], correctAnswer: 0 }],
-                }),
-              })}
+              onClick={() =>
+                append({
+                  title: "",
+                  description: "",
+                  videoFile: undefined,
+                  quizzes: Array(5).fill({
+                    questions: [
+                      { question: "", options: ["", "", ""], correctAnswer: 0 },
+                    ],
+                  }),
+                })
+              }
             >
               <Plus className="mr-2 h-4 w-4" /> Add Chapter
             </Button>
@@ -585,15 +656,19 @@ const PostCourse = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.2 }}
           >
-            <Button type="submit" size="lg" className="w-full  bg-green-700 font-semibold text-white hover:border-green-500 hover:bg-green-500 hoverTransition" disabled={isSubmitting}>
-              {isSubmitting ? 'Posting Course...' : 'Post Course'}
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full  bg-green-700 font-semibold text-white hover:border-green-500 hover:bg-green-500 hoverTransition"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Posting Course..." : "Post Course"}
             </Button>
           </motion.div>
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default PostCourse
-
+export default PostCourse;
