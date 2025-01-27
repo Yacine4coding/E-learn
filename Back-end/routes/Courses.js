@@ -1,15 +1,15 @@
 import express from "express";
-import { verifyToken } from "../middleware/jwt.js";
+import { getUserFromToken, verifyToken } from "../middleware/jwt.js";
 import {
   addCourse,
   bestCourses,
-  courseById,
   favoriteCourses,
-  getCourseById,
+  getCourse,
   getPersonellCourses,
   getTeacherCourses,
   updateCourses,
-  wishlistCourses,
+  wishlistCourses,searchCourses,
+  submitQuize
 } from "../controller/courses.js";
 import { enableTeacher } from "../middleware/teacher.js";
 import upload from "../middleware/multer.js";
@@ -19,14 +19,14 @@ courses.post(
   "/",
   verifyToken,
   enableTeacher,
-  upload.single("picture"),
+  upload.array("uploadsFile",10),
   addCourse
 );
-courses.get("/", verifyToken, enableTeacher, getPersonellCourses);
-courses.get("/courseById",courseById)
 courses.get("/bestCourses/:count", bestCourses);
-courses.put("/favorite/:courseId",verifyToken,favoriteCourses)
-courses.get("/:teacherId", verifyToken, getTeacherCourses);
-courses.put("/wishlist/:courseId",verifyToken,wishlistCourses)
+courses.get("/:courseId",getUserFromToken ,getCourse)
+courses.get("/search/:value",searchCourses);
+courses.put("/favorite/:courseId", verifyToken, favoriteCourses);
+courses.put("/submitquize",verifyToken , submitQuize)
+courses.put("/wishlist/:courseId", verifyToken, wishlistCourses);
 courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);
 export default courses;

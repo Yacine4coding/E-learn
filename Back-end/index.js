@@ -3,20 +3,19 @@ import dotenv from "dotenv";
 import session from "express-session";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import apiDoc from "./middleware/swagger.js";
 import connectDb from "./middleware/database.js";
 import path from "path";
 import {
-  comment,
   courses,
   google,
-  post,
+  marketPlace,
   studient,
   teacher,
   user,
 } from "./routes/routes.js";
 import passport from "passport";
 import { fileURLToPath } from "url";
+import review from "./routes/reviews.js";
 const app = express();
 // * config
 app.use(
@@ -51,15 +50,13 @@ app.use(cookieParser());
 // routers
 app.use("/google", google);
 app.use("/user", user);
-
-
-app.use("/post", post);
-app.use("/comment", comment);
 app.use("/studient", studient);
 app.use("/course", courses);
 app.use("/teacher", teacher);
-app.use("/api-doc", apiDoc);
-app.use((req, res) => {
+app.use("/marketPlace",marketPlace);
+app.use("/review", review);
+
+app.use((_, res) => {
   res.status(505).send("rout not found");
 });
 app.listen(process.env.PORT || 3001, () => {

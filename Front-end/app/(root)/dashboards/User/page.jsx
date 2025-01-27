@@ -4,75 +4,25 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import CourseCard from "@/components/CourseCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/CustomUI/tabs";
-
-// Course banners (temporory)
-import cours1 from "@/public/couseTest/Placeholder1.png";
-import cours2 from "@/public/couseTest/Placeholder2.png";
-import cours3 from "@/public/couseTest/Placeholder3.png";
-import cours4 from "@/public/couseTest/Placeholder4.png";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/CustomUI/tabs";
 import { getDashboard } from "@/request/user";
-
-const courses = [
-  {
-    title: "Introduction to Web Development",
-    creator: "John Doe",
-    imageUrl: cours1,
-    price: 49.99,
-    stars: 4.5,
-    view: 1200,
-    oldPrice: 79.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Mastering Python Programming",
-    creator: "Jane Smith",
-    imageUrl: cours2,
-    price: 39.99,
-    stars: 4.7,
-    view: 1500,
-    oldPrice: 59.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Data Science and Machine Learning",
-    creator: "Alice Johnson",
-    imageUrl: cours3,
-    price: 69.99,
-    stars: 4.8,
-    view: 2200,
-    oldPrice: 89.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Digital Marketing Essentials",
-    creator: "Bob Lee",
-    imageUrl: cours4,
-    price: 29.99,
-    stars: 4.2,
-    view: 800,
-    oldPrice: 49.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-  {
-    title: "Digital Marketing Essentials",
-    creator: "Bob Lee",
-    imageUrl: cours4,
-    price: 29.99,
-    stars: 4.2,
-    view: 800,
-    oldPrice: 49.99,
-    TotalLecturs: 10,
-    Progress: 4,
-  },
-];
+import { initScriptLoader } from "next/script";
+import {
+  initCourses,
+  initFavCourses,
+  initWishlistCourses,
+} from "@/redux/dashboard";
+import { useDispatch, useSelector } from "react-redux";
+import { errorNotifcation } from "@/components/toast";
 
 const UserDashboard = () => {
-  const [cours, setCourses] = useState([]);
+  const { courses, favoriteCourse } = useSelector((s) => s.dashboard);
+  const dispatch = useDispatch();
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -85,15 +35,23 @@ const UserDashboard = () => {
       // HUNDLE RESPONSE
       switch (status) {
         case 200:
-          setCourses(data);
+          const { favCourses, buyCourses, wishlistCourses } = data ;
+          dispatch(initCourses(buyCourses));
+          dispatch(initFavCourses(favCourses));
+          dispatch(initWishlistCourses(wishlistCourses));
           break;
-        case 500:
-          console.log("error");
+        case 401:
+          errorNotifcation(data.message);
+          router.push("/");
+          break;
+        case 10:
+          errorNotifcation("error 10 status");
+          break;
+        default:
+          errorNotifcation(data.message);
       }
     })();
   }, []);
-
-  
 
   return (
     <div className="min-h-screen flex flex-col mb-6">
@@ -139,11 +97,7 @@ const UserDashboard = () => {
                 {courses.map((course, i) => (
                   <CourseCard
                     key={i}
-                    creator={course.teacherName}
-                    courseId={course.courseId}
-                    imageUrl={course.picture}
-                    progress={course.progress}
-                    totalLectures={course.chapterNumber}
+                    course = {course}
                     menuIcon={true}
                   />
                 ))}
@@ -159,16 +113,12 @@ const UserDashboard = () => {
                 </p>
               </div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {courses.map((course, i) => (
-                  course.isFavorite&&<CourseCard
-                  key={i}
-                  creator={course.teacherName}
-                  courseId={course.courseId}
-                  imageUrl={course.picture}
-                  progress={course.progress}
-                  totalLectures={course.chapterNumber}
-                  favIcon={true}
-                />
+                {favoriteCourse.map((course, i) => (
+                  <CourseCard
+                    key={i}
+                    course = {course}
+                    favIcon={true}
+                  />
                 ))}
               </div>
             </TabsContent>
@@ -184,14 +134,10 @@ const UserDashboard = () => {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {courses.map(
                   (course, i) =>
-                    course.chapterNumber === course.progress && (
+                    course.chapterNumber === course.progress.chapterNumber && (
                       <CourseCard
                         key={i}
-                        creator={course.teacherName}
-                        courseId={course.courseId}
-                        imageUrl={course.picture}
-                        progress={course.progress}
-                        totalLectures={course.chapterNumber}
+                        course={course}
                         completIcon={true}
                       />
                     )

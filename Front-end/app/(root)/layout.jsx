@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import MainFooter from "@/components/MainFooter";
 import ReduxContainer from "@/redux/ReduxContainer";
 import NavbarSub from "@/components/NavbarSub";
+import { Toaster } from "react-hot-toast";
 
 const Gilroy = localFont({
   src: [
@@ -60,8 +61,9 @@ export const metadata = {
 export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={Gilroy.variable}>
-      <body>
+      <body className="min-h-screen flex flex-col">
         <ReduxContainer>
+          <Toaster />
           <Navbar />
           {children}
           <MainFooter />

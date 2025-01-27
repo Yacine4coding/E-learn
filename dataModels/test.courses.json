@@ -35,7 +35,16 @@
         "title": "chapter3",
         "description": "description of chapter3",
         "link": "https://googl.com",
-        "queezes": []
+        "queezes": [
+          {
+            "question": "this first question",
+            "choices": [
+              "answer number 1 of first question",
+              "answer number 2 of first question"
+            ],
+            "answerNumber": 1
+          }
+        ]
       }
     ],
     "picture": "public/Placeholder3.png",

@@ -10,6 +10,8 @@ import { isLoggin, logOut } from "@/request/auth";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { setState } from "@/redux/user";
+import { Skeleton } from "@/components/ui/skeleton";
+
 
 import {
   DropdownMenu,
@@ -18,7 +20,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import { genProfileImg } from "@/public/avatars/avatar";
+import { errorNotifcation } from "./toast";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -32,20 +36,18 @@ const Navbar = () => {
   useEffect(() => {
     (async function () {
       const {
-        data: { userinfo },
+        data,
         status,
       } = await isLoggin();
       switch (status) {
         case 200:
-          dispatch(setState(userinfo));
-          console.log("is loggin");
+          dispatch(setState(data.userinfo));
           break;
         case 10:
-          console.log(10);
-          setError("catch error");
+          errorNotifcation("catch error status 10");
         case 500:
+          errorNotifcation("internal server error");
           setError(data.message);
-          console.log(500);
       }
       setLoading(false);
     })();
@@ -69,8 +71,8 @@ const Navbar = () => {
     router.push("/Account");
   };
 
-  const handleWishlistClick = () => {
-    router.push(`/dashboards/User?defTab=wishlist`);
+  const handleFavClick = () => {
+    router.push(`/dashboards/User?defTab=Favorite`);
   };
 
   const handleMyCoursesClick = () => {
@@ -82,6 +84,27 @@ const Navbar = () => {
     dispatch(setState(null));
     router.push("/");
   };
+
+
+  const handleStoreClick = () => {
+    router.push("/Services");
+  }
+
+  const handleMyServicesClick = () => {
+    console.log("My Services");
+    router.push(`/dashboards/myServices`);
+  }
+
+  const handleMyProposalsClick = () => {
+    console.log("My Proposals");
+    router.push(`/dashboards/myProposals`);
+  }
+
+  const handleMyDashboardClick = () => {
+    router.push(`/dashboards/Teacher`);
+  }
+
+
 
   const OffnavItems = [
     { label: "Login", onClick: handleLoginClick },
@@ -100,7 +123,7 @@ const Navbar = () => {
   };
 
   if (loading) {
-    return <div className="w-full text-center mt-8 bg-white">Loading...</div>;
+    return <Skeleton className="h-20 w-full bg-gray-500" />; // Display loading state
   }
 
   return (
@@ -117,19 +140,19 @@ const Navbar = () => {
         {isLoged ? (
           <>
             {!user.isteacher && (
-              <span
-                className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
-                onClick={OnNavItems[2].onClick}
-              >
-                {OnNavItems[2].label}
-              </span>
+              <>
+                <span
+                  className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
+                  onClick={OnNavItems[2].onClick}
+                >
+                  {OnNavItems[2].label}
+                </span>
+              </>
             )}
-            <button
-              className="nrmlBnt hoverTransition"
-              onClick={OnNavItems[1].onClick}
-            >
-              {OnNavItems[1].label}
-            </button>
+
+            {/* Notifications */}
+            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer" onClick={handleProfileClick}>
@@ -144,26 +167,71 @@ const Navbar = () => {
                     {user.email || "exemple@temp.com"}
                   </p>
                 </div>
-                <DropdownMenuSeparator />
+
+                <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
+
                 <DropdownMenuItem
                   className="cursor-pointer hover:bg-slate-200 hoverTransition"
                   onClick={handleProfileClick}
                 >
                   My Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                  onClick={handleMyCoursesClick}
-                >
-                  My Courses
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                  onClick={handleWishlistClick}
-                >
-                  Wishlist
-                </DropdownMenuItem>
+
+                {user.isteacher? (
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyDashboardClick}
+                    >
+                      My Dashboard
+                    </DropdownMenuItem>
+                ):( 
+                  <>
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyCoursesClick}
+                    >
+                      My Courses
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleFavClick}
+                    >
+                      Favourite
+                    </DropdownMenuItem>
+                  </>
+                )}
+
                 <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
+
+                {/* if services > 0 */}
+                {!user.isteacher && (
+                  <>
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyServicesClick}
+                    >
+                      My Services
+                    </DropdownMenuItem>
+
+                    {/* if Proposal > 0 */}
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleMyProposalsClick}
+                    >
+                      My Porposals
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      onClick={handleStoreClick}
+                    >
+                      MarketPlace
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
+                  </>
+                )}
+
+
                 <DropdownMenuItem
                   className="text-red-600 cursor-pointer hover:bg-slate-200 hoverTransition"
                   onClick={handleLogoutClick}

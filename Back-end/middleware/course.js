@@ -1,39 +1,37 @@
 export function generateCourse(course, user, allData = false) {
-  const {
+  let {
     _id: id,
     title,
+    stars,
+    view,
+    discount,
     description,
-    amount,
-    chapters,
-    payCount,
-    chapterNumber,
-    buyCount,
-    picture
+    chapters,chapterNumber,
+    picture,level , category,price , introduction
   } = course;
-  const { username, picture : userPicture } = user;
-  const result = allData
-    ? {
+  introduction.link = `http://localhost:5000/${introduction.link}`
+  chapters = chapters.map(chapter => {
+    chapter.link = `http://localhost:5000/${chapter.link}`
+    return chapter;
+  })
+  const { username, picture: userPicture } = user;
+  const result =  {
         id,
         title,
+        stars,chapterNumber,
+        view,
+        discount,
         description,
-        amount,
-        chapterNumber,
+        price,
         chapters,
-        payCount,
         username,
-        picture,
+        picture: `http://localhost:5000/${picture}`,
         userPicture,
-        buyCount,
+        introduction , 
+        level , 
+        category, 
+
       }
-    : {
-        id,
-        title,
-        description,
-        amount,
-        username,
-        picture,
-        userPicture,
-      };
   return result;
 }
 export function testChpater(chapter) {
@@ -74,20 +72,23 @@ export function testChpater(chapter) {
   return result;
 }
 export function sortCourse(courses) {
-  switch (true) {
-    case !(courses instanceof Array):
-      return false;
-    case courses.length === 0:
-      return false;
-  }
-  for (let i = courses.length; i > 1; i--) {
-    for (let j = 0; j < i; j++) {
-      if (courses[j].buyCount < courses[j + 1].buyCount) {
-        let k = courses[j];
-        courses[j] = courses[j + 1];
-        courses[j + 1] = k;
+  try {
+    console.log(courses instanceof Array);
+    console.log(courses.length === 0);
+    if (!(courses instanceof Array)) return false;
+    if (courses.length === 0) return false;
+    for (let i = courses.length-1; i > 0; i--) {
+      for (let j = 0; j < i; j++) {
+        if (courses[j].buyCount < courses[j + 1].buyCount) {
+          let k = courses[j];
+          courses[j] = courses[j + 1];
+          courses[j + 1] = k;
+        }
       }
     }
+  } catch (error) {
+    console.log(error);
+    return false;
   }
   return courses;
 }

@@ -3,19 +3,23 @@ import {
   generateToken,
   isTokenCorrect,
 } from "../middleware/jwt.js";
+import {__dirname} from "../middleware/multer.js";
+import path from 'path';
+import fs from 'fs';
 import {
   comparePassword,
   hashingPassword,
   generateUserInfo,
   generateUserName,
 } from "../middleware/user.js";
+import Studient from "../models/Studient.js";
 import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
-import { deleteUserComment } from "./comment.js";
 import { getCourseById } from "./courses.js";
-import { deleteUserPosts } from "./post.js";
 import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
 import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
+import Courses from "../models/Course.js";
+import { generateCourse } from "../middleware/course.js";
 
 export async function singup(req, res) {
   let { email, password, isteacher = false, picture = "" } = req.body;
@@ -142,14 +146,6 @@ export async function deleteAccount(req, res) {
   const { userId } = req.body;
   try {
     const user = await User.findById(userId);
-    if (!(await deleteUserPosts(userId))) {
-      res.status(500).send("post delete error");
-      return;
-    }
-    if (!(await deleteUserComment(userId))) {
-      res.status(500).send("comments delete error");
-      return;
-    }
     const countInfoDeleted = user.isteacher
       ? await deleteTeacher(user.userId, userId)
       : await deleteStudient(user.userId);
@@ -179,13 +175,15 @@ export async function updateUserInfo(req, res) {
     language,
     link,
   } = req.body;
-  if (!username && !password && !bio && !currentPassword && !email)
+  if (!username && !password && !bio && !currentPassword && !email && !firstName && !lastName)
     return res.status(204).send();
   try {
     let isUpdated = false;
     // GET USER DATA
     let user = await User.findById(userId);
-    let userinfo = user.isteacher? await getTeacher(user.userId) : await getStudient(user.userId) 
+    let userinfo = user.isteacher
+      ? await getTeacher(user.userId)
+      : await getStudient(user.userId);
     // UPDATE USER BIO
     if (user.bio !== bio) {
       user.bio = bio;
@@ -197,23 +195,22 @@ export async function updateUserInfo(req, res) {
       if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email))
         return res.status(400).send({ message: "email format are inccorect" });
       if (await User.findOne({ email }))
-        return res.status(403).send({ message: "username is already exist" });
+        return res.status(400).send({ message: "email is already exist" });
       user.email = email;
       isUpdated = true;
     }
     // UPDATE USER NAME
     if (username && username !== user.username) {
       if (await User.findOne({ username }))
-        return res.status(403).send({ message: "username is already exist" });
+        return res.status(400).send({ message: "username is already exist" });
       user.username = username;
       isUpdated = true;
     }
-    // SET PASSWORD CASES AND UPDATE IT
+    // check PASSWORD CASES AND UPDATE IT
     if ((!password && currentPassword) || (password && !currentPassword))
       return res.status(400).send({
         message: "password or current password are empty",
       });
-
     if (password && currentPassword) {
       if (
         !user.password ||
@@ -250,57 +247,94 @@ export async function updateUserInfo(req, res) {
     if (!isUpdated) return res.status(204).send();
     user = await user.save();
     res.status(200).send({
-      user: {...generateUserInfo(user),...userinfo}
+      user: { ...generateUserInfo(user), ...userinfo },
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "internal server error" });
   }
 }
-export async function getUserDashboard(req, res) {
-  const { userId, isteacher } = req.body;
+export async function getUserDashboard(req, res, next) {
+  const { userId, isteacher, secondId } = req.body;
+  if (isteacher) {
+    next(); 
+    return;
+  }
   try {
-    if (isteacher)
-      return res.status(500).send({ message: "feature is comming" });
-    // GET STUDIENT OBJECT
-    const { userId: secondId } = await User.findById(userId);
-    // STUDIENT DASHBOARD
-    const userInfo = await getStudient(secondId);
-    let userCourses = await StudientCourse.find({ studientId: userId }); // return array of courses or null
-
-    if (!userCourses) res.status(204).send();
-    // FORMAT COURSES
-    for (let i = 0; i < userCourses.length; i++) {
-      const {
-        courseId,
-        progress: { chapterNumber: progress },
-      } = userCourses[i];
-      const {
-        username: teacherName,
-        picture,
-        description,
-        teacherProfileImg,
-        chapterNumber,
-      } = await getCourseById(courseId);
-      const isFavorite = userInfo.favorite.includes(courseId);
-      const isInWishList = userInfo.wishlist.includes(courseId);
-      userCourses[i] = {
-        isFavorite,
-        isInWishList,
-        picture: `http://localhost:5000/${picture}`,
-        description,
-        teacherName,
-        teacherProfileImg,
-        chapterNumber,
-        progress,
-        courseId,
-      };
+    const informations = await Studient.findById(secondId); // get information of userID
+    // * GET FAVORITE COURSE
+    const favCourses = [];
+    for (let i = 0; i < informations.favorite.length; i++) {
+      const fav = informations.favorite[i];
+      favCourses.push(await getCourseById(fav));
+    }
+    const buyCoursesId = await StudientCourse.find({ studentId: userId });
+    // *  GET BUY COURSES
+    const buyCourses = [];
+    for (let i = 0; i < buyCoursesId.length; i++) {
+      const ele = buyCoursesId[i];
+      const course = await getCourseById(ele.courseId);
+      buyCourses.push({
+        ...course,
+        progress: ele,
+      });
     }
 
-    res.status(200).send({ courses: userCourses });
+    // * GET WISHLIST COURSE
+    const wishlistCourses = [];
+    for (let i = 0; i < informations.wishlist.length; i++) {
+      const wishlist = informations.wishlist[i];
+      wishlistCourses.push(await getCourseById(wishlist));
+    }
+    // HUNDLE RES
+    res.status(200).send({
+      favCourses,
+      buyCourses,
+      wishlistCourses,
+    });
   } catch (error) {
     console.log(error);
-    res.status(505).send({ message: "internal server error" });
+    res.status(500).send({
+      message: "internal server error",
+    });
+  }
+}
+export async function updateProfileImage(req,res) {
+  try {
+    const {userId} = req;
+    const imgPath = req.file.path ;
+    const user = await User.findById(userId) ; 
+
+    if (!user) return res.status(404).send({message: "user not found"})
+    // delete the current path
+    const isHasPicture = /^public/.test(user.picture);
+    if (user.picture&&isHasPicture) {
+      const currentFilePath = path.join(__dirname, '/', user.picture);
+      console.log(currentFilePath)
+      if (fs.existsSync(currentFilePath)) {
+        fs.unlinkSync(currentFilePath);
+      }
+    }
+    // update picture 
+    user.picture = imgPath;
+    const newUser = await user.save();
+    res.status(200).send({userinfo : generateUserInfo(newUser)});
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({message : "internal server error"})
+  }
+}
+export async function getTeacherDashboard (req,res) {
+  const {userId , secondId , user} = req.body ;
+  try {
+    const teacher = await getTeacher(secondId);
+    if (!teacher) return res.status(404).send({message : "teacher not found"});
+    const courses = await Courses.find({teacherId : userId});
+    const handleCourses = courses.map(ele=>generateCourse(ele,user))
+    res.status(200).send({courses: handleCourses});
+  } catch (error) {
+    console.log(error)
+    res.status(500).send({message : "internal server error"})
   }
 }
 // * google auth
@@ -318,8 +352,8 @@ export async function isUserExist(userId) {
       isExist: true,
       user: {
         username: isUserExist.username,
+        email: isUserExist.email,
         picture: isUserExist.picture,
-        isHasPicture: isUserExist.isHasPicture,
         isteacher: isUserExist.isteacher,
         secondId: isUserExist.userId,
       },

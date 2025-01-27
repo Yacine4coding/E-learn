@@ -12,6 +12,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { googleAuth, login } from "@/request/auth";
+import { errorNotifcation, successNotifcation } from "@/components/toast";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -33,27 +34,17 @@ const Login = () => {
 
     switch (status) {
       case 200:
-        route.push(`/dashboards/User`);
-        break;
-      case 400:
-        console.log("400");
-        console.log(data.message);
-        setError(data.message);
-        break;
-      case 422:
-        console.log("422");
-        console.log(data.message);
-        setError(data.message);
+        successNotifcation("welcome back")
+        route.push(`/`);
         break;
       case 500:
-        console.log("500");
-        console.log(data.message);
-        setError(data.message);
+        errorNotifcation(data.message);
+        break;
+      case 10:
+        errorNotifcation("code error status 10");
         break;
       default:
-        console.log("Somthing went wrong,please try again later");
-        setError("Somthing went wrong,please try again later");
-        break;
+        setError(data.message);
     }
     setLoading(false);
   };
