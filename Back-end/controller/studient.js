@@ -79,14 +79,6 @@ export async function deleteStudientCourse(req, res) {
   }
 }
 // functions
-export async function deleteStudient(studientId) {
-  try {
-    await Studient.findByIdAndDelete(studientId);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
 export async function createNewStudient() {
   try {
     const studient = await new Studient().save();

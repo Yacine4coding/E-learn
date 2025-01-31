@@ -13,6 +13,7 @@ import {
   teacher,
   user,
 } from "./routes/routes.js";
+import routes from "./routes/routes.js";
 import passport from "passport";
 import { fileURLToPath } from "url";
 import review from "./routes/reviews.js";
@@ -29,11 +30,9 @@ app.use(
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 dotenv.config();
 connectDb();
@@ -48,12 +47,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // routers
+app.use("/api", routes);
 app.use("/google", google);
 app.use("/user", user);
 app.use("/studient", studient);
 app.use("/course", courses);
 app.use("/teacher", teacher);
-app.use("/marketPlace",marketPlace);
+app.use("/marketPlace", marketPlace);
 app.use("/review", review);
 
 app.use((_, res) => {
