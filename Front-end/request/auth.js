@@ -2,9 +2,13 @@ import axios from "axios";
 import { APIURL, CREDENTIALS } from "./reqParams";
 import { getRandomAvatar } from "@/public/avatars/avatar";
 import { errorNotifcation } from "@/components/toast";
+
+const authUrl = `${APIURL}/api/auth`;
+
 export function googleAuth() {
   window.open(`${APIURL}/google/callback`, "_self");
 }
+
 export async function signup(email, password) {
   try {
     const avatar = getRandomAvatar();
@@ -13,7 +17,7 @@ export async function signup(email, password) {
       return { status: 10 };
     }
     const { data, status } = await axios.post(
-      `${APIURL}/user/signup`,
+      `${authUrl}/signup`,
       {
         email,
         password,
@@ -29,6 +33,7 @@ export async function signup(email, password) {
     return { data, status };
   }
 }
+
 export async function login(username, password) {
   try {
     if (!username || !password) {
@@ -36,7 +41,7 @@ export async function login(username, password) {
       return { status: 10 };
     }
     const { data, status } = await axios.post(
-      `${APIURL}/user/login`,
+      `${authUrl}/login`,
       {
         username,
         password,
@@ -53,11 +58,11 @@ export async function login(username, password) {
 }
 export async function isLoggin() {
   try {
-    const res = await axios.get(`${APIURL}/user/isLoggin`, CREDENTIALS);
+    const res = await axios.get(`${authUrl}/isLoggin`, CREDENTIALS);
     const { data, status } = res;
     return { data, status };
   } catch (error) {
-    console.log("isloogin error : ",error);
+    console.log("isloogin error : ", error);
     if (!error.response) return { status: 10 };
     const { data, status } = error.response;
     return { data, status };
@@ -65,7 +70,7 @@ export async function isLoggin() {
 }
 export async function logOut() {
   try {
-    await axios.get(`${APIURL}/user/logout`, CREDENTIALS);
+    await axios.get(`${authUrl}/logout`, CREDENTIALS);
   } catch (error) {
     console.log(error);
   }
