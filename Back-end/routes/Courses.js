@@ -5,12 +5,12 @@ import {
   bestCourses,
   favoriteCourses,
   getCourse,
-  getPersonellCourses,
-  getTeacherCourses,
   updateCourses,
-  wishlistCourses,searchCourses,
+  wishlistCourses,
+  searchCourses,
   submitQuize,
-  getCourseProgress
+  getCourseProgress,
+  deleteCourse,
 } from "../controller/courses.js";
 import { enableTeacher } from "../middleware/teacher.js";
 import upload from "../middleware/multer.js";
@@ -20,15 +20,17 @@ courses.post(
   "/",
   verifyToken,
   enableTeacher,
-  upload.array("uploadsFile",10),
+  upload.array("uploadsFile", 10),
   addCourse
 );
 courses.get("/bestCourses/:count", bestCourses);
-courses.get("/:courseId",getUserFromToken ,getCourse)
-courses.get("/search/:value",searchCourses);
+courses.get("/:courseId", getUserFromToken, getCourse);
+courses.get("/search/:value", searchCourses);
 courses.get("/progress/:courseId", verifyToken, getCourseProgress);
-courses.put("/favorite/:courseId",verifyToken , favoriteCourses);
-courses.put("/submitquize",verifyToken , submitQuize)
+courses.put("/favorite/:courseId", verifyToken, favoriteCourses);
+courses.put("/submitquize", verifyToken, submitQuize);
 courses.put("/wishlist/:courseId", verifyToken, wishlistCourses);
 courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);
+
+courses.delete("/:courseId", verifyToken, deleteCourse);
 export default courses;

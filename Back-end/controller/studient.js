@@ -1,11 +1,7 @@
 import { generateStudientInfo } from "../middleware/studient.js";
 import Studient from "../models/Studient.js";
 import StudientCourse from "../models/StudientCourse.js";
-import {
-  deleteCouseById,
-  getCourseById,
-  incrementCourseBuy,
-} from "./courses.js";
+import { getCourseById } from "./courses.js";
 import { isUserExist } from "./user.js";
 
 export async function changePoint(req, res) {
@@ -97,11 +93,8 @@ export async function getStudient(userId) {
 }
 export async function updateCourse(userId, obj) {
   try {
-    await Studient.updateOne(
-      { _id: userId},
-      { $set: { ...obj } }
-    );
-    return true ;
+    await Studient.updateOne({ _id: userId }, { $set: { ...obj } });
+    return true;
   } catch (error) {
     return false;
   }

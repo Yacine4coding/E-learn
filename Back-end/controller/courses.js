@@ -1,8 +1,4 @@
-import {
-  generateCourse,
-  sortCourse,
-  testChpater,
-} from "../middleware/course.js";
+import { generateCourse, sortCourse } from "../middleware/course.js";
 import Courses from "../models/Course.js";
 import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
@@ -95,7 +91,7 @@ export async function addCourse(req, res) {
 export async function getPersonellCourses(req, res) {
   const { userId, user } = req.body;
   try {
-    let courses = await Courses.find({ teacherId: userId });
+    let courses = await Courses.find({ teacherId: userId, visible: true });
     if (courses.length === 0) {
       res.status(204).send();
       return;
@@ -127,7 +123,7 @@ export async function getTeacherCourses(req, res) {
       res.status(400).send({ message: "the id isn't of teacher" });
       return;
     }
-    let courses = await Courses.find({ teacherId });
+    let courses = await Courses.find({ teacherId  , visible: true });
     if (courses.length === 0) {
       res.status(204).send();
       return;
@@ -202,9 +198,8 @@ export async function bestCourses(req, res) {
     return;
   }
   try {
-    let courses = await Courses.find();
+    let courses = await Courses.find({visible: true})
     if (courses.length === 0) return res.status(204).send();
-    console.log(courses);
     for (let i = 0; i < courses.length; i++) {
       const { user } = await isUserExist(courses[i].teacherId);
 
@@ -371,16 +366,48 @@ export async function submitQuize(req, res) {
   }
 }
 export async function getCourseProgress(req, res) {
- try {
-  const { userId } = req.body;
-  const {courseId} = req.params;
-  const progress = await StudientCourse.findOne({studentId:userId,courseId});
-  if (!progress) return res.status(403).send({message:"you don't have the access for this progress"});
-  res.status(200).send(progress);
- } catch (error) {
-  console.log(error);
-  res.status(500).send({ message: "internal server error" });
- }
+  try {
+    const { userId } = req.body;
+    const { courseId } = req.params;
+    const progress = await StudientCourse.findOne({
+      studentId: userId,
+      courseId,
+    });
+    if (!progress)
+      return res
+        .status(403)
+        .send({ message: "you don't have the access for this progress" });
+    res.status(200).send(progress);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function deleteCourse(req, res) {
+  const { userId, isteacher, user } = req.body;
+  const { courseId } = req.params;
+  // * if user not teacher
+  if (!isteacher)
+    return res
+      .status(403)
+      .send({ message: "you don't have the access for this opperation" });
+
+  try {
+    const course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    // the theacher isn't the owner of course
+    if (course.teacherId !== userId)
+      return res.status(403).send({
+        message: "this course is not yours, if any problem send a feedback",
+      });
+    course.visible = false;
+    await course.save();
+    res.status(200).send({ course });
+  } catch (error) {
+    console.log("delete course controller");
+    console.log(error.message);
+    return res.status(500).send({ message: "internal server error" });
+  }
 }
 // * functions
 export async function getCoursesById(id, user) {
@@ -399,6 +426,7 @@ export async function getCourseById(courseId) {
     if (!course) return null;
     const { isExist, user } = await isUserExist(course.teacherId);
     if (!isExist) return null;
+    if (!course.visible) return null;
     return generateCourse(course, user, true);
   } catch (error) {
     return null;
@@ -413,21 +441,5 @@ export async function incrementCourseBuy(courseId) {
     return true;
   } catch (error) {
     return null;
-  }
-}
-export async function deleteTeacherCourses(teacherId) {
-  try {
-    await Courses.deleteMany({ teacherId });
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-export async function deleteCouseById(courseId) {
-  try {
-    await Courses.findByIdAndDelete({ teacherId });
-    return true;
-  } catch (error) {
-    return false;
   }
 }

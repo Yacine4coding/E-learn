@@ -5,17 +5,21 @@ const coursesShcema = mongoose.Schema({
     type: String,
     require: true,
   },
+  visible: {
+    type: Boolean,
+    default: true,
+  },
   description: {
     type: String,
     default: "",
   },
-  level : {
-    type : String , 
-    require : true ,
+  level: {
+    type: String,
+    require: true,
   },
-  category : {
-    type : String , 
-    require : true ,
+  category: {
+    type: String,
+    require: true,
   },
   price: {
     type: Number,
@@ -41,9 +45,9 @@ const coursesShcema = mongoose.Schema({
     min: 1,
     require: true,
   },
-  introduction : {
+  introduction: {
     type: Object,
-    require : true ,
+    require: true,
   },
   chapters: {
     type: Array,
