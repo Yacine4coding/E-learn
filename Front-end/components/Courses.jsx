@@ -32,7 +32,7 @@ const Courses = () => {
     })();
   }, []);
   return (
-    <div className="w-full flex flex-col items-center mt-20 mb-8 py-8 ">
+    <div className="w-full flex flex-col items-center mb-8 py-8 ">
       <h1 className="text-3xl font-gilroy font-bold mb-8">
         Browse Our Top Courses
       </h1>
