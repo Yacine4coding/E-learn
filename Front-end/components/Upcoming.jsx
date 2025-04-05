@@ -32,7 +32,7 @@ const Upcoming = () => {
   }, []);
   return (
     <div className="w-full flex flex-col items-center p-8 mb-12 bg-white">
-      <h1 className="text-2xl font-gilroy font-bold mb-8">Upcoming Webinar</h1>
+      <h1 className="text-3xl font-gilroy font-bold mb-8">Upcoming Webinar</h1>
       <div className="flex justify-around flex-wrap gap-4">
         {courses.map((course, i) => (
           <CourseCard

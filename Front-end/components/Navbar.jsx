@@ -1,199 +1,278 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
+"use client"
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
 
-import "@/styles/globals.css"; // Ensure the path to your CSS is correct
-import logo from "../public/logo.png"; // Ensure the path to your logo is correct
-import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "/components/ui/avatar";
-import { isLoggin, logOut } from "@/request/auth";
-import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
-import { setState } from "@/redux/user";
-import { Skeleton } from "@/components/ui/skeleton";
-
-
+import { Avatar, AvatarFallback, AvatarImage } from "/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
-import { genProfileImg } from "@/public/avatars/avatar";
-import { errorNotifcation } from "./toast";
+} from "@/components/ui/dropdown-menu"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Input } from "@/components/ui/input"
+
+import { isLoggin, logOut } from "@/request/auth"
+import { setState } from "@/redux/user"
+
+import "@/styles/globals.css"
+import logo from "../public/logo.png"
+import { genProfileImg } from "@/public/avatars/avatar"
+import { errorNotifcation } from "./toast"
+import { Briefcase, Heart, Home, Search } from "lucide-react"
 
 const Navbar = () => {
-  const dispatch = useDispatch();
-  const { user, isLoggin: isLoged } = useSelector((s) => s.user);
-  const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch()
+  const { user, isLoggin: isLoged } = useSelector((s) => s.user)
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
-  const [Error, setError] = useState(""); // Store user data
-  const [loading, setLoading] = useState(true); // Loading state
+  const [Error, setError] = useState("")
+  const [loading, setLoading] = useState(true)
 
-  const router = useRouter();
+  const router = useRouter()
+
   useEffect(() => {
-    (async function () {
-      const {
-        data,
-        status,
-      } = await isLoggin();
+    ;(async () => {
+      const { data, status } = await isLoggin()
       switch (status) {
         case 200:
-          dispatch(setState(data.userinfo));
-          break;
+          dispatch(setState(data.userinfo))
+          break
         case 10:
-          errorNotifcation("catch error status 10");
+          errorNotifcation("catch error status 10")
         case 500:
-          errorNotifcation("internal server error");
-          setError(data.message);
+          errorNotifcation("internal server error")
+          setError(data.message)
       }
-      setLoading(false);
-    })();
-  }, []);
+      setLoading(false)
+    })()
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isOpen && !event.target.closest("button")) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isOpen])
 
   const handleLoginClick = () => {
-    router.push("/auth/Login");
-    setIsOpen(false);
-  };
-  const handleSignupClick = () => {
-    router.push("/auth/Signup");
-    setIsOpen(false);
-  };
-  const handleInstructorClick = () => {
-    router.push("/Instructor");
-  };
+    router.push("/auth/Login")
+    setIsOpen(false)
+  }
 
-  // loged in handlers
+  const handleSignupClick = () => {
+    router.push("/auth/Signup")
+    setIsOpen(false)
+  }
+
+  const handleInstructorClick = () => {
+    router.push("/Instructor")
+  }
 
   const handleProfileClick = () => {
-    router.push("/Account");
-  };
+    router.push("/Account")
+  }
 
   const handleFavClick = () => {
-    router.push(`/dashboards/User?defTab=Favorite`);
-  };
+    router.push(`/dashboards/User?defTab=Favorite`)
+  }
 
   const handleMyCoursesClick = () => {
-    router.push(`/dashboards/User?defTab=all-courses`);
-  };
+    router.push(`/dashboards/User?defTab=all-courses`)
+  }
 
   const handleLogoutClick = async () => {
-    await logOut();
-    dispatch(setState(null));
-    router.push("/");
-  };
+    await logOut()
+    dispatch(setState(null))
+    router.push("/")
+  }
 
-
-  const handleStoreClick = () => {
-    router.push("/Services");
+  const handleServicesClick = () => {
+    router.push("/Services")
   }
 
   const handleMyServicesClick = () => {
-    console.log("My Services");
-    router.push(`/dashboards/myServices`);
+    router.push(`/dashboards/myServices`)
   }
 
   const handleMyProposalsClick = () => {
-    console.log("My Proposals");
-    router.push(`/dashboards/myProposals`);
+    router.push(`/dashboards/myProposals`)
   }
 
   const handleMyDashboardClick = () => {
-    router.push(`/dashboards/Teacher`);
+    router.push(`/dashboards/Teacher`)
   }
 
+  const handleHomeClick = () => {
+    router.push("/")
+  }
 
+  const handleSearchClick = () => {
+    if (searchQuery.trim()) {
+      router.push(`/Search?query=${searchQuery}`)
+    }
+  }
 
-  const OffnavItems = [
-    { label: "Login", onClick: handleLoginClick },
-    { label: "Sign Up", onClick: handleSignupClick },
-    { label: "Become Instructor", onClick: handleInstructorClick },
-  ];
-
-  const OnNavItems = [
-    { label: "My Profile", onClick: handleProfileClick },
-    { label: "Log out", onClick: handleLogoutClick },
-    { label: "Become Instructor", onClick: handleInstructorClick },
-  ];
-
-  const toggleMenu = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      handleSearchClick()
+    }
+  }
 
   if (loading) {
-    return <Skeleton className="h-20 w-full bg-gray-500" />; // Display loading state
+    return (
+      <nav className="flex items-center justify-between h-16 px-6 bg-[#003049] text-white">
+        <div className="w-40">
+          <Skeleton className="h-8 w-32 bg-gray-700" />
+        </div>
+        <div className="w-96">
+          <Skeleton className="h-10 w-full rounded-full bg-gray-700" />
+        </div>
+        <div className="flex space-x-6">
+          <Skeleton className="h-6 w-6 rounded-full bg-gray-700" />
+          <Skeleton className="h-6 w-6 rounded-full bg-gray-700" />
+          <Skeleton className="h-6 w-6 rounded-full bg-gray-700" />
+          <Skeleton className="h-8 w-8 rounded-full bg-gray-700" />
+        </div>
+      </nav>
+    )
+  }
+
+  if (Error) {
+    return (
+      <nav className="flex items-center justify-between h-16 px-6 bg-[#003049] text-white">
+        <Link href="/" className="flex items-center">
+          <Image src={logo || "/placeholder.svg"} alt="Edulink logo" height={32} width={32} />
+          <span className="ml-2 text-xl font-bold">Edulink</span>
+        </Link>
+        <div className="text-white">Something went wrong. Please try again later.</div>
+      </nav>
+    )
   }
 
   return (
-    <nav className="flex justify-between font-gilroy items-center py-4 px-6 bg-[#405E93]">
+    <nav className="flex items-center justify-between h-16 px-6 bg-[#003049] text-white">
       {/* Logo Section */}
       <Link href="/" className="flex items-center">
-        <Image src={logo} alt="logo image" height={43} width={43} />
-        <span className="ml-2 text-lg text-white font-extrabold">Edulink</span>
+        <Image src={logo || "/placeholder.svg"} alt="Edulink logo" height={32} width={32} />
+        <span className="ml-2 text-xl font-bold">Edulink</span>
       </Link>
 
-      {/* Desktop Navigation */}
+      {/* Search Bar */}
+      <div className="hidden md:flex items-center max-w-md w-full mx-4">
+        <div className="relative flex-grow">
+          <Input
+            type="text"
+            placeholder="Find courses..."
+            className="w-full bg-white text-black rounded-l-full pl-10 pr-4 h-10 focus-visible:ring-0 focus-visible:ring-offset-0 border-r-0"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+        </div>
+        <button
+          onClick={handleSearchClick}
+          className="h-10 bg-green-500 hover:bg-green-600 text-white px-4 rounded-r-full transition-colors text-sm font-medium"
+        >
+          Search
+        </button>
+      </div>
 
-      <div className="hidden md:flex items-center justify-end">
+      {/* Navigation Icons */}
+      <div className="flex items-center space-x-8">
+        {/* Home Icon */}
+        <button
+          onClick={handleHomeClick}
+          className="text-white hover:text-gray-300 transition-colors group relative"
+          aria-label="Home"
+        >
+          <Home className="h-5 w-5" />
+          <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            Home
+          </span>
+        </button>
+
         {isLoged ? (
           <>
-            {!user.isteacher && (
-              <>
-                <span
-                  className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
-                  onClick={OnNavItems[2].onClick}
-                >
-                  {OnNavItems[2].label}
-                </span>
-              </>
-            )}
+            {/* Favorites Icon */}
+            <button
+              onClick={handleFavClick}
+              className="text-white hover:text-gray-300 transition-colors group relative"
+              aria-label="Favorites"
+            >
+              <Heart className="h-5 w-5" />
+              <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                Favorites
+              </span>
+            </button>
 
-            {/* Notifications */}
-            
+            {/* Services Hub Icon */}
+            <button
+              onClick={handleServicesClick}
+              className="text-white hover:text-gray-300 transition-colors group relative"
+              aria-label="Services Hub"
+            >
+              <Briefcase className="h-5 w-5" />
+              <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                Services Hub
+              </span>
+            </button>
 
+            {/* User Profile */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer" onClick={handleProfileClick}>
-                  <AvatarImage src={genProfileImg(user.picture)} />
-                  <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <div className="cursor-pointer">
+                  <Avatar className="h-8 w-8 border border-white">
+                    <AvatarImage src={genProfileImg(user?.picture)} />
+                    <AvatarFallback>{user?.username?.charAt(0) || "U"}</AvatarFallback>
+                  </Avatar>
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white" align="end">
                 <div className="flex flex-col space-y-1 p-2">
-                  <p className="text-sm font-medium">{user.username}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {user.email || "exemple@temp.com"}
-                  </p>
+                  <p className="text-sm font-medium">{user?.username}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email || "example@temp.com"}</p>
                 </div>
 
                 <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
 
                 <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                  className="cursor-pointer hover:bg-slate-200 transition-colors"
                   onClick={handleProfileClick}
                 >
                   My Profile
                 </DropdownMenuItem>
 
-                {user.isteacher? (
-                    <DropdownMenuItem
-                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                      onClick={handleMyDashboardClick}
-                    >
-                      My Dashboard
-                    </DropdownMenuItem>
-                ):( 
+                {user?.isteacher ? (
+                  <DropdownMenuItem
+                    className="cursor-pointer hover:bg-slate-200 transition-colors"
+                    onClick={handleMyDashboardClick}
+                  >
+                    My Dashboard
+                  </DropdownMenuItem>
+                ) : (
                   <>
                     <DropdownMenuItem
-                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      className="cursor-pointer hover:bg-slate-200 transition-colors"
                       onClick={handleMyCoursesClick}
                     >
                       My Courses
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      className="cursor-pointer hover:bg-slate-200 transition-colors"
                       onClick={handleFavClick}
                     >
                       Favourite
@@ -203,37 +282,44 @@ const Navbar = () => {
 
                 <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
 
-                {/* if services > 0 */}
-                {!user.isteacher && (
+                {!user?.isteacher && (
                   <>
                     <DropdownMenuItem
-                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      className="cursor-pointer hover:bg-slate-200 transition-colors"
                       onClick={handleMyServicesClick}
                     >
                       My Services
                     </DropdownMenuItem>
 
-                    {/* if Proposal > 0 */}
                     <DropdownMenuItem
-                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
+                      className="cursor-pointer hover:bg-slate-200 transition-colors"
                       onClick={handleMyProposalsClick}
                     >
-                      My Porposals
+                      My Proposals
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
-                      className="cursor-pointer hover:bg-slate-200 hoverTransition"
-                      onClick={handleStoreClick}
+                      className="cursor-pointer hover:bg-slate-200 transition-colors"
+                      onClick={handleServicesClick}
                     >
-                      MarketPlace
+                      Services Hub
                     </DropdownMenuItem>
+
+                    {!user?.isteacher && (
+                      <DropdownMenuItem
+                        className="cursor-pointer hover:bg-slate-200 transition-colors"
+                        onClick={handleInstructorClick}
+                      >
+                        Become Instructor
+                      </DropdownMenuItem>
+                    )}
+
                     <DropdownMenuSeparator className="bg-gray-300 w-[95%] mx-auto" />
                   </>
                 )}
 
-
                 <DropdownMenuItem
-                  className="text-red-600 cursor-pointer hover:bg-slate-200 hoverTransition"
+                  className="text-red-600 cursor-pointer hover:bg-slate-200 transition-colors"
                   onClick={handleLogoutClick}
                 >
                   Logout
@@ -243,89 +329,22 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <span
-              className="mr-4 text-base font-normal text-white cursor-pointer hover:text-gray-300 hoverTransition"
-              onClick={OnNavItems[2].onClick}
-            >
-              {OffnavItems[2].label}
-            </span>
-            <button
-              className="nrmlBnt hoverTransition"
-              onClick={OffnavItems[0].onClick}
-            >
-              {OffnavItems[0].label}
+            {/* Login/Signup buttons for non-logged in users */}
+            <button className="text-white hover:text-gray-300 transition-colors text-sm" onClick={handleLoginClick}>
+              Login
             </button>
             <button
-              className="greenBtn hoverTransition"
-              onClick={OffnavItems[1].onClick}
+              className="bg-white text-black hover:bg-gray-200 transition-colors rounded-full px-4 py-1.5 text-sm font-medium"
+              onClick={handleSignupClick}
             >
-              {OffnavItems[1].label}
+              Sign Up
             </button>
-          </>
-        )}
-      </div>
-
-      {/* Mobile Navigation */}
-
-      <div className="md:hidden flex items-center">
-        {isLoged ? (
-          <>
-            <button className="p-2 rounded" onClick={toggleMenu}>
-              <Avatar className="cursor-pointer">
-                <AvatarImage src={genProfileImg(user.picture)} />
-                <AvatarFallback>YB</AvatarFallback>
-              </Avatar>
-            </button>
-            {isOpen && (
-              <div className="absolute top-20 right-4 bg-white shadow-md p-4 rounded transition-all duration-300 ease-in-out">
-                {OnNavItems.map((item, index) => (
-                  <button
-                    key={index}
-                    className="block w-full py-2 px-4 text-left hover:bg-gray-100"
-                    onClick={item.onClick}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <button className="p-2 rounded" onClick={toggleMenu}>
-              <svg
-                className="text-white w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-            {isOpen && (
-              <div className="absolute top-20 right-4 bg-white shadow-md p-4 rounded transition-all duration-300 ease-in-out">
-                {OffnavItems.map((item, index) => (
-                  <button
-                    key={index}
-                    className="block w-full py-2 px-4 text-left hover:bg-gray-100"
-                    onClick={item.onClick}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
           </>
         )}
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
+
