@@ -16,6 +16,7 @@ import { Pencil, Trash2, BookOpen } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCourse, initCourses } from "@/redux/dashboard";
 import { getDashboard } from "@/request/user";
+import { hideCourse } from "@/request/courses";
 
 const MyPostedCourses = () => {
   const router = useRouter();
@@ -23,22 +24,20 @@ const MyPostedCourses = () => {
   const { courses } = useSelector((s) => s.dashboard);
   const dispatch = useDispatch();
   useEffect(() => {
-      (async function () {
-        const {status , data} = await getDashboard() ; 
-        if (status === 200) {
-          dispatch(initCourses(data.courses));
-        }
-      })();
-  } , []);
+    (async function () {
+      const { status, data } = await getDashboard();
+      if (status === 200) {
+        dispatch(initCourses(data.courses));
+      }
+    })();
+  }, []);
   const handleEdit = (courseId) => {
     router.push(`/Instructor/editCourse/${courseId}`);
   };
 
   const handleDelete = async (courseId) => {
     // fetch for delete course
-
-    // DELETE FROM DATABASE
-    // DELETE FROM REDUX
+    await hideCourse(courseId);
     dispatch(deleteCourse(courseId));
   };
 
@@ -73,10 +72,10 @@ const MyPostedCourses = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow">
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className="text-sm mb-2 overflow-hidden">
                   {course.description}
                 </p>
-                <p className="font-semibold">${course.amount}</p>
+                <p className="font-semibold">${course.price}</p>
               </CardContent>
               <CardFooter className="flex justify-between">
                 <Button
@@ -101,8 +100,7 @@ const MyPostedCourses = () => {
         ))}
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default MyPostedCourses
-
+export default MyPostedCourses;

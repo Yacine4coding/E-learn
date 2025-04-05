@@ -6,32 +6,39 @@ export function generateCourse(course, user, allData = false) {
     view,
     discount,
     description,
-    chapters,chapterNumber,
-    picture,level , category,price , introduction
+    chapters,
+    chapterNumber,
+    teacherId,
+    picture,
+    level,
+    category,
+    price,
+    introduction,
   } = course;
-  introduction.link = `http://localhost:5000/${introduction.link}`
-  chapters = chapters.map(chapter => {
-    chapter.link = `http://localhost:5000/${chapter.link}`
+  introduction.link = `http://localhost:5000/${introduction.link}`;
+  chapters = chapters.map((chapter) => {
+    chapter.link = `http://localhost:5000/${chapter.link}`;
     return chapter;
-  })
+  });
   const { username, picture: userPicture } = user;
-  const result =  {
-        id,
-        title,
-        stars,chapterNumber,
-        view,
-        discount,
-        description,
-        price,
-        chapters,
-        username,
-        picture: `http://localhost:5000/${picture}`,
-        userPicture,
-        introduction , 
-        level , 
-        category, 
-
-      }
+  const result = {
+    id,
+    title,
+    stars,
+    chapterNumber,
+    view,
+    discount,
+    teacherId,
+    description,
+    price,
+    chapters,
+    username,
+    picture: `http://localhost:5000/${picture}`,
+    userPicture,
+    introduction,
+    level,
+    category,
+  };
   return result;
 }
 export function testChpater(chapter) {
@@ -77,7 +84,7 @@ export function sortCourse(courses) {
     console.log(courses.length === 0);
     if (!(courses instanceof Array)) return false;
     if (courses.length === 0) return false;
-    for (let i = courses.length-1; i > 0; i--) {
+    for (let i = courses.length - 1; i > 0; i--) {
       for (let j = 0; j < i; j++) {
         if (courses[j].buyCount < courses[j + 1].buyCount) {
           let k = courses[j];

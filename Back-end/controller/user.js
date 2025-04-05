@@ -196,7 +196,7 @@ export async function getTeacherDashboard(req, res) {
   try {
     const teacher = await getTeacher(secondId);
     if (!teacher) return res.status(404).send({ message: "teacher not found" });
-    const courses = await Courses.find({ teacherId: userId });
+    const courses = await Courses.find({ teacherId: userId, visible: true });
     const handleCourses = courses.map((ele) => generateCourse(ele, user));
     res.status(200).send({ courses: handleCourses });
   } catch (error) {
@@ -205,7 +205,7 @@ export async function getTeacherDashboard(req, res) {
   }
 }
 // * google auth
-export function googleFaild(req, res) {
+export function googleFaild(_, res) {
   res.status(401).send({
     message: "auth faild",
   });

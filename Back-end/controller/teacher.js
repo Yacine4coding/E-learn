@@ -1,6 +1,5 @@
 import { generateTeacherInfo } from "../middleware/teacher.js";
 import Teacher from "../models/Teacher.js";
-import { deleteTeacherCourses } from "./courses.js";
 
 export async function createNewTeacher() {
   try {
