@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,11 +19,9 @@ import {
 } from "@/components/CustomUI/tabs";
 import { errorNotifcation, successNotifcation } from "./toast";
 import { submitQueez } from "@/request/courses";
-import { useRouter } from "next/navigation";
 import { genProfileImg } from "@/public/avatars/avatar";
 
 const PaidCourse = ({ course, finalPage, review }) => {
-  const route = useRouter();
   // SET DATA INSIDE STAT
   const [Course, setCourse] = useState(course);
   // GET PRORESS
@@ -70,6 +68,7 @@ const PaidCourse = ({ course, finalPage, review }) => {
       successNotifcation("submit successfuly");
     }
   };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header Section */}
