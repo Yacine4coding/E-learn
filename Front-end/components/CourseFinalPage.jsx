@@ -17,7 +17,7 @@ import {
 import {
   getMyCourseReview,
   getMyCourseProgress,
-} from "../../../../../request/courses.js";
+} from "../request/courses.js";
 // Mock quiz results (replace with actual data fetching in a real app)
 const mockQuizResults = [
   { quizName: "Introduction Quiz", score: 8, totalQuestions: 10 },
@@ -64,7 +64,6 @@ const CourseFinalPage = () => {
   useEffect(() => {
     (async () => {
       const res1 = await getMyCourseReview(courseId);
-      console.log(res1);
       if (res1.status === 200) {
         setRating(res1.data.review.star);
         setReview(res1.data.review.message);

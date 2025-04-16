@@ -9,10 +9,12 @@ import Loading from "./Loading";
 import { Button } from "@/components/ui/button";
 import GraduationPng from "@/public/Graduation.svg";
 import Image from "next/image";
+import CourseFinalPage from "@/components/CourseFinalPage";
 
 function page() {
   const { courseId } = useParams();
   const [refresh, setRefresh] = useState(null);
+  const [reviewPage, setReviewPage] = useState(false);
   const [data, setData] = useState(null);
   const [review, setReview] = useState([]);
   const route = useRouter();
@@ -45,7 +47,6 @@ function page() {
   useEffect(() => {
     (async function () {
       const { status, data } = await getReview(courseId);
-      console.log(data);
       switch (status) {
         case 200:
           setReview(data.reviews);
@@ -62,10 +63,11 @@ function page() {
   }, [refresh]);
   // go to final page
   function finalPage() {
-    route.push(`/Courses/final/${courseId}`);
+    setReviewPage(true);
   }
   // some methods
   function restartCourse() {
+    setReviewPage(false);
     setData((prev) => {
       const course = prev.course;
       return {
@@ -75,6 +77,7 @@ function page() {
     });
   }
   function gotoLastCourse() {
+    setReviewPage(false);
     setData((prev) => {
       const course = prev.course;
       return {
@@ -94,7 +97,9 @@ function page() {
   if (data === null) return <Loading />;
   return (
     <div className="w-full">
-      {data.paid ? (
+      {reviewPage ? (
+        <CourseFinalPage />
+      ) : data.paid ? (
         data.course.progress?.for100 === 100 ? (
           <div className="relative w-full h-[71vh] flex justify-center items-center flex-col">
             <Image
