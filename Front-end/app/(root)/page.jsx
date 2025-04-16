@@ -36,7 +36,7 @@ export default function Home() {
       {/* Rest of the content */}
       <div className="container mx-auto">
         <Courses />
-        <Trending />
+        {/* <Trending /> */}
         <Announse title="Join Edulink now to get 35% off" />
         <Upcoming />
         <GetStarted />
