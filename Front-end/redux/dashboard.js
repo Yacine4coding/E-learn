@@ -39,16 +39,20 @@ const dashboard = createSlice({
     deleteCourse: (state, { payload }) => {
       try {
         const { courses } = state;
-        state.courses = courses.filter((ele) => ele.id !== payload);
+        state.courses = courses.map((ele) => {
+          if (ele.id === payload) return { ...ele, visible: false };
+          return ele;
+        });
       } catch (error) {
         console.log(error);
       }
-    }
+    },
   },
 });
 export const {
   toggleFavorite,
-  initCourses,deleteCourse,
+  initCourses,
+  deleteCourse,
   initFavCourses,
   initWishlistCourses,
 } = dashboard.actions;

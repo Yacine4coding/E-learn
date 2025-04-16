@@ -426,7 +426,6 @@ export async function getCourseById(courseId) {
     if (!course) return null;
     const { isExist, user } = await isUserExist(course.teacherId);
     if (!isExist) return null;
-    if (!course.visible) return null;
     return generateCourse(course, user, true);
   } catch (error) {
     return null;

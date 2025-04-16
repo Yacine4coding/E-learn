@@ -133,6 +133,8 @@ export async function getUserDashboard(req, res, next) {
     const favCourses = [];
     for (let i = 0; i < informations.favorite.length; i++) {
       const fav = informations.favorite[i];
+      const c = await getCourseById(fav);
+      if (!c || !c?.visible) continue;
       favCourses.push(await getCourseById(fav));
     }
     const buyCoursesId = await StudientCourse.find({ studentId: userId });
@@ -196,7 +198,7 @@ export async function getTeacherDashboard(req, res) {
   try {
     const teacher = await getTeacher(secondId);
     if (!teacher) return res.status(404).send({ message: "teacher not found" });
-    const courses = await Courses.find({ teacherId: userId, visible: true });
+    const courses = await Courses.find({ teacherId: userId });
     const handleCourses = courses.map((ele) => generateCourse(ele, user));
     res.status(200).send({ courses: handleCourses });
   } catch (error) {

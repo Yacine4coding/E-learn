@@ -10,6 +10,7 @@ export function generateCourse(course, user, allData = false) {
     chapterNumber,
     teacherId,
     picture,
+    visible,
     level,
     category,
     price,
@@ -24,6 +25,7 @@ export function generateCourse(course, user, allData = false) {
   const result = {
     id,
     title,
+    visible,
     stars,
     chapterNumber,
     view,

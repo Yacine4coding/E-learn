@@ -11,7 +11,6 @@ import {
   TabsTrigger,
 } from "@/components/CustomUI/tabs";
 import { getDashboard } from "@/request/user";
-import { initScriptLoader } from "next/script";
 import {
   initCourses,
   initFavCourses,
@@ -27,7 +26,7 @@ const UserDashboard = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const defTab = searchParams.get("defTab") || "all-courses";
-  const [anounseVisibility, setAnounseVisibility] = useState(true);
+  // console.log(favoriteCourse)
   // GET DASHBOARD INFORMATION
   useEffect(() => {
     (async function () {
@@ -36,6 +35,9 @@ const UserDashboard = () => {
       switch (status) {
         case 200:
           const { favCourses, buyCourses, wishlistCourses } = data ;
+          console.log(favCourses)
+          // console.log(firstfirst)
+          // console.log(firstfirst)
           dispatch(initCourses(buyCourses));
           dispatch(initFavCourses(favCourses));
           dispatch(initWishlistCourses(wishlistCourses));

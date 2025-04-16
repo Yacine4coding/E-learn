@@ -12,7 +12,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Pencil, Trash2, BookOpen } from "lucide-react";
+import { Pencil, Trash2, BookOpen, Eye } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCourse, initCourses } from "@/redux/dashboard";
 import { getDashboard } from "@/request/user";
@@ -34,7 +34,11 @@ const MyPostedCourses = () => {
   const handleEdit = (courseId) => {
     router.push(`/Instructor/editCourse/${courseId}`);
   };
-
+  const handleVisible = async (courseId) => {
+    // fetch for visible course
+    await hideCourse(courseId);
+    dispatch(deleteCourse(courseId));
+  }
   const handleDelete = async (courseId) => {
     // fetch for delete course
     await hideCourse(courseId);
@@ -64,7 +68,11 @@ const MyPostedCourses = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <Card className="h-full flex flex-col">
+            <Card
+              className={`h-full flex flex-col ${
+                course.visible || "bg-gray-200 opacity-80"
+              }`}
+            >
               <CardHeader>
                 <CardTitle>{course.title}</CardTitle>
                 <CardDescription>
@@ -81,19 +89,30 @@ const MyPostedCourses = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="bg-green-700 font-bold hover:bg-green-500 hoverTransition text-white"
+                  className="bg-green-700 font-bold hover:bg-green-500 duration-300 text-white"
                   onClick={() => handleEdit(course.id)}
                 >
                   <Pencil className="mr-2 h-4 w-2" /> Edit
                 </Button>
-                <Button
-                  variant="destructive"
-                  className="bg-red-700 font-bold hover:bg-red-500 hoverTransition text-white"
-                  size="sm"
-                  onClick={() => handleDelete(course.id)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" /> Delete
-                </Button>
+                {course.visible ? (
+                  <Button
+                    variant="destructive"
+                    className="bg-red-700 font-bold hover:bg-red-500 duration-300 text-white"
+                    size="sm"
+                    onClick={() => handleDelete(course.id)}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" /> Hide
+                  </Button>
+                ) : (
+                  <Button
+                    variant="destructive"
+                    className="bg-[#003049] font-bold hover:bg-blue-700 duration-300 text-white"
+                    size="sm"
+                    onClick={() => handleVisible(course.id)}
+                  >
+                    <Eye className="mr-2 h-4 w-4" /> Make it visible
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           </motion.div>
