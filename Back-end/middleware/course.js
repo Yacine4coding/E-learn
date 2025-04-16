@@ -36,7 +36,7 @@ export function generateCourse(course, user, allData = false) {
     chapters,
     username,
     picture: `http://localhost:5000/${picture}`,
-    userPicture,
+    userPicture: `http://localhost:5000/${userPicture}`,
     introduction,
     level,
     category,
