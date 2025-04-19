@@ -122,13 +122,9 @@ export async function updateUserInfo(req, res) {
   }
 }
 export async function getUserDashboard(req, res, next) {
-  const { userId, isteacher, secondId } = req.body;
-  if (isteacher) {
-    next();
-    return;
-  }
+  const { userId, isteacher } = req.body;
   try {
-    const informations = await Studient.findById(secondId); // get information of userID
+    const informations = await User.findById(userId); // get information of userID
     // * GET FAVORITE COURSE
     const favCourses = [];
     for (let i = 0; i < informations.favorite.length; i++) {
@@ -154,6 +150,11 @@ export async function getUserDashboard(req, res, next) {
     for (let i = 0; i < informations.wishlist.length; i++) {
       const wishlist = informations.wishlist[i];
       wishlistCourses.push(await getCourseById(wishlist));
+    }
+    if (isteacher) {
+      req.body.userInformation = { favCourses, buyCourses, wishlistCourses };
+      next();
+      return;
     }
     // HUNDLE RES
     res.status(200).send({
@@ -194,13 +195,19 @@ export async function updateProfileImage(req, res) {
   }
 }
 export async function getTeacherDashboard(req, res) {
-  const { userId, secondId, user } = req.body;
+  const { userId, secondId, user, userInformation } = req.body;
   try {
+    // * GET TEACHER INFORMATION
     const teacher = await getTeacher(secondId);
     if (!teacher) return res.status(404).send({ message: "teacher not found" });
+    // * GET TEACHER COURSES
     const courses = await Courses.find({ teacherId: userId });
     const handleCourses = courses.map((ele) => generateCourse(ele, user));
-    res.status(200).send({ courses: handleCourses });
+    // * GET TEACHER STUDENTS
+    res.status(200).send({
+      ...userInformation,
+      courses: handleCourses,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "internal server error" });

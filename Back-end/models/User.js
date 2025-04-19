@@ -11,6 +11,14 @@ const UserShcema = mongoose.Schema(
       type: String,
       require: true,
     },
+    favorite: {
+      type: Array,
+      default: [],
+    },
+    wishlist: {
+      type: Array,
+      default: [],
+    },
     firstName: {
       type: String,
       default: "",

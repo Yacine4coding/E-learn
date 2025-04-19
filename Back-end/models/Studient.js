@@ -4,14 +4,6 @@ const studientSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  favorite: {
-    type: Array,
-    default: [],
-  },
-  wishlist: {
-    type: Array,
-    default: [],
-  },
 });
 const Studient = mongoose.model("studient", studientSchema);
 export default Studient;

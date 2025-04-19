@@ -3,6 +3,9 @@
     "_id": {
       "$oid": "676c8758026508083bac2663"
     },
+
+    "favorite": [],
+    "wishlist": [],
     "userId": "676c8757026508083bac2660",
     "username": "yacine",
     "notifications": [],
@@ -28,6 +31,9 @@
     "_id": {
       "$oid": "676c875d026508083bac2669"
     },
+
+    "favorite": [],
+    "wishlist": [],
     "userId": "676c875d026508083bac2666",
     "username": "kaki",
     "notifications": [],
@@ -53,6 +59,9 @@
     "_id": {
       "$oid": "676c8762026508083bac266f"
     },
+
+    "favorite": [],
+    "wishlist": [],
     "userId": "676c8762026508083bac266c",
     "username": "amara",
     "notifications": [],
@@ -78,6 +87,9 @@
     "_id": {
       "$oid": "676c8789026508083bac267b"
     },
+
+    "favorite": [],
+    "wishlist": [],
     "userId": "676c8789026508083bac2678",
     "username": "medjahed",
     "notifications": [],
@@ -103,6 +115,9 @@
     "_id": {
       "$oid": "676c879d026508083bac2687"
     },
+
+    "favorite": [],
+    "wishlist": [],
     "userId": "676c879c026508083bac2684",
     "username": "samir",
     "notifications": [],
@@ -110,17 +125,45 @@
     "email": "samir@gmail.com",
     "password": "$2a$10$RPWMU1vVKpJ6M1as1nUiWeEOJKsrFEEcWHHHZM8bwPOSZ3vY6PJ4S",
     "isteacher": false,
-    "bio": "",
-    "language": "",
+    "bio": "i love dev",
+    "language": "ar",
     "link": "",
-    "firstName": "",
-    "lastName": "",
-    "picture": "avatar9.png",
+    "firstName": "samir",
+    "lastName": "benabdallah",
+    "picture": "public\\1744842985970-landing page 1.png",
     "createdAt": {
       "$date": "2024-12-25T22:30:53.149Z"
     },
     "updatedAt": {
-      "$date": "2024-12-25T22:30:53.149Z"
+      "$date": "2025-04-16T22:36:25.989Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "68003019e80f48786ee5c668"
+    },
+
+    "favorite": [],
+    "wishlist": [],
+    "userId": "68003019e80f48786ee5c665",
+    "username": "samirbenabdallah4002",
+    "firstName": "",
+    "lastName": "",
+    "language": "english",
+    "notifications": [],
+    "emailId": "104459246487193966748",
+    "email": "samirbenabdallah4002@gmail.com",
+    "password": "",
+    "isteacher": false,
+    "link": "",
+    "bio": "",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocJjjCSJ1TBvC0xxDFPNngP3b_oi2hUbIB_ls1SGIcj0Cu8foA=s96-c",
+    "createdAt": {
+      "$date": "2025-04-16T22:32:57.445Z"
+    },
+    "updatedAt": {
+      "$date": "2025-04-16T22:32:57.445Z"
     },
     "__v": 0
   }

@@ -31,13 +31,11 @@ const UserDashboard = () => {
   useEffect(() => {
     (async function () {
       const { data, status } = await getDashboard();
+      console.log(data);
       // HUNDLE RESPONSE
       switch (status) {
         case 200:
           const { favCourses, buyCourses, wishlistCourses } = data ;
-          console.log(favCourses)
-          // console.log(firstfirst)
-          // console.log(firstfirst)
           dispatch(initCourses(buyCourses));
           dispatch(initFavCourses(favCourses));
           dispatch(initWishlistCourses(wishlistCourses));
