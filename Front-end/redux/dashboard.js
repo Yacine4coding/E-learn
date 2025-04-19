@@ -2,6 +2,7 @@ const { createSlice } = require("@reduxjs/toolkit");
 
 const dashboard = createSlice({
   initialState: {
+    Mycourses: [],
     courses: [],
     favoriteCourse: [],
     wishlistCourse: [],
@@ -10,6 +11,9 @@ const dashboard = createSlice({
   reducers: {
     initCourses: (state, { payload: courses }) => {
       state.courses = courses;
+    },
+    initMyCourses: (state, { payload: Mycourses }) => {
+      state.Mycourses = Mycourses;
     },
     initFavCourses: (state, { payload: courses }) => {
       state.favoriteCourse = courses;
@@ -62,6 +66,7 @@ const dashboard = createSlice({
 });
 export const {
   toggleFavorite,
+  initMyCourses,
   initCourses,
   deleteCourse,addCourse,
   initFavCourses,

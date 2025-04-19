@@ -2,7 +2,7 @@ import { generateCourse, sortCourse } from "../middleware/course.js";
 import Courses from "../models/Course.js";
 import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
-import { getStudient, updateCourse } from "./studient.js";
+import { getStudient } from "./studient.js";
 import { isUserExist } from "./user.js";
 
 export async function addCourse(req, res) {
@@ -172,7 +172,6 @@ export async function getCourse(req, res) {
       });
     // USER LOGIN
     let user = await User.findById(userId);
-    user = await getStudient(user.userId);
     // GET FAVORITE STATUS
     const isFavorite = user.favorite.includes(courseId);
     const isPaid = await StudientCourse.findOne({

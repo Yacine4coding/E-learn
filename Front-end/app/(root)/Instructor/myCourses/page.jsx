@@ -21,16 +21,8 @@ import { enableCourse, hideCourse } from "@/request/courses";
 const MyPostedCourses = () => {
   const router = useRouter();
 
-  const { courses } = useSelector((s) => s.dashboard);
+  const { Mycourses: courses } = useSelector((s) => s.dashboard);
   const dispatch = useDispatch();
-  useEffect(() => {
-    (async function () {
-      const { status, data } = await getDashboard();
-      if (status === 200) {
-        dispatch(initCourses(data.courses));
-      }
-    })();
-  }, []);
   const handleEdit = (courseId) => {
     router.push(`/Instructor/editCourse/${courseId}`);
   };

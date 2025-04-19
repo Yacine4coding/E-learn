@@ -1,13 +1,27 @@
-import Hero from "@/components/Hero"
-import Courses from "@/components/Courses"
-import Announse from "@/components/promos/AnnounseSt"
-import Upcoming from "@/components/Upcoming"
-import GetStarted from "@/components/GetStarted"
-import Image from "next/image"
-import heroPic from "@/public/hero.png"
-import Trending from "@/components/Trending"
+"use client";
+import Hero from "@/components/Hero";
+import Courses from "@/components/Courses";
+import Announse from "@/components/promos/AnnounseSt";
+import Upcoming from "@/components/Upcoming";
+import GetStarted from "@/components/GetStarted";
+import Image from "next/image";
+import heroPic from "@/public/hero.png";
+import Trending from "@/components/Trending";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getDashboard } from "@/request/user";
+import { initMyCourses } from "@/redux/dashboard";
 
 export default function Home() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    (async function () {
+      const { status, data } = await getDashboard();
+      if (status === 200) {
+        dispatch(initMyCourses(data.courses));
+      }
+    })();
+  }, []);
   return (
     <div className="relative overflow-x-hidden">
       {/* Hero background container */}
