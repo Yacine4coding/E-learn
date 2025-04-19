@@ -220,16 +220,18 @@ const Navbar = () => {
             </button>
 
             {/* Services Hub Icon */}
-            <button
-              onClick={handleServicesClick}
-              className="text-white hover:text-gray-300 transition-colors group relative"
-              aria-label="Services Hub"
-            >
-              <Briefcase className="h-5 w-5" />
-              <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                Services Hub
-              </span>
-            </button>
+            {!user.isteacher && (
+              <button
+                onClick={handleServicesClick}
+                className="text-white hover:text-gray-300 transition-colors group relative"
+                aria-label="Services Hub"
+              >
+                <Briefcase className="h-5 w-5" />
+                <span className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                  Services Hub
+                </span>
+              </button>
+            )}
 
             {/* User Profile */}
             <DropdownMenu>
