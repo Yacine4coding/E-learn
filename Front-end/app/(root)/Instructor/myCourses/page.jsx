@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -12,11 +12,11 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Pencil, Trash2, BookOpen, Eye } from "lucide-react";
+import { Pencil, BookLock, BookCheck } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCourse, initCourses } from "@/redux/dashboard";
+import { addCourse, deleteCourse, initCourses } from "@/redux/dashboard";
 import { getDashboard } from "@/request/user";
-import { hideCourse } from "@/request/courses";
+import { enableCourse, hideCourse } from "@/request/courses";
 
 const MyPostedCourses = () => {
   const router = useRouter();
@@ -36,9 +36,9 @@ const MyPostedCourses = () => {
   };
   const handleVisible = async (courseId) => {
     // fetch for visible course
-    await hideCourse(courseId);
-    dispatch(deleteCourse(courseId));
-  }
+    const { status } = await enableCourse(courseId);
+    if (status == 200) dispatch(addCourse(courseId));
+  };
   const handleDelete = async (courseId) => {
     // fetch for delete course
     await hideCourse(courseId);
@@ -101,7 +101,7 @@ const MyPostedCourses = () => {
                     size="sm"
                     onClick={() => handleDelete(course.id)}
                   >
-                    <Trash2 className="mr-2 h-4 w-4" /> Hide
+                    <BookLock className="mr-2 h-4 w-4" /> Draft
                   </Button>
                 ) : (
                   <Button
@@ -110,7 +110,7 @@ const MyPostedCourses = () => {
                     size="sm"
                     onClick={() => handleVisible(course.id)}
                   >
-                    <Eye className="mr-2 h-4 w-4" /> Make it visible
+                    <BookCheck className="mr-2 h-4 w-4" /> Published
                   </Button>
                 )}
               </CardFooter>

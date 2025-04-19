@@ -47,12 +47,23 @@ const dashboard = createSlice({
         console.log(error);
       }
     },
+    addCourse: (state, { payload }) => {
+      try {
+        const { courses } = state;
+        state.courses = courses.map((ele) => {
+          if (ele.id === payload) return { ...ele, visible: true };
+          return ele;
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 });
 export const {
   toggleFavorite,
   initCourses,
-  deleteCourse,
+  deleteCourse,addCourse,
   initFavCourses,
   initWishlistCourses,
 } = dashboard.actions;

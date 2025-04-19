@@ -173,8 +173,25 @@ export async function getMyCourseProgress(courseId) {
 }
 export async function hideCourse(courseId) {
   try {
-    const {status , data} = await axios.delete(`${APIURL}/course/${courseId}`,CREDENTIALS);
-    return {status , data}
+    const { status, data } = await axios.delete(
+      `${APIURL}/course/${courseId}`,
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
+  }
+}
+export async function enableCourse(courseId) {
+  try {
+    const { status, data } = await axios.patch(
+      `${APIURL}/course/${courseId}`,
+      {},
+      CREDENTIALS
+    );
+    return { status, data };
   } catch (error) {
     console.log(error)
     if (!error.response) return {status : 10}

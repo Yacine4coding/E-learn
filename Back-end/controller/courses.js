@@ -87,110 +87,6 @@ export async function addCourse(req, res) {
     res.status(500).send({ message: "internal server error" });
   }
 }
-
-export async function getPersonellCourses(req, res) {
-  const { userId, user } = req.body;
-  try {
-    let courses = await Courses.find({ teacherId: userId, visible: true });
-    if (courses.length === 0) {
-      res.status(204).send();
-      return;
-    }
-    courses = courses.map((course) => generateCourse(course, user, true));
-    res.status(200).send({
-      count: courses.length,
-      courses,
-    });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-}
-export async function getTeacherCourses(req, res) {
-  const { teacherId } = req.params;
-  if (!teacherId) {
-    res.status(422).send({
-      message: "teacher id is empty",
-    });
-    return;
-  }
-  try {
-    const { isExist, user: teacher } = await isUserExist(teacherId);
-    if (!isExist) {
-      res.status(404).send({ message: "teacher not found" });
-      return;
-    }
-    if (!teacher.isteacher) {
-      res.status(400).send({ message: "the id isn't of teacher" });
-      return;
-    }
-    let courses = await Courses.find({ teacherId  , visible: true });
-    if (courses.length === 0) {
-      res.status(204).send();
-      return;
-    }
-    courses = courses.map((course) => generateCourse(course, teacher));
-    res.status(200).send({
-      count: courses.length,
-      courses,
-    });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-}
-export async function updateCourses(req, res) {
-  const {
-    userId: teacherId,
-    user,
-    title,
-    description,
-    amount,
-    link,
-  } = req.body;
-  const { courseId } = req.params;
-  try {
-    let course = await Courses.findById(courseId);
-    if (!course) {
-      res.status(400).send({ message: "post not found" });
-      return;
-    }
-    if (teacherId !== course._id.toString()) {
-      res.status(403).send({
-        message: "sorry !! but isn't your course",
-      });
-      return;
-    }
-    let isUpdated = false;
-    if (title && title !== course.title) {
-      course.title = title;
-      isUpdated = true;
-    }
-    if ((amount) => 0 && amount != course.amount) {
-      course.amount = amount;
-      isUpdated = true;
-    }
-    if (description && description !== course.description) {
-      course.description = description;
-      isUpdated = true;
-    }
-    if (link && link !== course.link) {
-      course.title = title;
-      isUpdated = true;
-    }
-    // * end
-    if (!isUpdated) {
-      res.status(204).send();
-      return;
-    }
-    course = await course.save();
-    res.status(200).send({
-      course: generateCourse(course, user),
-    });
-  } catch (error) {
-    res.status(500).send({
-      message: error.message,
-    });
-  }
-}
 export async function bestCourses(req, res) {
   const { count } = req.params;
   if (count <= 0) {
@@ -198,7 +94,7 @@ export async function bestCourses(req, res) {
     return;
   }
   try {
-    let courses = await Courses.find({visible: true})
+    let courses = await Courses.find({ visible: true });
     if (courses.length === 0) return res.status(204).send();
     for (let i = 0; i < courses.length; i++) {
       const { user } = await isUserExist(courses[i].teacherId);
@@ -219,21 +115,21 @@ export async function bestCourses(req, res) {
   }
 }
 export async function wishlistCourses(req, res) {
-  const { secondId } = req.body;
+  const { userId } = req.body;
   const { courseId } = req.params;
   try {
     // CHECK IF COURSE EXIST
     const { isExist } = await getCourseById(courseId);
     if (!isExist) return res.status(404).send({ message: "course not found" });
-    const { wishlist } = await getStudient(secondId);
-    const indexOfCourseId = wishlist.indexOf(courseId);
+    const user = await User.findById(userId);
+    const indexOfCourseId = user.wishlist.indexOf(courseId);
     if (indexOfCourseId === -1) {
-      wishlist.push(courseId);
-      await updateCourse(secondId, { wishlist });
+      user.wishlist.push(courseId);
+      await user.save();
       return res.status(200).send({ message: "add succesfully" });
     }
-    wishlist.splice(indexOfCourseId, 1);
-    await updateCourse(secondId, { wishlist });
+    user.wishlist.splice(indexOfCourseId, 1);
+    await user.save();
     res.status(200).send({ message: "delete successfully" });
   } catch (error) {
     console.log(error);
@@ -241,18 +137,18 @@ export async function wishlistCourses(req, res) {
   }
 }
 export async function favoriteCourses(req, res) {
-  const { secondId } = req.body;
+  const { userId } = req.body;
   const { courseId } = req.params;
   try {
-    const { favorite } = await getStudient(secondId);
-    const indexOfCourseId = favorite.indexOf(courseId);
+    const user = await User.findById(userId);
+    const indexOfCourseId = user.favorite.indexOf(courseId);
     if (indexOfCourseId === -1) {
-      favorite.push(courseId);
-      await updateCourse(secondId, { favorite });
+      user.favorite.push(courseId);
+      user.save();
       return res.status(200).send({ message: "add succesfully" });
     }
-    favorite.splice(indexOfCourseId, 1);
-    await updateCourse(secondId, { favorite });
+    user.favorite.splice(indexOfCourseId, 1);
+    user.save();
     res.status(200).send({ message: "delete successfully" });
   } catch (error) {
     console.log(error);
@@ -325,7 +221,7 @@ export async function searchCourses(req, res) {
   }
 }
 export async function submitQuize(req, res) {
-  const { userId, courseId, chapterNumber , quizeResult } = req.body;
+  const { userId, courseId, chapterNumber, quizeResult } = req.body;
   if (!courseId || chapterNumber < -1 || quizeResult === undefined)
     return res.status(422).send({ messge: "all body properties are required" });
   try {
@@ -384,7 +280,7 @@ export async function getCourseProgress(req, res) {
   }
 }
 export async function deleteCourse(req, res) {
-  const { userId, isteacher, user } = req.body;
+  const { userId, isteacher } = req.body;
   const { courseId } = req.params;
   // * if user not teacher
   if (!isteacher)
@@ -401,6 +297,32 @@ export async function deleteCourse(req, res) {
         message: "this course is not yours, if any problem send a feedback",
       });
     course.visible = false;
+    await course.save();
+    res.status(200).send({ course });
+  } catch (error) {
+    console.log("delete course controller");
+    console.log(error.message);
+    return res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function enableCourse(req, res) {
+  const { userId, isteacher } = req.body;
+  const { courseId } = req.params;
+  // * if user not teacher
+  if (!isteacher)
+    return res
+      .status(403)
+      .send({ message: "you don't have the access for this opperation" });
+
+  try {
+    const course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    // the theacher isn't the owner of course
+    if (course.teacherId !== userId)
+      return res.status(403).send({
+        message: "this course is not yours, if any problem send a feedback",
+      });
+    course.visible = true;
     await course.save();
     res.status(200).send({ course });
   } catch (error) {
