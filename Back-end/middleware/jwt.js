@@ -81,6 +81,7 @@ export async function verifyToken(req, res, next) {
     req.body.userId = userId.toString();
     req.userId = userId.toString();
     req.body.user = user;
+    req.user = user;
     req.body.isteacher = user.isteacher;
     req.body.secondId = user.secondId;
     addExistingToken(token, res);
