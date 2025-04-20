@@ -1,12 +1,12 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useForm, useFieldArray } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,144 +15,149 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
-import { CheckCircle, Plus, Minus, Upload } from 'lucide-react'
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Plus, Minus, Upload } from "lucide-react";
+import { getCourse } from "@/request/courses";
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024
-const ACCEPTED_VIDEO_TYPES = ['video/mp4']
+const MAX_FILE_SIZE = 100 * 1024 * 1024;
+const ACCEPTED_VIDEO_TYPES = ["video/mp4"];
 
-const videoFileSchema = z.object({
+const linkSchema = z.object({
   name: z.string(),
-  size: z.number().max(MAX_FILE_SIZE, 'File size must be less than 100MB'),
-  type: z.enum(ACCEPTED_VIDEO_TYPES, 'Only MP4 files are accepted'),
-})
+  size: z.number().max(MAX_FILE_SIZE, "File size must be less than 100MB"),
+  type: z.enum(ACCEPTED_VIDEO_TYPES, "Only MP4 files are accepted"),
+});
 
 const chapterSchema = z.object({
-  title: z.string().min(1, 'Chapter title is required'),
-  description: z.string().min(1, 'Chapter description is required'),
-  videoFile: videoFileSchema.optional(),
-})
+  title: z.string().min(1, "Chapter title is required"),
+  description: z.string().min(1, "Chapter description is required"),
+  link: linkSchema.optional(),
+});
 
 const formSchema = z.object({
-  title: z.string().min(5, { message: 'Title must be at least 5 characters long' }),
-  description: z.string().min(20, { message: 'Description must be at least 20 characters long' }),
-  category: z.string().min(1, { message: 'Please select a category' }),
-  level: z.string().min(1, { message: 'Please select a level' }),
-  price: z.string().refine((val) => !isNaN(Number(val)), { message: 'Price must be a number' }),
-  duration: z.string().refine((val) => !isNaN(Number(val)), { message: 'Duration must be a number' }),
-  isPublished: z.boolean().default(false),
-  introduction: z.object({
-    title: z.string().min(1, 'Introduction title is required'),
-    description: z.string().min(1, 'Introduction description is required'),
-    videoFile: videoFileSchema.optional(),
+  title: z
+    .string()
+    .min(5, { message: "Title must be at least 5 characters long" }),
+  description: z
+    .string()
+    .min(20, { message: "Description must be at least 20 characters long" }),
+  category: z.string().min(1, { message: "Please select a category" }),
+  level: z.string().min(1, { message: "Please select a level" }),
+  price: z.string().refine((val) => !isNaN(Number(val)), {
+    message: "Price must be a number",
   }),
-  chapters: z.array(chapterSchema).min(1, 'At least one chapter is required'),
-})
-
+  visible: z.boolean().default(false),
+  introduction: z.object({
+    title: z.string().min(1, "Introduction title is required"),
+    description: z.string().min(1, "Introduction description is required"),
+    link: linkSchema.optional(),
+  }),
+  chapters: z.array(chapterSchema).min(1, "At least one chapter is required"),
+});
 const EditCourse = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const params = useParams()
-  const router = useRouter()
-  const courseId = params.id
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [course, setCourse] = useState(false);
+  const route = useRouter();
+  const { id: courseId } = useParams();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      category: '',
-      level: '',
-      price: '',
-      duration: '',
-      isPublished: false,
+      title: "",
+      description: "",
+      category: "",
+      level: "",
+      price: "",
+      visible: false,
       introduction: {
-        title: '',
-        description: '',
-        videoFile: undefined,
+        title: "",
+        description: "",
+        link: undefined,
       },
       chapters: [
         {
-          title: '',
-          description: '',
-          videoFile: undefined,
+          title: "",
+          description: "",
+          link: undefined,
         },
       ],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "chapters",
-  })
+  });
 
   useEffect(() => {
-    const fetchCourseData = async () => {
-      const mockCourseData = {
-        title: 'Introduction to React',
-        description: 'Learn the basics of React and build your first app',
-        category: 'programming',
-        level: 'beginner',
-        price: '49.99',
-        duration: '10',
-        isPublished: true,
-        introduction: {
-          title: 'Welcome to React',
-          description: 'An overview of what you\'ll learn in this course',
-          videoFile: undefined,
-        },
-        chapters: [
-          {
-            title: 'React Fundamentals',
-            description: 'Understanding the core concepts of React',
-            videoFile: undefined,
-          },
-          {
-            title: 'Building Your First Component',
-            description: 'Step-by-step guide to creating React components',
-            videoFile: undefined,
-          },
-        ],
+    (async function () {
+      const { status, data } = await getCourse(courseId);
+      if (status === 404) {
+        route.push("/Instructor/myCourses");
+        return;
       }
-
-      form.reset(mockCourseData)
-    }
-
-    fetchCourseData()
-  }, [courseId, form])
-
-  const onSubmit = (values) => {
-    setIsSubmitting(true)
-    console.log(values)
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setIsSuccess(true)
-      setTimeout(() => {
-        setIsSuccess(false)
-        router.push('/teacher/my-courses')
-      }, 2000)
-    }, 2000)
+      // setCourse(data.course);
+      form.reset({
+        title: data.course.title,
+        description: data.course.description,
+        category: data.course.category,
+        level: data.course.level,
+        price: data.course.price,
+        visible: data.course.visible,
+        introduction: {
+          title: data.course.introduction.title,
+          description: data.course.introduction.description,
+          link: data.course.introduction.link,
+        },
+        chapters: data.course.chapters,
+      });
+    })();
+  }, [courseId, form]);
+  // ! handle part
+  function handleIntroduction() {
+    const { title, description, link } = form.getValues("introduction");
+    // if (!title || !description) {
+    //   return false;
+    // }
+    // if (link && !linkSchema.safeParse(link).success) {
+    //   return false;
+    // }
+    // return true;
   }
-
+  function handleCourseInformatino() {
+    const { title, description, category, level, price, visible } =
+      form.getValues();
+  }
+  function handleChapter(index) {
+    const { chapters } = form.getValues();
+    const { title, description, link } = chapters[index];
+    // if (!title || !description) {
+    //   return false;
+    // }
+    // if (link && !linkSchema.safeParse(link).success) {
+    //   return false;
+    // }
+    // return true;
+  }
+  // ! handle part end
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="container mx-auto py-10 px-4 sm:px-6 lg:px-8"
     >
-      <motion.h1 
+      <motion.h1
         className="text-4xl font-bold mb-8 text-center"
         initial={{ y: -50 }}
         animate={{ y: 0 }}
@@ -161,8 +166,8 @@ const EditCourse = () => {
         Edit Course
       </motion.h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <motion.div 
+        <form className="space-y-8">
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -206,7 +211,7 @@ const EditCourse = () => {
             />
           </motion.div>
 
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -218,7 +223,10 @@ const EditCourse = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
@@ -244,7 +252,10 @@ const EditCourse = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Course Level</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a level" />
@@ -270,26 +281,14 @@ const EditCourse = () => {
                 <FormItem>
                   <FormLabel>Price ($)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Enter course price" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Enter course price"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     Set a fair price for your course content.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration (hours)</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Enter course duration" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Estimate the total duration of your course in hours.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -304,7 +303,7 @@ const EditCourse = () => {
           >
             <FormField
               control={form.control}
-              name="isPublished"
+              name="visible"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
@@ -314,9 +313,7 @@ const EditCourse = () => {
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Publish immediately
-                    </FormLabel>
+                    <FormLabel>Publish immediately</FormLabel>
                     <FormDescription>
                       If unchecked, your course will be saved as a draft.
                     </FormDescription>
@@ -325,7 +322,22 @@ const EditCourse = () => {
               )}
             />
           </motion.div>
-          
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+          >
+            <Button
+              type="button"
+              size="lg"
+              className="w-full duration-300 hover:bg-green-300 hover:text-white"
+              disabled={isSubmitting}
+              onClick={handleCourseInformatino}
+            >
+              {isSubmitting ? "Updating Course..." : "Update Course"}
+            </Button>
+          </motion.div>
+          {/* end part one */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -343,7 +355,10 @@ const EditCourse = () => {
                     <FormItem>
                       <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter introduction title" {...field} />
+                        <Input
+                          placeholder="Enter introduction title"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -356,7 +371,10 @@ const EditCourse = () => {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Enter introduction description" {...field} />
+                        <Textarea
+                          placeholder="Enter introduction description"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -364,7 +382,7 @@ const EditCourse = () => {
                 />
                 <FormField
                   control={form.control}
-                  name="introduction.videoFile"
+                  name="introduction.link"
                   render={({ field: { onChange, value, ...rest } }) => (
                     <FormItem>
                       <FormLabel>Video File (MP4 only, max 100MB)</FormLabel>
@@ -374,9 +392,9 @@ const EditCourse = () => {
                             type="file"
                             accept="video/mp4"
                             onChange={(e) => {
-                              const file = e.target.files?.[0]
+                              const file = e.target.files?.[0];
                               if (file) {
-                                onChange(file)
+                                onChange(file);
                               }
                             }}
                             {...rest}
@@ -386,8 +404,10 @@ const EditCourse = () => {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              const fileInput = document.querySelector('input[name="introduction.videoFile"]')
-                              fileInput?.click()
+                              const fileInput = document.querySelector(
+                                'input[name="introduction.link"]'
+                              );
+                              fileInput?.click();
                             }}
                           >
                             <Upload className="h-4 w-4" />
@@ -399,10 +419,20 @@ const EditCourse = () => {
                     </FormItem>
                   )}
                 />
+
+                <Button
+                  type="button"
+                  size="lg"
+                  className="w-full duration-300 hover:bg-green-300 hover:text-white"
+                  disabled={isSubmitting}
+                  onClick={handleIntroduction}
+                >
+                  {isSubmitting ? "Updating Course..." : "Update Course"}
+                </Button>
               </CardContent>
             </Card>
           </motion.div>
-
+          {/* introduction end */}
           <AnimatePresence>
             {fields.map((field, index) => (
               <motion.div
@@ -434,7 +464,10 @@ const EditCourse = () => {
                         <FormItem>
                           <FormLabel>Title</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter chapter title" {...field} />
+                            <Input
+                              placeholder="Enter chapter title"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -447,7 +480,10 @@ const EditCourse = () => {
                         <FormItem>
                           <FormLabel>Description</FormLabel>
                           <FormControl>
-                            <Textarea placeholder="Enter chapter description" {...field} />
+                            <Textarea
+                              placeholder="Enter chapter description"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -455,19 +491,21 @@ const EditCourse = () => {
                     />
                     <FormField
                       control={form.control}
-                      name={`chapters.${index}.videoFile`}
+                      name={`chapters.${index}.link`}
                       render={({ field: { onChange, value, ...rest } }) => (
                         <FormItem>
-                          <FormLabel>Video File (MP4 only, max 100MB)</FormLabel>
+                          <FormLabel>
+                            Video File (MP4 only, max 100MB)
+                          </FormLabel>
                           <FormControl>
                             <div className="flex items-center space-x-2">
                               <Input
                                 type="file"
                                 accept="video/mp4"
                                 onChange={(e) => {
-                                  const file = e.target.files?.[0]
+                                  const file = e.target.files?.[0];
                                   if (file) {
-                                    onChange(file)
+                                    onChange(file);
                                   }
                                 }}
                                 {...rest}
@@ -477,25 +515,38 @@ const EditCourse = () => {
                                 variant="outline"
                                 size="icon"
                                 onClick={() => {
-                                  const fileInput = document.querySelector(`input[name="chapters.${index}.videoFile"]`)
-                                  fileInput?.click()
+                                  const fileInput = document.querySelector(
+                                    `input[name="chapters.${index}.link"]`
+                                  );
+                                  fileInput?.click();
                                 }}
                               >
                                 <Upload className="h-4 w-4" />
                               </Button>
                             </div>
                           </FormControl>
-                          {value && <FormDescription>{value.name}</FormDescription>}
+                          {value && (
+                            <FormDescription>{value.name}</FormDescription>
+                          )}
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+                    <Button
+                      type="button"
+                      size="lg"
+                      className="w-full duration-300 hover:bg-green-300 hover:text-white "
+                      disabled={isSubmitting}
+                      onClick={()=>handleChapter(index)}
+                    >
+                      {isSubmitting ? "Updating Course..." : "Update Course"}
+                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
           </AnimatePresence>
-
+          {/* chapters part end */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -506,39 +557,17 @@ const EditCourse = () => {
               variant="outline"
               size="lg"
               className="w-full"
-              onClick={() => append({ title: '', description: '', videoFile: undefined })}
+              onClick={() =>
+                append({ title: "", description: "", link: undefined })
+              }
             >
               <Plus className="mr-2 h-4 w-4" /> Add Chapter
             </Button>
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
-          >
-            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? 'Updating Course...' : 'Update Course'}
-            </Button>
-          </motion.div>
         </form>
       </Form>
-      <AnimatePresence>
-        {isSuccess && (
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-md flex items-center shadow-lg"
-          >
-            <CheckCircle className="mr-2" />
-            Course updated successfully!
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
-  )
-}
+  );
+};
 
-export default EditCourse
-
+export default EditCourse;

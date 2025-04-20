@@ -3,25 +3,15 @@ import Hero from "@/components/Hero";
 import Courses from "@/components/Courses";
 import Announse from "@/components/promos/AnnounseSt";
 import Upcoming from "@/components/Upcoming";
+import Trending from "@/components/Trending";
 import GetStarted from "@/components/GetStarted";
 import Image from "next/image";
 import heroPic from "@/public/hero.png";
-import Trending from "@/components/Trending";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { getDashboard } from "@/request/user";
-import { initMyCourses } from "@/redux/dashboard";
+
+import { useSelector } from "react-redux";
 
 export default function Home() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    (async function () {
-      const { status, data } = await getDashboard();
-      if (status === 200) {
-        dispatch(initMyCourses(data.courses));
-      }
-    })();
-  }, []);
+  const { isLoggin: isLoged } = useSelector((s) => s.user);
   return (
     <div className="relative overflow-x-hidden">
       {/* Hero background container */}
@@ -50,12 +40,14 @@ export default function Home() {
       {/* Rest of the content */}
       <div className="container mx-auto">
         <Courses />
-        {/* <Trending /> */}
-        <Announse title="Join Edulink now to get 35% off" />
-        <Upcoming />
-        <GetStarted />
+        <Trending />
+        {!isLoged && <Announse title="Join Edulink now to get 35% off" />}
+        {/* <Upcoming /> */}
+        {!isLoged && (
+          // <Announse title="Join Edulink now to get 35% off" />
+          <GetStarted />
+        )}
       </div>
     </div>
-  )
+  );
 }
-

@@ -38,7 +38,7 @@ const Button = React.forwardRef(({ className, variant, size, asChild = false, ..
   const Comp = asChild ? Slot : "button"
   return (
     (<Comp
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={"bg-gray-300 "+ cn(buttonVariants({ variant, size, className }))+" px-3 w-auto mx-auto "}
       ref={ref}
       {...props} />)
   );

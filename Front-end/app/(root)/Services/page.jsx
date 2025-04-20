@@ -138,14 +138,12 @@ const Services = () => {
         ))}
       </div>
       <motion.div 
-        className="mt-8 text-center"
+        className="text-center fixed w-max bottom-5 shadow-lg left-1/2 -translate-x-1/2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5 }}
       >
-        {/* <Link href="/Services/postService"> */}
-          <Button size="lg" onClick={handlePostClick} className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-700 hoverTransition text-white">Post a New Service</Button>
-        {/* </Link> */}
+        
       </motion.div>
     </div>
   )

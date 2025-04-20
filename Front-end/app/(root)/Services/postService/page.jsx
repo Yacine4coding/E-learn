@@ -160,7 +160,7 @@ const PostService = () => {
         </div>
         <Button
           type="submit"
-          className="w-full font-semibold font-gilory bg-green-500 hover:bg-green-400 hoverTransition text-white"
+          className="px-4 font-semibold mx-auto block font-gilory bg-green-500 hover:bg-green-400 hoverTransition text-white"
         >
           Post Service
         </Button>

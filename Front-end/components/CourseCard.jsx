@@ -21,11 +21,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Route } from "lucide-react";
 
 import { setFavoriteCourse } from "@/request/courses";
 import { toggleFavorite } from "@/redux/dashboard";
@@ -43,19 +40,20 @@ function truncateDescription(description, MAX_DESCRIPTION_LENGTH) {
 function formatNumber(number) {
   return number >= 1000 ? `${(number / 1000).toFixed(1)}k` : number.toString();
 }
-
 const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
   const {
-    title,  
+    title,
     username: creator,
     id: courseId,
     picture: imageUrl,
     description,
     discount: price,
-    stars : {count : stars},
+    stars: { count: stars },
     price: oldPrice,
-    progress ,
+    progress,
+    // isfavorite = false,
   } = course;
+  console.log(course)
   const totalLectures = course.chapters.length;
   const PriceCond = Boolean(price && oldPrice);
   const dispatch = useDispatch();
@@ -170,15 +168,6 @@ const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
                   <FavoriteIcon htmlColor="red" />
                   <span>Add to favorite</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer hover:bg-slate-200"
-                  onClick={handleRemoveClick}
-                >
-                  <DeleteForeverIcon htmlColor="red" />
-                  <span className="font-gilroy font-bold text-red-800">
-                    Remove
-                  </span>
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -195,7 +184,11 @@ const CourseCard = ({ course, favIcon, menuIcon, completIcon }) => {
       </div>
 
       {progress && (
-        <CustomProgress value={progress.chapterNumber} max={totalLectures} className="my-1" />
+        <CustomProgress
+          value={progress.chapterNumber}
+          max={totalLectures}
+          className="my-1"
+        />
       )}
 
       {title && <h2 className="text-base font-bold">{title}</h2>}

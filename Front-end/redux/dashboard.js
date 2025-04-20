@@ -42,8 +42,8 @@ const dashboard = createSlice({
     },
     deleteCourse: (state, { payload }) => {
       try {
-        const { courses } = state;
-        state.courses = courses.map((ele) => {
+        const { Mycourses: courses } = state;
+        state.Mycourses = courses.map((ele) => {
           if (ele.id === payload) return { ...ele, visible: false };
           return ele;
         });
@@ -53,8 +53,8 @@ const dashboard = createSlice({
     },
     addCourse: (state, { payload }) => {
       try {
-        const { courses } = state;
-        state.courses = courses.map((ele) => {
+        const { Mycourses: courses } = state;
+        state.Mycourses = courses.map((ele) => {
           if (ele.id === payload) return { ...ele, visible: true };
           return ele;
         });
@@ -68,7 +68,8 @@ export const {
   toggleFavorite,
   initMyCourses,
   initCourses,
-  deleteCourse,addCourse,
+  deleteCourse,
+  addCourse,
   initFavCourses,
   initWishlistCourses,
 } = dashboard.actions;

@@ -14,13 +14,21 @@ import {
 } from "@/components/ui/card";
 import { Pencil, BookLock, BookCheck } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCourse, deleteCourse, initCourses } from "@/redux/dashboard";
+import { addCourse, deleteCourse, initMyCourses } from "@/redux/dashboard";
 import { getDashboard } from "@/request/user";
 import { enableCourse, hideCourse } from "@/request/courses";
 
 const MyPostedCourses = () => {
   const router = useRouter();
-
+  useEffect(() => {
+    (async function () {
+      const { status, data } = await getDashboard();
+      console.log(data);
+      if (status === 200) {
+        dispatch(initMyCourses(data.courses));
+      }
+    })();
+  }, []);
   const { Mycourses: courses } = useSelector((s) => s.dashboard);
   const dispatch = useDispatch();
   const handleEdit = (courseId) => {
