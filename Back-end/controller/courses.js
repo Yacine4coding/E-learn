@@ -2,8 +2,10 @@ import { generateCourse, sortCourse } from "../middleware/course.js";
 import Courses from "../models/Course.js";
 import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
-import { getStudient } from "./studient.js";
 import { isUserExist } from "./user.js";
+import { __dirname } from "../middleware/multer.js";
+import path from "path";
+import fs from "fs";
 
 export async function addCourse(req, res) {
   try {
@@ -330,6 +332,255 @@ export async function enableCourse(req, res) {
     return res.status(500).send({ message: "internal server error" });
   }
 }
+export async function updateCourses(req, res) {
+  let { user, userId, title, description, level, category, price, visible } =
+    req.body;
+  const { courseId } = req.params;
+  visible = Boolean(visible);
+
+  try {
+    const course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    // the theacher isn't the owner of course
+    if (course.teacherId !== userId)
+      return res.status(403).send({
+        message: "this course is not yours, if any problem send a feedback",
+      });
+    if (title && title !== course.title) course.title = title;
+    if (description && description !== course.description)
+      course.description = description;
+    if (level && level !== course.level) course.level = level;
+    if (category && category !== course.category) course.category = category;
+    if (price && price !== course.price) course.price = price;
+    if (visible !== course.visible) course.visible = visible;
+    const newCourse = await course.save();
+    res.status(200).send({
+      course: generateCourse(newCourse, user),
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function updateIntroductionCourses(req, res) {
+  const { title, description } = req.body;
+  const { userId, user } = req;
+  const { courseId } = req.params;
+  let link = false;
+  if (req.file) link = req.file.path;
+  try {
+    let course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    if (course.teacherId !== userId)
+      return res.status(403).send({
+        message: "this course is not yours, if any problem send a feedback",
+      });
+    let introduction = {};
+    introduction.title = title ? title : course.introduction.title;
+    introduction.link = link ? link : course.introduction.link;
+    introduction.description = description
+      ? description
+      : course.introduction.description;
+    if (link) {
+      if (course.introduction.link) {
+        const currentFilePath = path.join(
+          __dirname,
+          "/",
+          course.introduction.link
+        );
+        if (fs.existsSync(currentFilePath)) {
+          fs.unlinkSync(currentFilePath);
+        }
+      }
+    }
+    const newCourse = await Courses.findOneAndUpdate(
+      { _id: courseId },
+      { $set: { introduction } },
+      { new: true }
+    );
+    res.status(200).send({
+      course: generateCourse(newCourse, user),
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function updateCourseChapter(req, res) {
+  let { title, description, chapterNumber } = req.body;
+  const { userId, user } = req;
+  const { courseId } = req.params;
+  let link = false;
+  if (req.file) link = req.file.path;
+  try {
+    let course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    if (course.teacherId !== userId)
+      return res.status(403).send({
+        message: "this course is not yours, if any problem send a feedback",
+      });
+    // * delete old vedio if we have the new one
+    if (link) {
+      if (course.introduction.link) {
+        const currentFilePath = path.join(
+          __dirname,
+          "/",
+          course.introduction.link
+        );
+        if (fs.existsSync(currentFilePath)) {
+          fs.unlinkSync(currentFilePath);
+        }
+      }
+    }
+    // todo : for old chapter ;
+    if (chapterNumber < course.chapterNumber) {
+      // init chapter
+      const chapter = {
+        title: title ? title : course.chapters[chapterNumber].title,
+        link: link ? link : course.chapters[chapterNumber].link,
+        quizzes: course.chapters[chapterNumber].quizzes,
+        description: description
+          ? description
+          : course.chapters[chapterNumber].description,
+      };
+      // init chapter array
+      const chapters = course.chapters;
+      // update chapter
+      chapters[chapterNumber] = chapter;
+      // update in mongoose
+      const newCourse = await Courses.findOneAndUpdate(
+        { _id: courseId },
+        { $set: { chapters } },
+        { new: true }
+      );
+      return res.status(200).send({
+        course: generateCourse(newCourse, user),
+      });
+    }
+    // todo : for new chapter hasn't correct index ;
+    if (chapterNumber > course.chapterNumber)
+      chapterNumber = course.chapterNumber;
+    // todo : for new chapter has a correct index ;
+    // check data
+    if (!title || !description || !link)
+      return res
+        .status(422)
+        .send({ message: "you are create a new chapter , all data required" });
+    // init chapter
+    const quizzes = [
+      {
+        question: "question 1",
+        options: [
+          "option 1 of question 1",
+          "option 2 of question 1",
+          "option 3 of question 1",
+          "option 4 of question 1",
+        ],
+        correctAnswer: 2,
+      },
+      {
+        question: "question 2",
+        options: [
+          "option 1 of question 2",
+          "option 2 of question 2",
+          "option 3 of question 2",
+          "option 4 of question 2",
+        ],
+        correctAnswer: 3,
+      },
+      {
+        question: "question 3",
+        options: [
+          "option 1 of question 3",
+          "option 2 of question 3",
+          "option 3 of question 3",
+          "option 4 of question 3",
+        ],
+        correctAnswer: 0,
+      },
+      {
+        question: "question 4",
+        options: [
+          "option 1 of question 4",
+          "option 2 of question 4",
+          "option 3 of question 4",
+          "option 4 of question 4",
+        ],
+        correctAnswer: 0,
+      },
+      {
+        question: "question 5",
+        options: [
+          "option 1 of question 5",
+          "option 2 of question 5",
+          "option 3 of question 5",
+          "option 4 of question 5",
+        ],
+        correctAnswer: 2,
+      },
+    ];
+    const chapter = { title, link, description, quizzes };
+    // init chapter array
+    const chapters = course.chapters;
+    // update chapter
+    chapters[chapterNumber] = chapter;
+    // update in mongoose
+    const newCourse = await Courses.findOneAndUpdate(
+      { _id: courseId },
+      { $set: { chapters, chapterNumber: chapters.length } },
+      { new: true }
+    );
+    res.status(200).send({
+      course: generateCourse(newCourse, user),
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function deleteCourseChapter(req, res) {
+  let { chapterNumber } = req.params;
+  const { userId, user } = req;
+  const { courseId } = req.params;
+  try {
+    let course = await Courses.findById(courseId);
+    if (!course) return res.status(404).send({ message: "course not found" });
+    if (course.teacherId !== userId)
+      return res.status(403).send({
+        message: "this course is not yours, if any problem send a feedback",
+      });
+    if (chapterNumber >= course.chapterNumber) return res.status(204).send();
+
+    // * delete old vedio if we have the new one
+    if (course.chapters[chapterNumber].link) {
+      const currentFilePath = path.join(
+        __dirname,
+        "/",
+        course.chapters[chapterNumber].link
+      );
+      if (fs.existsSync(currentFilePath)) {
+        fs.unlinkSync(currentFilePath);
+      }
+    }
+    // init chapter array
+
+    const chapters = course.chapters;
+    chapters.splice(chapterNumber, 1);
+    console.log(chapters);
+    // update in mongoose
+    const newCourse = await Courses.findOneAndUpdate(
+      { _id: courseId },
+      { $set: { chapters } },
+      { new: true }
+    );
+    res.status(200).send({
+      course: generateCourse(newCourse, user),
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
 // * functions
 export async function getCoursesById(id, user) {
   try {
@@ -352,6 +603,7 @@ export async function getCourseById(courseId) {
     return null;
   }
 }
+
 export async function incrementCourseBuy(courseId) {
   try {
     const course = await Courses.findById(courseId);

@@ -11,6 +11,10 @@ import {
   getCourseProgress,
   deleteCourse,
   enableCourse,
+  updateCourses,
+  updateIntroductionCourses,
+  updateCourseChapter,
+  deleteCourseChapter,
 } from "../controller/courses.js";
 import { enableTeacher } from "../middleware/teacher.js";
 import upload from "../middleware/multer.js";
@@ -30,8 +34,24 @@ courses.get("/progress/:courseId", verifyToken, getCourseProgress);
 courses.put("/favorite/:courseId", verifyToken, favoriteCourses);
 courses.put("/submitquize", verifyToken, submitQuize);
 courses.put("/wishlist/:courseId", verifyToken, wishlistCourses);
-// courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);
+courses.put("/:courseId", verifyToken, enableTeacher, updateCourses);
+upload.single("profileImage"),
+  courses.put(
+    "/introduction/:courseId",
+    verifyToken,
+    enableTeacher,
+    upload.single("link"),
+    updateIntroductionCourses
+  );
+courses.put(
+  "/chapter/:courseId",
+  verifyToken,
+  enableTeacher,
+  upload.single("link"),
+  updateCourseChapter
+);
 
 courses.patch("/:courseId", verifyToken, enableCourse);
 courses.delete("/:courseId", verifyToken, deleteCourse);
+courses.delete("/chapter/:courseId/:chapterNumber", verifyToken, deleteCourseChapter);
 export default courses;
