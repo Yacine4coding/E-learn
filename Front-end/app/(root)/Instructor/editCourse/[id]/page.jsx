@@ -28,7 +28,14 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Plus, Minus, Upload } from "lucide-react";
-import { getCourse } from "@/request/courses";
+import {
+  deleteCourseChapter,
+  getCourse,
+  updateChapterCourse,
+  updateCourse,
+  updateIntorductinoCourse,
+} from "@/request/courses";
+import { errorNotifcation, successNotifcation } from "@/components/toast";
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024;
 const ACCEPTED_VIDEO_TYPES = ["video/mp4"];
@@ -98,6 +105,14 @@ const EditCourse = () => {
     control: form.control,
     name: "chapters",
   });
+  async function deleteChapter(chapterNumber) {
+    const { status, data } = await deleteCourseChapter(chapterNumber, courseId);
+    if (status === 200) {
+      successNotifcation("chapter deleted successufuly");
+    } else if (status !== 204) {
+      errorNotifcation(data.message);
+    }
+  }
 
   useEffect(() => {
     (async function () {
@@ -124,30 +139,64 @@ const EditCourse = () => {
     })();
   }, [courseId, form]);
   // ! handle part
-  function handleIntroduction() {
-    const { title, description, link } = form.getValues("introduction");
-    // if (!title || !description) {
-    //   return false;
-    // }
-    // if (link && !linkSchema.safeParse(link).success) {
-    //   return false;
-    // }
-    // return true;
+  async function handleIntroduction(e) {
+    let { title, description, link } = form.getValues("introduction");
+    e.target.disabled = true;
+    e.target.innerText = "Updating Course...";
+    console.log(form.getValues("introduction"));
+    if (typeof link === "string") link = null;
+    const formData = new FormData();
+    formData.append("link", link);
+    formData.append("title", title);
+    formData.append("description", description);
+    const { status, data } = await updateIntorductinoCourse(formData, courseId);
+    if (status === 200) successNotifcation("course Updated successfuly");
+    else errorNotifcation(data.message);
+    e.target.disabled = false;
+    e.target.innerText = "Update Course";
   }
-  function handleCourseInformatino() {
+  async function handleCourseInformatino(e) {
     const { title, description, category, level, price, visible } =
       form.getValues();
+    e.target.disabled = true;
+    e.target.innerText = "Updating Course...";
+    const { status, data } = await updateCourse(
+      {
+        title,
+        description,
+        category,
+        level,
+        price,
+        visible,
+      },
+      courseId
+    );
+    if (status === 200) {
+      form.reset(data.course);
+      successNotifcation("course updated successfuly");
+    } else {
+      errorNotifcation(data.message);
+    }
+
+    e.target.disabled = false;
+    e.target.innerText = "Update Course";
   }
-  function handleChapter(index) {
-    const { chapters } = form.getValues();
-    const { title, description, link } = chapters[index];
-    // if (!title || !description) {
-    //   return false;
-    // }
-    // if (link && !linkSchema.safeParse(link).success) {
-    //   return false;
-    // }
-    // return true;
+  async function handleChapter(chapterNumber, e) {
+    let { title, description, link } =
+      form.getValues("chapters")[chapterNumber];
+    e.target.disabled = true;
+    e.target.innerText = "Updating Course...";
+    if (typeof link === "string") link = null;
+    const formData = new FormData();
+    formData.append("link", link);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("chapterNumber", chapterNumber);
+    const { status, data } = await updateChapterCourse(formData, courseId);
+    if (status === 200) successNotifcation("course Updated successfuly");
+    else errorNotifcation(data.message);
+    e.target.disabled = false;
+    e.target.innerText = "Update Course";
   }
   // ! handle part end
   return (
@@ -450,7 +499,10 @@ const EditCourse = () => {
                         type="button"
                         variant="destructive"
                         size="icon"
-                        onClick={() => remove(index)}
+                        onClick={() => {
+                          remove(index);
+                          deleteChapter(index);
+                        }}
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
@@ -537,7 +589,7 @@ const EditCourse = () => {
                       size="lg"
                       className="w-full duration-300 hover:bg-green-300 hover:text-white "
                       disabled={isSubmitting}
-                      onClick={()=>handleChapter(index)}
+                      onClick={(e) => handleChapter(index, e)}
                     >
                       {isSubmitting ? "Updating Course..." : "Update Course"}
                     </Button>

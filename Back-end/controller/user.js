@@ -1,8 +1,4 @@
-import {
-  addExistingToken,
-  generateToken,
-  isTokenCorrect,
-} from "../middleware/jwt.js";
+
 import { __dirname } from "../middleware/multer.js";
 import path from "path";
 import fs from "fs";
@@ -180,7 +176,6 @@ export async function updateProfileImage(req, res) {
     const isHasPicture = /^public/.test(user.picture);
     if (user.picture && isHasPicture) {
       const currentFilePath = path.join(__dirname, "/", user.picture);
-      console.log(currentFilePath);
       if (fs.existsSync(currentFilePath)) {
         fs.unlinkSync(currentFilePath);
       }

@@ -86,7 +86,7 @@ export async function submitQueez(quizAnswer, courseId, chapterNumber) {
   try {
     const { status, data } = await axios.put(
       `${APIURL}/course/submitquize`,
-      { quizeResult : quizAnswer, courseId, chapterNumber },
+      { quizeResult: quizAnswer, courseId, chapterNumber },
       CREDENTIALS
     );
     return { status, data };
@@ -134,41 +134,46 @@ export async function getReview(courseId) {
     };
   }
 }
-export async function createCourse (formdata) {
+export async function createCourse(formdata) {
   try {
-    const {status , data} = await axios.post(`${APIURL}/course`,formdata , 
-      {
-        withCredentials: true,
-      });
-    console.log(status , data);
-    return {status , data}
+    const { status, data } = await axios.post(`${APIURL}/course`, formdata, {
+      withCredentials: true,
+    });
+    console.log(status, data);
+    return { status, data };
   } catch (error) {
-    console.log(error)
-    if (!error.response) return {status : 10}
+    console.log(error);
+    if (!error.response) return { status: 10 };
     return {
-      status : error.response.status , 
-      data : error.response.data
-    }
+      status: error.response.status,
+      data: error.response.data,
+    };
   }
 }
 export async function getMyCourseReview(courseId) {
   try {
-    const {status , data} = await axios.get(`${APIURL}/review/mine/${courseId}`,CREDENTIALS);
-    return {status , data}
+    const { status, data } = await axios.get(
+      `${APIURL}/review/mine/${courseId}`,
+      CREDENTIALS
+    );
+    return { status, data };
   } catch (error) {
-    console.log(error)
-    if (!error.response) return {status : 10}
-    return {status : error.response.status , data : error.response.data}
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
   }
 }
 export async function getMyCourseProgress(courseId) {
   try {
-    const {status , data} = await axios.get(`${APIURL}/course/progress/${courseId}`,CREDENTIALS);
-    return {status , data}  
+    const { status, data } = await axios.get(
+      `${APIURL}/course/progress/${courseId}`,
+      CREDENTIALS
+    );
+    return { status, data };
   } catch (error) {
-    console.log(error)
-    if (!error.response) return {status : 10}
-    return {status : error.response.status , data : error.response.data}
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
   }
 }
 export async function hideCourse(courseId) {
@@ -193,8 +198,62 @@ export async function enableCourse(courseId) {
     );
     return { status, data };
   } catch (error) {
-    console.log(error)
-    if (!error.response) return {status : 10}
-    return {status : error.response.status , data : error.response.data}
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
+  }
+}
+export async function updateCourse(formdata, courseId) {
+  try {
+    const { status, data } = await axios.put(
+      `${APIURL}/course/${courseId}`,
+      formdata,
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
+  }
+}
+export async function updateIntorductinoCourse(formdata, courseId) {
+  try {
+    const { status, data } = await axios.put(
+      `${APIURL}/course/introduction/${courseId}`,
+      formdata,
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
+  }
+}
+export async function updateChapterCourse(formdata, courseId) {
+  try {
+    const { status, data } = await axios.put(
+      `${APIURL}/course/chapter/${courseId}`,
+      formdata,
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
+  }
+}
+export async function deleteCourseChapter(chapterNumber, courseId) {
+  try {
+    const { status, data } = await axios.delete(
+      `${APIURL}/course/chapter/${courseId}/${chapterNumber}`,
+      // { chapterNumber },
+      CREDENTIALS
+    );
+    return { status, data };
+  } catch (error) {
+    console.log(error);
+    if (!error.response) return { status: 10 };
+    return { status: error.response.status, data: error.response.data };
   }
 }
