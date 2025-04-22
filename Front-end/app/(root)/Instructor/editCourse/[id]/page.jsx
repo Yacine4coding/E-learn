@@ -379,7 +379,7 @@ const EditCourse = () => {
             <Button
               type="button"
               size="lg"
-              className="w-full duration-300 hover:bg-green-300 hover:text-white"
+              className="duration-300 hover:bg-green-300 hover:text-white px-3 w-auto mx-auto bg-gray-300"
               disabled={isSubmitting}
               onClick={handleCourseInformatino}
             >
@@ -472,7 +472,7 @@ const EditCourse = () => {
                 <Button
                   type="button"
                   size="lg"
-                  className="w-full duration-300 hover:bg-green-300 hover:text-white"
+                  className="duration-300 hover:bg-green-300 hover:text-white px-3 w-auto mx-auto bg-gray-300"
                   disabled={isSubmitting}
                   onClick={handleIntroduction}
                 >
@@ -587,7 +587,7 @@ const EditCourse = () => {
                     <Button
                       type="button"
                       size="lg"
-                      className="w-full duration-300 hover:bg-green-300 hover:text-white "
+                                        className="duration-300 hover:bg-green-300 hover:text-white px-3 w-auto mx-auto bg-gray-300"
                       disabled={isSubmitting}
                       onClick={(e) => handleChapter(index, e)}
                     >
