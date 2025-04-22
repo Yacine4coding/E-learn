@@ -1,27 +1,313 @@
 [{
   "_id": {
-    "$oid": "6790b8908617c4fa488102f5"
+    "$oid": "6805f9ee4c16beb60be562fb"
   },
-  "title": "dhklmsdfqhkfdhlkm",
-  "description": "dsqmhkldsqfkdlhdskhldkhdfsqklfdqlkmdfkhlqshlkqkhldfshkldsfqhlkm",
+  "title": "BMC course",
+  "visible": true,
+  "description": "course of BMC to learn how you create a project",
   "level": "beginner",
-  "category": "programming",
-  "price": 123,
+  "category": "design",
+  "price": 12,
   "discount": 0,
   "stars": {
     "usersId": []
   },
   "teacherId": "676c8762026508083bac266f",
-  "chapterNumber": 1,
+  "chapterNumber": 9,
   "introduction": {
-    "title": "fdjkhdjhkdsqkhjfdsjhk",
-    "description": "jkdsqfhjkdfhkjdfqshkjqdfskhj",
-    "link": "public\\1737537680247-page.jsx - E-learn - Visual Studio Code 2025-01-20 14-07-37.mp4"
+    "title": "نشئ نموذج العمل التجاري لمشروعك الخاص",
+    "link": "public\\1745224279845-Business Model Canvas Ø£ÙØ´Ø¦ ÙÙÙØ°Ø¬ Ø§ÙØ¹ÙÙ Ø§ÙØªØ¬Ø§Ø±Ù ÙÙØ´Ø±ÙØ¹Ù Ø§ÙØ®Ø§Øµ.mp4",
+    "description": "نشئ نموذج العمل التجاري لمشروعك الخاص"
   },
   "chapters": [
     {
-      "title": "fdkhldsqhdsqfkhjl",
-      "description": "kqhsfdhjkqdsfhkjdhfjsqjkhdsl",
+      "title": " كيف تحدد العملاء المستهدفين من المشروع",
+      "description": " كيف تحدد العملاء المستهدفين من المشروع",
+      "quizzes": [
+        {
+          "question": "question",
+          "options": [
+            "a",
+            "correct",
+            "b",
+            "c"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question",
+          "options": [
+            "correct",
+            "A",
+            "c",
+            "b"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "Q3",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "Q4",
+          "options": [
+            "A",
+            "C",
+            "correct",
+            "B"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "Q5",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "correctAnswer": 0
+        }
+      ],
+      "link": "public\\1745222126473-Business Model Canvas 01 _ ÙÙÙ ØªØ­Ø¯Ø¯ Ø§ÙØ¹ÙÙØ§Ø¡ Ø§ÙÙØ³ØªÙØ¯ÙÙÙ ÙÙ Ø§ÙÙØ´Ø±ÙØ¹.mp4"
+    },
+    {
+      "title": " كيف تحدد القيم المقترحة",
+      "link": "public\\1745224202550-Business Model Canvas 02 Value proposition_ ÙÙÙ ØªØ­Ø¯Ø¯ Ø§ÙÙÙÙ Ø§ÙÙÙØªØ±Ø­Ø©.mp4",
+      "description": " كيف تحدد القيم المقترحة وما هي القيمة الحقيقية ملشروعك",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "قنوات التواصل",
+      "link": "public\\1745224231782-Business Model Canvas 03 Channels _ ÙÙÙØ§Øª Ø§ÙØªÙØ§ØµÙ.mp4",
+      "description": "ما هو تاثير مواقع التواصل على المشاريع",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "لعلاقات مع العملاء",
+      "link": "public\\1745224347899-Business Model Canvas 04 Customer Relationships _ Ø§ÙØ¹ÙØ§ÙØ§Øª ÙØ¹ Ø§ÙØ¹ÙÙØ§Ø¡.mp4",
+      "description": "ما هي اهم العلاقات في المشاريع و ما قوانينها",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "مصادر الايرادات",
+      "link": "public\\1745224361539-Business Model Canvas 05 Revenue streams _ ÙØµØ§Ø¯Ø± Ø§ÙØ§ÙØ±Ø§Ø¯Ø§Øª.mp4",
+      "description": "مصادر الايرادات",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "الموارد الرئيسية",
+      "link": "public\\1745224389978-Business Model Canvas 06 Key Resources _ Ø§ÙÙÙØ§Ø±Ø¯ Ø§ÙØ±Ø¦ÙØ³ÙØ©.mp4",
       "quizzes": [
         {
           "question": "question 1",
@@ -74,10 +360,605 @@
           "correctAnswer": 2
         }
       ],
-      "link": "public\\1737537680571-page.jsx - E-learn - Visual Studio Code 2025-01-20 14-07-37.mp4"
+      "description": "هل الجودة او الكمية"
+    },
+    {
+      "title": "الأنشطة الرئيسية",
+      "link": "public\\1745224478736-Business Model Canvas 07 Key Activities _ Ø§ÙØ£ÙØ´Ø·Ø© Ø§ÙØ±Ø¦ÙØ³ÙØ©.mp4",
+      "description": "هل هناك انشطة موحدة لكل المشاريع",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "الشراكات الرئيسية",
+      "link": "public\\1745224525453-Business Model Canvas 08 Key Partners _ Ø§ÙØ´Ø±Ø§ÙØ§Øª Ø§ÙØ±Ø¦ÙØ³ÙØ©.mp4",
+      "description": "ما هي الشراكات الاساسية على حسب نمط المشروع",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "هيكل التكاليف",
+      "link": "public\\1745224563916-Business Model Canvas 09 Cost structure _ ÙÙÙÙ Ø§ÙØªÙØ§ÙÙÙ.mp4",
+      "description": "ما هي الهيكلة التي يستخدمها اغلب الشركات",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
     }
   ],
-  "picture": "public\\1737537680235-Yacine4coding_E-learn at samir - Google Chrome 02_01_2025 18_39_03.png",
+  "picture": "public\\1745222126414-landing page 2.png",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "680604e54c16beb60be563a3"
+  },
+  "title": "os (operatino system)",
   "visible": true,
+  "description": "all what you need te create operating system",
+  "level": "intermediate",
+  "category": "programming",
+  "price": 1000,
+  "discount": 0,
+  "stars": {
+    "usersId": []
+  },
+  "teacherId": "676c8789026508083bac267b",
+  "chapterNumber": 7,
+  "introduction": {
+    "title": "intro",
+    "description": "Making a simple Dynamic Memory Allocator (malloc)",
+    "link": "public\\1745224933301-Making a simple Dynamic Memory Allocator (malloc).mp4"
+  },
+  "chapters": [
+    {
+      "title": "Assembly, Booting",
+      "description": "what is assembly",
+      "quizzes": [
+        {
+          "question": "question",
+          "options": [
+            "a",
+            "correct",
+            "b",
+            "c"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "question": "question",
+          "options": [
+            "correct",
+            "A",
+            "c",
+            "b"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "Q3",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "question": "Q4",
+          "options": [
+            "A",
+            "C",
+            "correct",
+            "B"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "Q5",
+          "options": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "correctAnswer": 0
+        }
+      ],
+      "link": "public\\1745224933427-Making an OS (x86) Chapter 1 - CPU, Assembly, Booting.mp4"
+    },
+    {
+      "title": "BIOS, Printing the Alphabet, Conditional Jumps",
+      "link": "public\\1745224981658-Making an OS (x86) Chapter 2 - BIOS, Printing the Alphabet, Conditional Jumps.mp4",
+      "description": "is windows the first think run so what is bios",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "Strings, Keyboard Input in BIOS",
+      "link": "public\\1745224997685-Making an OS (x86) Chapter 3 - Strings, Keyboard Input in BIOS.mp4",
+      "description": "Strings, Keyboard Input in BIOS",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "Stack, Functions, Segmentation",
+      "link": "public\\1745225015231-Making an OS (x86) Chapter 4 - Stack, Functions, Segmentation.mp4",
+      "description": "Stack, Functions, Segmentation",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "Reading the disk with BIOS",
+      "link": "public\\1745225026660-Making an OS (x86) Chapter 5 - Reading the disk with BIOS.mp4",
+      "description": "Reading the disk with BIOS",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "title": "Entering Protected mode, GDT",
+      "link": "public\\1745225043016-Making an OS (x86) Chapter 6 - Entering Protected mode, GDT.mp4",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ],
+      "description": "Entering Protected mode, GDT"
+    },
+    {
+      "title": " Cross Compiler, Bootloader",
+      "link": "public\\1745225059293-Making an OS (x86) Chapter 7 - Cross Compiler, Bootloader, Kernel.mp4",
+      "description": " Cross Compiler, Bootloader",
+      "quizzes": [
+        {
+          "question": "question 1",
+          "options": [
+            "option 1 of question 1",
+            "option 2 of question 1",
+            "option 3 of question 1",
+            "option 4 of question 1"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "question": "question 2",
+          "options": [
+            "option 1 of question 2",
+            "option 2 of question 2",
+            "option 3 of question 2",
+            "option 4 of question 2"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "question": "question 3",
+          "options": [
+            "option 1 of question 3",
+            "option 2 of question 3",
+            "option 3 of question 3",
+            "option 4 of question 3"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 4",
+          "options": [
+            "option 1 of question 4",
+            "option 2 of question 4",
+            "option 3 of question 4",
+            "option 4 of question 4"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "question": "question 5",
+          "options": [
+            "option 1 of question 5",
+            "option 2 of question 5",
+            "option 3 of question 5",
+            "option 4 of question 5"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    }
+  ],
+  "picture": "public\\1745224933276-landing page 1.png",
   "__v": 0
 }]
