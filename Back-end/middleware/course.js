@@ -36,7 +36,7 @@ export function generateCourse(course, user, allData = false) {
     chapters,
     username,
     picture: `http://localhost:5000/${picture}`,
-    userPicture: `http://localhost:5000/${userPicture}`,
+    userPicture: userPicture.startsWith("avatar") ? userPicture : `http://localhost:5000/${userPicture}`,
     introduction,
     level,
     category,

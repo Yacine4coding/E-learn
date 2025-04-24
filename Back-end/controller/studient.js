@@ -46,6 +46,9 @@ export async function buyCourse(req, res) {
       case !course:
         res.status(400).send({ message: "no course with this id" });
         return;
+      case course.teacherId === studentId:
+        res.status(400).send({ message: "is your course" });
+        return;
     }
     await new StudientCourse({ courseId, studentId }).save();
     res.status(200).send({
