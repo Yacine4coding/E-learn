@@ -117,7 +117,7 @@ const UserDashboard = () => {
                   List of your favorite courses
                 </p>
               </div>
-              {courses.length == 0 ? (
+              {favoriteCourse.length == 0 ? (
                 <h1 className="text-3xl mt-10 text-center font-semibold w-full">
                   No Course Yet
                 </h1>
