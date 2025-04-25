@@ -1,22 +1,9 @@
 import { generateStudientInfo } from "../middleware/studient.js";
-import Studient from "../models/Student.js";
+import Studient from "../models/Studient.js";
+import StudientCourse from "../models/StudientCourse.js";
+import { getCourseById } from "./courses.js";
+import { isUserExist } from "./user.js";
 
-export async function createNewStudient() {
-  try {
-    const studient = await new Studient().save();
-    return generateStudientInfo(studient);
-  } catch (error) {
-    return false;
-  }
-}
-export async function getStudient(userId) {
-  try {
-    const studient = await Studient.findById(userId);
-    return generateStudientInfo(studient);
-  } catch (error) {
-    return false;
-  }
-}
 export async function changePoint(req, res) {
   const { points } = req.body;
   const { userId } = req.params;
@@ -44,9 +31,72 @@ export async function changePoint(req, res) {
     res.status(500).send({ message: error.message });
   }
 }
-export async function deleteStudient(studientId) {
+export async function buyCourse(req, res) {
+  const { courseId } = req.params;
+  const { userId: studentId } = req.body;
   try {
-    await Studient.findByIdAndDelete(studientId);
+    const course = await getCourseById(courseId);
+    const isAlreadyBuy = await StudientCourse.findOne({ courseId, studentId });
+    switch (true) {
+      case Boolean(isAlreadyBuy):
+        res
+          .status(400)
+          .send({ message: "studient is already buy this course" });
+        return;
+      case !course:
+        res.status(400).send({ message: "no course with this id" });
+        return;
+      case course.teacherId === studentId:
+        res.status(400).send({ message: "is your course" });
+        return;
+    }
+    await new StudientCourse({ courseId, studentId }).save();
+    res.status(200).send({
+      message: "buy succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function deleteStudientCourse(req, res) {
+  const { courseId } = req.params;
+  const { userId: studientId } = req.body;
+  try {
+    if (!(await StudientCourse.deleteOne({ courseId, studientId }))) {
+      res.status(400).send({ message: "no studient course buy it" });
+      return;
+    }
+    const course = await getCourseById(courseId);
+    const { isExist } = await isUserExist(course.teacherId);
+    if (!isExist) {
+      await deleteCouseById(courseId);
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+// functions
+export async function createNewStudient() {
+  try {
+    const studient = await new Studient().save();
+    return generateStudientInfo(studient);
+  } catch (error) {
+    return false;
+  }
+}
+export async function getStudient(userId) {
+  try {
+    const studient = await Studient.findById(userId);
+    return generateStudientInfo(studient);
+  } catch (error) {
+    return false;
+  }
+}
+export async function updateCourse(userId, obj) {
+  try {
+    await Studient.updateOne({ _id: userId }, { $set: { ...obj } });
     return true;
   } catch (error) {
     return false;

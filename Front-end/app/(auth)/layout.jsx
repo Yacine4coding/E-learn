@@ -1,7 +1,8 @@
-import React from 'react'
+import React from "react";
 
-import "@/styles/globals.css"
+import "@/styles/globals.css";
 import localFont from "next/font/local";
+import ReduxContainer from "@/redux/ReduxContainer";
 
 const Gilroy = localFont({
   src: [
@@ -63,4 +64,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-

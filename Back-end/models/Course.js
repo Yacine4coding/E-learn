@@ -5,17 +5,36 @@ const coursesShcema = mongoose.Schema({
     type: String,
     require: true,
   },
+  visible: {
+    type: Boolean,
+    default: true,
+  },
   description: {
     type: String,
     default: "",
   },
-  ammount: {
+  level: {
+    type: String,
+    require: true,
+  },
+  category: {
+    type: String,
+    require: true,
+  },
+  price: {
     type: Number,
     default: 0,
   },
-  payCount: {
+  discount: {
     type: Number,
     default: 0,
+  },
+  stars: {
+    type: Object,
+    default: {
+      usersId: [],
+      count: Number,
+    },
   },
   teacherId: {
     type: String,
@@ -26,9 +45,17 @@ const coursesShcema = mongoose.Schema({
     min: 1,
     require: true,
   },
+  introduction: {
+    type: Object,
+    require: true,
+  },
   chapters: {
     type: Array,
-    default: [],
+    require: true,
+  },
+  picture: {
+    type: String,
+    require: true,
   },
 });
 const Courses = mongoose.model("course", coursesShcema);

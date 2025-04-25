@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import User from "../models/User.js";
 
 export async function hashingPassword(password) {
   const salt = await bcrypt.genSalt(10);
@@ -10,31 +11,41 @@ export async function comparePassword(pass, hashPass) {
   return isCorrectPassword;
 }
 export function generateUserInfo(user) {
-  const {
+  let {
     username,
     isteacher,
     notifications,
     bio,
+    email,
+    link,
     emailId,
-    isHasPicture,
     picture,
-    userId,
+    language,
+    firstName,
+    lastName,
   } = user;
+  if (/^public/.test(picture)) picture = `http://localhost:5000/${picture}`;
   return {
+    email,
+    link,
+    language,
+    firstName,
+    lastName,
     username,
-    emailValidate : Boolean(emailId),
+    emailValidate: Boolean(emailId),
     bio,
     notifications,
     isteacher,
     picture,
-    isHasPicture,
   };
 }
-export function generateGoogleProps(callbackURL) {
-  return {
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL ,
-    scope: ["profile", "email"],
-  };
+export async function generateUserName(email) {
+  let username = email.split("@")[0];
+  // check if userename is already exist
+  let isUserExist = false;
+  do {
+    isUserExist = await User.findOne({ username });
+    if (isUserExist) username = `${username}${parseInt(Math.random() * 1000)}`;
+  } while (isUserExist);
+  return username;
 }

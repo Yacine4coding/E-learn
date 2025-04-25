@@ -1,6 +1,5 @@
 import { generateTeacherInfo } from "../middleware/teacher.js";
 import Teacher from "../models/Teacher.js";
-import { deleteTeacherCourses } from "./courses.js";
 
 export async function createNewTeacher() {
   try {
@@ -18,13 +17,11 @@ export async function getTeacher(userId) {
     return false;
   }
 }
-export async function deleteTeacher(teacherId, userId) {
+export async function getTeacherDashboard(req, res) {
+  const { userId, user } = req.body;
   try {
-    await Teacher.findByIdAndDelete(teacherId );
-    await deleteTeacherCourses(userId);
-    return true;
+    const courses = await getCoursesById(userId, user);
   } catch (error) {
-    console.log(error);
-    return false;
+    res.status(500).send({ message: error.message });
   }
 }

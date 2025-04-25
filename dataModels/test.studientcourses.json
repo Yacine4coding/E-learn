@@ -1,0 +1,59 @@
+[
+  {
+    "_id": {
+      "$oid": "676c87c7026508083bac268d"
+    },
+    "courseId": "676c8772026508083bac2672",
+    "studientId": "676c879d026508083bac2687",
+    "progress": {
+      "chapterNumber": 2,
+      "for100": 0
+    },
+    "quiz": {},
+    "createdAt": {
+      "$date": "2024-12-25T22:31:35.608Z"
+    },
+    "updatedAt": {
+      "$date": "2024-12-25T22:31:35.608Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "676c87e0026508083bac2694"
+    },
+    "courseId": "676c8792026508083bac267e",
+    "studientId": "676c879d026508083bac2687",
+    "progress": {
+      "chapterNumber": 0,
+      "for100": 0,
+      "quiz": {}
+    },
+    "createdAt": {
+      "$date": "2024-12-25T22:32:00.748Z"
+    },
+    "updatedAt": {
+      "$date": "2024-12-25T22:32:00.748Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "676c885c026508083bac26a2"
+    },
+    "courseId": "676c8776026508083bac2675",
+    "studientId": "676c879d026508083bac2687",
+    "progress": {
+      "chapterNumber": 4,
+      "for100": 0,
+      "quiz": {}
+    },
+    "createdAt": {
+      "$date": "2024-12-25T22:34:04.967Z"
+    },
+    "updatedAt": {
+      "$date": "2024-12-25T22:34:04.967Z"
+    },
+    "__v": 0
+  }
+]

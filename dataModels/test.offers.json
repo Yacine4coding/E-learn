@@ -1,0 +1,260 @@
+[{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f1"
+  },
+  "message": "I'm skilled in web development and can create a responsive website tailored to your needs.",
+  "userId": "676c879d026508083bac2687",
+  "serviceId": "677703dc0ce26f99d866bb31",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f2"
+  },
+  "message": "I have experience building websites for small businesses and can deliver quickly.",
+  "userId": "676c875d026508083bac2669",
+  "serviceId": "677703dc0ce26f99d866bb31",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f3"
+  },
+  "message": "I can ensure your website is optimized for performance and SEO.",
+  "userId": "676c8758026508083bac2663",
+  "serviceId": "677703dc0ce26f99d866bb31",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f4"
+  },
+  "message": "I specialize in minimalistic and modern logo designs.",
+  "userId": "676c875d026508083bac2669",
+  "serviceId": "677703dc0ce26f99d866bb32",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f5"
+  },
+  "message": "I can provide a logo that aligns perfectly with your brand identity.",
+  "userId": "676c879d026508083bac2687",
+  "serviceId": "677703dc0ce26f99d866bb32",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f6"
+  },
+  "message": "I use advanced tools to ensure your logo stands out.",
+  "userId": "676c8758026508083bac2663",
+  "serviceId": "677703dc0ce26f99d866bb32",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f7"
+  },
+  "message": "I can develop a cross-platform app for both iOS and Android.",
+  "userId": "676c8758026508083bac2663",
+  "serviceId": "677703dc0ce26f99d866bb33",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f8"
+  },
+  "message": "I have expertise in React Native and can build your app efficiently.",
+  "userId": "676c875d026508083bac2669",
+  "serviceId": "677703dc0ce26f99d866bb33",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7f9"
+  },
+  "message": "I can create an app with a smooth UI/UX experience.",
+  "userId": "676c879d026508083bac2687",
+  "serviceId": "677703dc0ce26f99d866bb33",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7fa"
+  },
+  "message": "I write engaging articles tailored to your target audience.",
+  "userId": "676c875d026508083bac2669",
+  "serviceId": "677703dc0ce26f99d866bb34",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7fb"
+  },
+  "message": "I specialize in SEO writing to improve your website's search rankings.",
+  "userId": "676c879d026508083bac2687",
+  "serviceId": "677703dc0ce26f99d866bb34",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7fc"
+  },
+  "message": "I can write clear and concise content for professional blogs.",
+  "userId": "676c8758026508083bac2663",
+  "serviceId": "677703dc0ce26f99d866bb34",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7fd"
+  },
+  "message": "I can create targeted ad campaigns to boost your online presence.",
+  "userId": "676c875d026508083bac2669",
+  "serviceId": "677703dc0ce26f99d866bb35",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7fe"
+  },
+  "message": "I specialize in running cost-effective digital marketing strategies.",
+  "userId": "676c879d026508083bac2687",
+  "serviceId": "677703dc0ce26f99d866bb35",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea7ff"
+  },
+  "message": "I can create detailed models for your architectural projects.",
+  "userId": "676c8758026508083bac2663",
+  "serviceId": "677703dc0ce26f99d866bb36",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea800"
+  },
+  "message": "I specialize in realistic 3D modeling for product design.",
+  "userId": "676c879d026508083bac2687",
+  "serviceId": "677703dc0ce26f99d866bb36",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea801"
+  },
+  "message": "I have expertise in Blender and can deliver quality models.",
+  "userId": "676c875d026508083bac2669",
+  "serviceId": "677703dc0ce26f99d866bb36",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea802"
+  },
+  "message": "I can edit and enhance your videos to professional standards.",
+  "userId": "676c875d026508083bac2669",
+  "serviceId": "677703dc0ce26f99d866bb37",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea803"
+  },
+  "message": "I have experience creating marketing videos with After Effects.",
+  "userId": "676c879d026508083bac2687",
+  "serviceId": "677703dc0ce26f99d866bb37",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+},
+{
+  "_id": {
+    "$oid": "67793a627668ec8e15aea804"
+  },
+  "message": "I offer high-quality post-production editing services.",
+  "userId": "676c8758026508083bac2663",
+  "serviceId": "677703dc0ce26f99d866bb37",
+  "progressing": {
+    "progress": "pending",
+    "date": null,
+    "message": ""
+  }
+}]

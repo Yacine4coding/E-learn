@@ -1,213 +1,79 @@
-import {
-  addExistingToken,
-  generateToken,
-  isTokenCorrect,
-} from "../middleware/jwt.js";
+
+import { __dirname } from "../middleware/multer.js";
+import path from "path";
+import fs from "fs";
 import {
   comparePassword,
   hashingPassword,
   generateUserInfo,
+  generateUserName,
 } from "../middleware/user.js";
+import Studient from "../models/Studient.js";
+import StudientCourse from "../models/StudientCourse.js";
 import User from "../models/User.js";
-import { deleteUserComment } from "./comment.js";
-import { deleteUserPosts } from "./post.js";
-import { createNewStudient, deleteStudient, getStudient } from "./studient.js";
-import { createNewTeacher, deleteTeacher, getTeacher } from "./teacher.js";
+import { getCourseById } from "./courses.js";
+import { createNewStudient, getStudient } from "./studient.js";
+import { createNewTeacher, getTeacher } from "./teacher.js";
+import Courses from "../models/Course.js";
+import { generateCourse } from "../middleware/course.js";
 
-// * normal auth
-export async function singup(req, res) {
-  let { email, password, isteacher = false, picture = "" } = req.body;
-  if (!email || !password) {
-    res.status(422).send({ message: "all inputs is required" });
-    return;
-  }
-  // * check email pattern
-  if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email)) {
-    res.status(400).send({ message: "email not correct" });
-    return;
-  }
-  isteacher = Boolean(isteacher);
-  try {
-    // check if email is already exist
-    if (await User.findOne({ email })) {
-      res.status(409).send({ message: "email is already exist" });
-      return;
-    }
-    // create user account in (teacher/student)
-    let userAccount = isteacher
-      ? await createNewTeacher()
-      : await createNewStudient();
-    if (!userAccount) {
-      res.status(500).send({ message: "Internal server error" });
-      return;
-    }
-    // generate username
-    let username = email.split("@")[0];
-    // check if userename is already exist
-    let isUserExist = false;
-    do {
-      isUserExist = await User.findOne({ username });
-      if (isUserExist) {
-        // generate new username
-        username = `${username}${parseInt(Math.random() * 100)}`;
-      }
-    } while (isUserExist);
-    // hashing password
-    const passwordHash = await hashingPassword(password);
-    const newUser = await new User({
-      isteacher,
-      userId: userAccount.userId.toString(),
-      email,
-      username,
-      password: passwordHash,
-      isHasPicture: Boolean(picture),
-      picture,
-    }).save();
-    // send response
-    await generateToken(newUser, res);
-    res.status(201).send({
-      user: {
-        ...generateUserInfo(newUser),
-        ...userAccount,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ message: error.message });
-  }
-}
-export async function login(req, res) {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    res.status(422).send({ message: "all inputs are required" });
-    return;
-  }
-  try {
-    const checkUser = await User.findOne({ username });
-    // ! don't find user or password isn't match
-    if (!checkUser || !comparePassword(password, checkUser?.password)) {
-      res.status(400).send({
-        message: "username or password is inccorect",
-      });
-      return;
-    }
-    // * check user info in (teacher/studient)
-    const userInfo = checkUser.isteacher
-      ? await getTeacher(checkUser.userId)
-      : await getStudient(checkUser.userId);
-    // * generate res and cookies(token)
-    await generateToken(checkUser, res);
-    res.status(200).send({
-      user: {
-        ...generateUserInfo(checkUser),
-        ...userInfo,
-      },
-    });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-}
-// * routes
-export async function isLoggin(req, res) {
-  try {
-    if (req.user) {
-      await generateToken(req.user, res);
-      res.status(200).send({
-        user: req.user,
-      });
-      return;
-    }
-    const { token } = req.cookies;
-    if (!token) {
-      res.status(204).send();
-      return;
-    }
-    const { isCorrect, userId } = await isTokenCorrect(token);
-    if (!isCorrect || !userId) {
-      res.status(204).send();
-      return;
-    }
-    const userinfo = await User.findById(userId);
-    if (!userinfo) {
-      res.status(404).send({
-        message: "user not found ",
-      });
-      return;
-    }
-    const userDetails = userinfo.isteacher
-      ? await getTeacher(userinfo.userId)
-      : await getStudient(userinfo.userId);
-    await generateToken(userinfo, res);
-    res.status(200).send({
-      userinfo: { ...generateUserInfo(userinfo), ...userDetails },
-    });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-}
-// * delete
-export async function deleteAccount(req, res) {
-  const { userId } = req.body;
-  try {
-    const user = await User.findById(userId);
-    // todo : set tasks delete
-    if (!(await deleteUserPosts(userId))) {
-      res.status(500).send("post delete error");
-      return;
-    }
-    if (!(await deleteUserComment(userId))) {
-      res.status(500).send("comments delete error");
-      return;
-    }
-    const countInfoDeleted = user.isteacher
-      ? await deleteTeacher(user.userId, userId)
-      : await deleteStudient(user.userId);
-    if (!countInfoDeleted) {
-      res.status(500).send("internal server error");
-      return;
-    }
-    const deletedUser = await User.findByIdAndDelete(userId);
-
-    if (deletedUser) {
-      addExistingToken("", res);
-      res.status(204).send();
-    } else res.status(404).send({ message: "user not found" });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-}
-// * updates
 export async function updateUserInfo(req, res) {
-  const { userId, username, password, currentPassword, bio } = req.body;
-  if (!username && !password && !bio && !currentPassword) {
-    res.status(204).send();
-    return;
-  }
+  const {
+    userId,
+    username,
+    password,
+    currentPassword,
+    bio = "",
+    email = false,
+    firstName,
+    lastName,
+    language,
+    link,
+  } = req.body;
+  if (
+    !username &&
+    !password &&
+    !bio &&
+    !currentPassword &&
+    !email &&
+    !firstName &&
+    !lastName
+  )
+    return res.status(204).send();
   try {
     let isUpdated = false;
+    // GET USER DATA
     let user = await User.findById(userId);
-    if (!user) {
-      res.status(404).send({ message: "user not found" });
-      return;
-    }
-    if (bio !== null && user.bio !== bio) {
+    let userinfo = user.isteacher
+      ? await getTeacher(user.userId)
+      : await getStudient(user.userId);
+    // UPDATE USER BIO
+    if (user.bio !== bio) {
       user.bio = bio;
       isUpdated = true;
     }
+    // UPDATE EMAIL
+    // CHECK IF EMAIL FORM CORRECT
+    if (email && user.email !== email) {
+      if (!/^[a-zA-Z0-9._]+@[a-zA-Z.-]+\.[a-zA-Z]{3}$/.test(email))
+        return res.status(400).send({ message: "email format are inccorect" });
+      if (await User.findOne({ email }))
+        return res.status(400).send({ message: "email is already exist" });
+      user.email = email;
+      isUpdated = true;
+    }
+    // UPDATE USER NAME
     if (username && username !== user.username) {
-      if (await User.findOne({username})) {
-        res.status(403).send({ message: "username is already exist" });
-        return;
-      }
+      if (await User.findOne({ username }))
+        return res.status(400).send({ message: "username is already exist" });
       user.username = username;
       isUpdated = true;
     }
-    if ((!password && currentPassword) || (password && !currentPassword)) {
-      res.status(404).send({
+    // check PASSWORD CASES AND UPDATE IT
+    if ((!password && currentPassword) || (password && !currentPassword))
+      return res.status(400).send({
         message: "password or current password are empty",
       });
-      return;
-    }
     if (password && currentPassword) {
       if (
         !user.password ||
@@ -220,28 +86,133 @@ export async function updateUserInfo(req, res) {
         return;
       }
     }
-    if (!isUpdated) {
-      res.status(204).send();
-      return;
+    //UPDATE LANGUAGE
+    if (user.language !== language) {
+      user.language = language;
+      isUpdated = true;
     }
+    //UPDATE LINK
+    if (user.link !== link) {
+      user.link = link;
+      isUpdated = true;
+    }
+    // UPDATE FIRST NAME
+    if (user.firstName !== firstName) {
+      user.firstName = firstName;
+      isUpdated = true;
+    }
+    // UPDATE LAST NAME
+    if (user.lastName !== lastName) {
+      user.lastName = lastName;
+      isUpdated = true;
+    }
+    // SAVE UPDATES AND SEND RES
+    if (!isUpdated) return res.status(204).send();
     user = await user.save();
     res.status(200).send({
-      user: generateUserInfo(user),
+      user: { ...generateUserInfo(user), ...userinfo },
     });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function getUserDashboard(req, res, next) {
+  const { userId, isteacher } = req.body;
+  try {
+    const informations = await User.findById(userId); // get information of userID
+    // * GET FAVORITE COURSE
+    const favCourses = [];
+    for (let i = 0; i < informations.favorite.length; i++) {
+      const fav = informations.favorite[i];
+      const c = await getCourseById(fav);
+      if (!c || !c?.visible) continue;
+      favCourses.push(await getCourseById(fav));
+    }
+    const buyCoursesId = await StudientCourse.find({ studentId: userId });
+    // *  GET BUY COURSES
+    const buyCourses = [];
+    for (let i = 0; i < buyCoursesId.length; i++) {
+      const ele = buyCoursesId[i];
+      const course = await getCourseById(ele.courseId);
+      buyCourses.push({
+        ...course,
+        progress: ele,
+      });
+    }
+
+    // * GET WISHLIST COURSE
+    const wishlistCourses = [];
+    for (let i = 0; i < informations.wishlist.length; i++) {
+      const wishlist = informations.wishlist[i];
+      wishlistCourses.push(await getCourseById(wishlist));
+    }
+    if (isteacher) {
+      req.body.userInformation = { favCourses, buyCourses, wishlistCourses };
+      next();
+      return;
+    }
+    // HUNDLE RES
+    res.status(200).send({
+      favCourses,
+      buyCourses,
+      wishlistCourses,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "internal server error",
+    });
+  }
+}
+export async function updateProfileImage(req, res) {
+  try {
+    const { userId } = req;
+    const imgPath = req.file.path;
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).send({ message: "user not found" });
+    // delete the current path
+    const isHasPicture = /^public/.test(user.picture);
+    if (user.picture && isHasPicture) {
+      const currentFilePath = path.join(__dirname, "/", user.picture);
+      if (fs.existsSync(currentFilePath)) {
+        fs.unlinkSync(currentFilePath);
+      }
+    }
+    // update picture
+    user.picture = imgPath;
+    const newUser = await user.save();
+    res.status(200).send({ userinfo: generateUserInfo(newUser) });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
+  }
+}
+export async function getTeacherDashboard(req, res) {
+  const { userId, secondId, user, userInformation } = req.body;
+  try {
+    // * GET TEACHER INFORMATION
+    const teacher = await getTeacher(secondId);
+    if (!teacher) return res.status(404).send({ message: "teacher not found" });
+    // * GET TEACHER COURSES
+    const courses = await Courses.find({ teacherId: userId });
+    const handleCourses = courses.map((ele) => generateCourse(ele, user));
+    // * GET TEACHER STUDENTS
+    res.status(200).send({
+      ...userInformation,
+      courses: handleCourses,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "internal server error" });
   }
 }
 // * google auth
-export function googleFaild(req, res) {
+export function googleFaild(_, res) {
   res.status(401).send({
     message: "auth faild",
   });
-}
-export async function googleLogOut(req, res) {
-  req.logout();
-  addExistingToken("", res);
-  res.redirect(process.env.CLIENT_URL);
 }
 // * function
 export async function isUserExist(userId) {
@@ -252,9 +223,10 @@ export async function isUserExist(userId) {
       isExist: true,
       user: {
         username: isUserExist.username,
+        email: isUserExist.email,
         picture: isUserExist.picture,
-        isHasPicture: isUserExist.isHasPicture,
         isteacher: isUserExist.isteacher,
+        secondId: isUserExist.userId,
       },
     };
   } catch (error) {
@@ -262,16 +234,15 @@ export async function isUserExist(userId) {
   }
 }
 export async function googleSingup(user, isteacher = false) {
-  if (!user) return false;
   try {
     const { sub: emailId } = user;
-    const isExist = await User.findOne({ emailId });
+    let isExist = await User.findOne({ emailId });
     let userinfo = null;
     if (!isExist) {
       userinfo = isteacher
         ? await createNewTeacher()
         : await createNewStudient();
-      user = await new User({
+      isExist = await new User({
         email: user.email,
         emailId,
         password: "",
@@ -279,7 +250,7 @@ export async function googleSingup(user, isteacher = false) {
         picture: user.picture,
         userId: userinfo.userId,
         isteacher,
-        username: user.email.split("@")[0],
+        username: await generateUserName(user.email),
       }).save();
     } else {
       userinfo = isExist.isteacher
