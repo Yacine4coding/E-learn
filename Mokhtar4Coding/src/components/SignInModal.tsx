@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import GoogleIcon from "@/components/GoogleIcon";
 
-interface SignInModalProps {
+interface SignInModalProps { 
   isOpen: boolean;
   onClose: () => void;
 }

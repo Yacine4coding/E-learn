@@ -13,7 +13,7 @@ const Index = () => {
   const handleBrowseCourses = () => {
     setIsSignInModalOpen(true);
   };
-
+//test commit kaki to show contribution
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       {/* Header - Made smaller with reduced padding */}
